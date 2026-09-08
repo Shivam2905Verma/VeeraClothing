@@ -1,13 +1,17 @@
+import { uploadToCloudinary } from "../../config/cloudinary.config.js";
 import { db } from "../../config/DB.config.js";
 import { cart_items } from "../../models/cart_items.model.js";
 import { order_items } from "../../models/order_items.model.js";
 import { products } from "../../models/product.model.js";
+import { product_images } from "../../models/product_images.model.js";
 import { product_variants } from "../../models/product_variants.model.js";
 
 // Transaction = all operations succeed together, or none of them are applied.
 export async function createProduct(req, res) {
   try {
-    const { name, description, category_id, variants } = req.body;
+    const { name, description, category_id } = req.body;
+    const variants = JSON.parse(req.body.variants);
+    const files = req.files;
 
     if (!name || !category_id) {
       return res.status(400).json({
@@ -23,12 +27,23 @@ export async function createProduct(req, res) {
       });
     }
 
+    if (!files || files.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "At least one product image is required",
+      });
+    }
+
+    // 1. Upload all image buffers in parallel to Cloudinary
+    const uploadPromises = files.map((file) => uploadToCloudinary(file.buffer));
+    const imageUrls = await Promise.all(uploadPromises);
+
     const result = await db.transaction(async (tx) => {
       // 1. Create product
       const [product] = await tx.insert(products).values({
         name,
         description,
-        category_id,
+        category_id: parseInt(category_id),
       });
 
       // 2. Create variants using product.id
@@ -43,9 +58,17 @@ export async function createProduct(req, res) {
         .insert(product_variants)
         .values(variantValues);
 
+      // Create image rows using the Cloudinary URLs
+      const imageValues = imageUrls.map((url) => ({
+        product_id: product.insertId,
+        image_url: url,
+      }));
+      const createdImages = await tx.insert(product_images).values(imageValues);
+
       return {
         product,
         variants: createdVariants,
+        images: createdImages,
       };
     });
 

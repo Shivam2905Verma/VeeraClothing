@@ -1,4 +1,5 @@
 import { Router } from "express";
+import multer from "multer";
 import {
   createProduct,
   createVariant,
@@ -12,24 +13,17 @@ import {
   permanentDeleteVariant,
 } from "../../controllers/dashboard/product.controller.js";
 const productDashboardRouter = Router();
-// config/multer.js
-import multer from "multer";
-
 const storage = multer.memoryStorage();
-
 export const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith("image/")) {
-      cb(null, true);
-    } else {
-      cb(new Error("Only image files are allowed"), false);
-    }
-  },
+  limits: { fileSize: 5 * 1024 * 1024 },
 });
 
-productDashboardRouter.post("/createproduct", createProduct);
+productDashboardRouter.post(
+  "/createproduct",
+  upload.array("images", 5),
+  createProduct,
+);
 productDashboardRouter.put("/updateproduct/:id", updateProduct);
 productDashboardRouter.patch("/inactiveproduct/:id", inactiveProduct);
 productDashboardRouter.patch("/activeproduct/:id", activateProduct);
@@ -41,10 +35,10 @@ productDashboardRouter.patch("/inactivevariant/:id", inactiveVariant);
 productDashboardRouter.patch("/activevariant/:id", activateVariant);
 productDashboardRouter.delete("/deletevariant/:id", permanentDeleteVariant);
 
-productDashboardRouter.post("/upload-image", uploadImage);
-productDashboardRouter.delete(
-  "/product/:product_id/delete-image/:image_id",
-  deleteImage,
-);
+// productDashboardRouter.post("/upload-image", uploadImage);
+// productDashboardRouter.delete(
+//   "/product/:product_id/delete-image/:image_id",
+//   deleteImage,
+// );
 
 export default productDashboardRouter;
