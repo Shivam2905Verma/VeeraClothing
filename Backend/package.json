@@ -19,7 +19,8 @@
     "express": "^5.2.1",
     "morgan": "^1.11.0",
     "multer": "^2.3.0",
-    "mysql2": "^3.24.4"
+    "mysql2": "^3.24.4",
+    "zod": "^4.5.4"
   },
   "devDependencies": {
     "drizzle-kit": "^0.31.10"

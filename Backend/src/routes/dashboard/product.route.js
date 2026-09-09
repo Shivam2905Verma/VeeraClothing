@@ -12,6 +12,13 @@ import {
   permanentDeleteProduct,
   permanentDeleteVariant,
 } from "../../controllers/dashboard/product.controller.js";
+import { zodValidateData } from "../../middleware/validate.middleware.js";
+import {
+  createProductSchema,
+  createVariantSchema,
+  updateProductSchema,
+  updateVariantSchema,
+} from "../../validators/dashboard/product.schema.js";
 const productDashboardRouter = Router();
 const storage = multer.memoryStorage();
 export const upload = multer({
@@ -22,15 +29,28 @@ export const upload = multer({
 productDashboardRouter.post(
   "/createproduct",
   upload.array("images", 5),
+  zodValidateData(createProductSchema),
   createProduct,
 );
-productDashboardRouter.put("/updateproduct/:id", updateProduct);
+productDashboardRouter.put(
+  "/updateproduct/:id",
+  zodValidateData(updateProductSchema),
+  updateProduct,
+);
 productDashboardRouter.patch("/inactiveproduct/:id", inactiveProduct);
 productDashboardRouter.patch("/activeproduct/:id", activateProduct);
 productDashboardRouter.delete("/deleteproduct/:id", permanentDeleteProduct);
 
-productDashboardRouter.post("/createvariant", createVariant);
-productDashboardRouter.put("/updatevariant/:id", updateVariant);
+productDashboardRouter.post(
+  "/createvariant",
+  zodValidateData(createVariantSchema),
+  createVariant,
+);
+productDashboardRouter.put(
+  "/updatevariant/:id",
+  zodValidateData(updateVariantSchema),
+  updateVariant,
+);
 productDashboardRouter.patch("/inactivevariant/:id", inactiveVariant);
 productDashboardRouter.patch("/activevariant/:id", activateVariant);
 productDashboardRouter.delete("/deletevariant/:id", permanentDeleteVariant);

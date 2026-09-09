@@ -10,23 +10,8 @@ import { product_variants } from "../../models/product_variants.model.js";
 // Transaction = all operations succeed together, or none of them are applied.
 export async function createProduct(req, res) {
   try {
-    const { name, description, category_id } = req.body;
-    const variants = JSON.parse(req.body.variants);
+    const { name, description, category_id, variants } = req.body;
     const files = req.files;
-
-    if (!name || !category_id) {
-      return res.status(400).json({
-        success: false,
-        message: "Name and category are required",
-      });
-    }
-
-    if (!Array.isArray(variants) || variants.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "At least one variant is required",
-      });
-    }
 
     if (!files || files.length === 0) {
       return res.status(400).json({
@@ -92,13 +77,6 @@ export async function createVariant(req, res) {
   try {
     const { variants } = req.body;
 
-    if (!Array.isArray(variants) || variants.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "At least one variant is required",
-      });
-    }
-
     const variantValues = variants.map((variant) => ({
       product_id: variant.product_id,
       color: variant.color,
@@ -128,19 +106,13 @@ export async function createVariant(req, res) {
 export async function updateProduct(req, res) {
   try {
     const productId = parseInt(req.params.id);
-    const { name, description, category_id } = req.body;
+    const { name, description } = req.body;
+    const category_id = Number(req.body.category_id);
 
     if (isNaN(productId)) {
       return res
         .status(400)
         .json({ success: false, message: "Invalid product ID" });
-    }
-
-    if (!name || !category_id) {
-      return res.status(400).json({
-        success: false,
-        message: "Name and category are required",
-      });
     }
 
     await db
@@ -168,19 +140,14 @@ export async function updateProduct(req, res) {
 export async function updateVariant(req, res) {
   try {
     const variantId = parseInt(req.params.id);
-    const { color, price, stock } = req.body;
+    const { color } = req.body;
+    const price = Number(req.body.price);
+    const stock = Number(req.body.stock);
 
     if (isNaN(variantId)) {
       return res
         .status(400)
         .json({ success: false, message: "Invalid variant ID" });
-    }
-
-    if (!color || !price || !stock) {
-      return res.status(400).json({
-        success: false,
-        message: "Color, price, and stock are required",
-      });
     }
 
     await db
