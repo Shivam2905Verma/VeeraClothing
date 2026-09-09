@@ -12,19 +12,22 @@ import {
   permanentDeleteProduct,
   permanentDeleteVariant,
 } from "../../controllers/dashboard/product.controller.js";
-import { zodValidateData } from "../../middleware/validate.middleware.js";
+import { zodValidateData } from "../../middleware/validateData.middleware.js";
 import {
   createProductSchema,
   createVariantSchema,
   updateProductSchema,
   updateVariantSchema,
 } from "../../validators/dashboard/product.schema.js";
+import { verifyAdmin } from "../../middleware/verifyAdmin.middleware.js";
 const productDashboardRouter = Router();
 const storage = multer.memoryStorage();
 export const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 },
 });
+
+productDashboardRouter.use(verifyAdmin);
 
 productDashboardRouter.post(
   "/createproduct",

@@ -4,12 +4,15 @@ import {
   updateCategory,
   deleteCategory,
 } from "../../controllers/dashboard/categories.controller.js";
-import { zodValidateData } from "../../middleware/validate.middleware.js";
+import { zodValidateData } from "../../middleware/validateData.middleware.js";
 import {
   createCategorySchema,
   updateCategorySchema,
 } from "../../validators/dashboard/categories.schema.js";
+import { verifyAdmin } from "../../middleware/verifyAdmin.middleware.js";
 const categoriesDashboardRouter = Router();
+
+categoriesDashboardRouter.use(verifyAdmin);
 
 categoriesDashboardRouter.post(
   "/createcategory",
