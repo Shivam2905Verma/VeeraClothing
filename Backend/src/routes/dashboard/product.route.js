@@ -35,10 +35,15 @@ productDashboardRouter.patch("/inactivevariant/:id", inactiveVariant);
 productDashboardRouter.patch("/activevariant/:id", activateVariant);
 productDashboardRouter.delete("/deletevariant/:id", permanentDeleteVariant);
 
-// productDashboardRouter.post("/upload-image", uploadImage);
+//To-DO
+// productDashboardRouter.post(
+//   "/product/:id/update-image/:imageId",
+//   upload.array("images", 5),
+//   updateProductImage,
+// );
 // productDashboardRouter.delete(
-//   "/product/:product_id/delete-image/:image_id",
-//   deleteImage,
+//   "/product/:id/delete-image/:imageId",
+//   deleteProductImage,
 // );
 
 export default productDashboardRouter;

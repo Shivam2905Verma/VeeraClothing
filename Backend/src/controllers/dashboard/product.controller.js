@@ -1,3 +1,4 @@
+import { eq, inArray } from "drizzle-orm";
 import { uploadToCloudinary } from "../../config/cloudinary.config.js";
 import { db } from "../../config/DB.config.js";
 import { cart_items } from "../../models/cart_items.model.js";
@@ -218,7 +219,7 @@ export async function inactiveProduct(req, res) {
     await db.transaction(async (tx) => {
       const [productUpdate] = await tx
         .update(products)
-        .set({ isActive: false })
+        .set({ is_active: false })
         .where(eq(products.id, productId));
 
       if (productUpdate.affectedRows === 0) {
@@ -227,7 +228,7 @@ export async function inactiveProduct(req, res) {
 
       await tx
         .update(product_variants)
-        .set({ isActive: false })
+        .set({ is_active: false })
         .where(eq(product_variants.product_id, productId));
 
       const variants = await tx
@@ -256,7 +257,7 @@ export async function inactiveProduct(req, res) {
       });
     }
 
-    console.error("deleteProduct error:", error);
+    console.error("inactiveProduct error:", error);
     return res.status(500).json({
       success: false,
       message: "Failed to deactivate product",
@@ -277,7 +278,7 @@ export async function inactiveVariant(req, res) {
 
     const [variantUpdate] = await db
       .update(product_variants)
-      .set({ isActive: false })
+      .set({ is_active: false })
       .where(eq(product_variants.id, variantId));
 
     if (variantUpdate.affectedRows === 0) {
@@ -317,7 +318,7 @@ export async function activateProduct(req, res) {
       // 1. Activate the parent product
       const [productUpdate] = await tx
         .update(products)
-        .set({ isActive: true })
+        .set({ is_active: true })
         .where(eq(products.id, productId));
 
       if (productUpdate.affectedRows === 0) {
@@ -327,7 +328,7 @@ export async function activateProduct(req, res) {
       // 2. Activate all associated child variants
       await tx
         .update(product_variants)
-        .set({ isActive: true })
+        .set({ is_active: true })
         .where(eq(product_variants.product_id, productId));
     });
 
@@ -368,7 +369,7 @@ export async function activateVariant(req, res) {
         .select({
           id: product_variants.id,
           productId: product_variants.product_id,
-          parentActive: products.isActive,
+          parentActive: products.is_active,
         })
         .from(product_variants)
         .innerJoin(products, eq(product_variants.product_id, products.id))
@@ -386,7 +387,7 @@ export async function activateVariant(req, res) {
       // 3. Activate the variant
       await tx
         .update(product_variants)
-        .set({ isActive: true })
+        .set({ is_active: true })
         .where(eq(product_variants.id, variantId));
     });
 

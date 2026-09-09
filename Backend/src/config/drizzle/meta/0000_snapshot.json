@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "cb510bd6-63df-4b86-adc8-d2b03a79f31c",
+  "id": "a542651d-71a4-421a-97f1-ca28b3dd3468",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "address": {
@@ -261,8 +261,8 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "categories_measurements_measurement_type_id_measurement_types_id_fk": {
-          "name": "categories_measurements_measurement_type_id_measurement_types_id_fk",
+        "cat_meas_type_fk": {
+          "name": "cat_meas_type_fk",
           "tableFrom": "categories_measurements",
           "tableTo": "measurement_types",
           "columnsFrom": [
@@ -371,8 +371,8 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "order_item_measurements_measurement_type_id_measurement_types_id_fk": {
-          "name": "order_item_measurements_measurement_type_id_measurement_types_id_fk",
+        "ord_item_meas_type_fk": {
+          "name": "ord_item_meas_type_fk",
           "tableFrom": "order_item_measurements",
           "tableTo": "measurement_types",
           "columnsFrom": [
@@ -681,7 +681,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -764,7 +764,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
