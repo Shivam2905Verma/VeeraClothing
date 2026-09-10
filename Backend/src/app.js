@@ -6,6 +6,7 @@ import productDashboardRouter from "./routes/dashboard/product.route.js";
 import categoriesDashboardRouter from "./routes/dashboard/categories.route.js";
 import authDashboardRouter from "./routes/dashboard/auth.route.js";
 import cookieParser from "cookie-parser";
+import { sendVerificationEmail } from "./service/mail.service.js";
 
 const app = express();
 
@@ -23,5 +24,7 @@ app.use("/api/main/product", productRouter);
 app.use("/api/dashboard/product", productDashboardRouter);
 app.use("/api/dashboard/categories", categoriesDashboardRouter);
 app.use("/api/dashboard/auth", authDashboardRouter);
+
+sendVerificationEmail("shivam7355g@gmail.com");
 
 export default app;

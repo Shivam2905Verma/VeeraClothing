@@ -1,0 +1,1 @@
+ALTER TABLE `user` ADD `is_verified` boolean DEFAULT false NOT NULL;

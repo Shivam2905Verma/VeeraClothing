@@ -15,6 +15,13 @@
       "when": 1788973866393,
       "tag": "0001_shocking_captain_flint",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1789023422432,
+      "tag": "0002_free_magma",
+      "breakpoints": true
     }
   ]
 }

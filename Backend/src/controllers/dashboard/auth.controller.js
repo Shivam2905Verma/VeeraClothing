@@ -26,7 +26,7 @@ export const login = async (req, res) => {
     const token = generateTokenForAdmin(user.admin_id);
     res.cookie("admin_token", token, {
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: "strict",
       maxAge: 24 * 60 * 60 * 1000,
     });

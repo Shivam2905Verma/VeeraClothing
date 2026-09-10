@@ -5,3 +5,9 @@ export const generateTokenForAdmin = (adminId) => {
     expiresIn: "24h",
   });
 };
+
+export const generateTokenForUser = (userId, userEmail) => {
+  return jwt.sign({ userId, userEmail }, process.env.JWT_SECRET_USER, {
+    expiresIn: "3d",
+  });
+};
