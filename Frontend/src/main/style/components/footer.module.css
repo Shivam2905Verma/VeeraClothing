@@ -1,0 +1,33 @@
+.footer {
+  margin-top: 1rem;
+  background-color: #f6f7f6;
+  padding: 5rem 2rem;
+}
+
+.followus p {
+  margin-bottom: 0.5rem;
+}
+
+.followus i {
+  font-weight: 100;
+  font-size: 1.5rem;
+  margin-right: 1rem;
+}
+
+.paymenttypes {
+  margin-top: 3rem;
+}
+
+.paymenttypes p {
+  margin-bottom: 0.5rem;
+}
+
+.paymentLogos {
+  display: flex;
+  gap: 2rem;
+}
+
+.paymenttypes img {
+  width: 6rem;
+  border-radius: 10px;
+}

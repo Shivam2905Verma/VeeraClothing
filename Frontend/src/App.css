@@ -2,11 +2,16 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  font-family: sans-serif;
 }
 
 html,
 body {
   height: 100%;
   width: 100%;
-  background-color: rgb(75, 75, 75);
+}
+
+.divider {
+  padding-block: 20px;
+  border-bottom: 3px solid #f7f6f7;
 }

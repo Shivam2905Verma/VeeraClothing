@@ -1,0 +1,58 @@
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  padding: 2.5rem;
+  margin: 0 auto;
+  overflow: hidden;
+  user-select: none;
+}
+
+.sliderWrapper {
+  width: 100%;
+  overflow: hidden;
+  cursor: grab;
+}
+
+.sliderWrapper:active {
+  cursor: grabbing;
+}
+
+.track {
+  display: flex;
+  width: 100%;
+  /* Smooth easing curve for the slide snap animation */
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+}
+
+/* While dragging with mouse or touch, disable the transition so it directly tracks the cursor */
+.track.isDragging {
+  transition: none;
+}
+
+.slide {
+  flex: 0 0 100%;
+  min-width: 100%;
+  aspect-ratio: 21 / 9;
+  position: relative;
+}
+
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  display: block;
+  pointer-events: none;
+}
+
+@media screen and (max-width: 768px) {
+  .arrow {
+    display: none;
+  }
+
+  .container {
+    padding: 0;
+  }
+}
