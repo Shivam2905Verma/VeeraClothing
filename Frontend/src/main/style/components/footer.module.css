@@ -5,6 +5,7 @@
 }
 
 .followus p {
+  pointer-events: none;
   margin-bottom: 0.5rem;
 }
 

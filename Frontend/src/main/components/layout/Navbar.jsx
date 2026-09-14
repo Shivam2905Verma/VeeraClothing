@@ -3,20 +3,20 @@ import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <div className={style.container}>
+    <>
       <div className={style.top}>
         <div className={style.topleft}>
           <span className={style.mobileonly + " " + style.menubar}>
-            <i class="ri-menu-line"></i>
+            <i className="ri-menu-line"></i>
           </span>
           <span className={style.login + " " + style.computeronly}>
-            <i class="ri-user-line"></i> Login / Register
+            <i className="ri-user-line"></i> Login / Register
           </span>
         </div>
         <div className={style.topcenter}>VEERA CLOTHING</div>
         <div className={style.topright}>
-          <i class="ri-search-line"></i>
-          <i class="ri-handbag-line"></i>
+          <i className="ri-search-line"></i>
+          <i className="ri-handbag-line"></i>
           <div className={style.cartCount}>0</div>
         </div>
       </div>
@@ -34,7 +34,7 @@ const Navbar = () => {
           Contact Us
         </Link>
       </div>
-    </div>
+    </>
   );
 };
 

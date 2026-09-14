@@ -47,6 +47,9 @@
 }
 
 .linkcontainer {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   display: flex;
   background-color: #f7f6f7;
   justify-content: space-around;

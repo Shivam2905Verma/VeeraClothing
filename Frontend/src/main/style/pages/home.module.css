@@ -9,6 +9,13 @@
   font-size: 1.1rem;
 }
 
+a {
+  cursor: pointer;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: black;
+}
+
 .cardscontainer {
   display: flex;
   flex-shrink: 0;
