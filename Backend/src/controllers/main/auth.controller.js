@@ -44,6 +44,7 @@ export async function registerUser(req, res) {
       },
     });
   } catch (error) {
+    console.log(error);
     console.log("Error from registration controller: ", error.message);
     return res
       .status(500)

@@ -9,6 +9,11 @@ CREATE TABLE `address` (
 	CONSTRAINT `address_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
+CREATE TABLE `admin` (
+	`admin_id` varchar(255) NOT NULL,
+	`password` varchar(255) NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE `cart_items` (
 	`id` int AUTO_INCREMENT NOT NULL,
 	`user_id` int NOT NULL,
@@ -102,6 +107,13 @@ CREATE TABLE `products` (
 	`name` varchar(255) NOT NULL,
 	`description` text,
 	`category_id` int NOT NULL,
+	`price` int NOT NULL,
+	`image_url` varchar(255) NOT NULL,
+	`stock` int NOT NULL,
+	`highlights` varchar(500) NOT NULL,
+	`composition` varchar(500) NOT NULL,
+	`care` varchar(200) NOT NULL,
+	`extra_info` varchar(200) NOT NULL,
 	`is_active` boolean NOT NULL DEFAULT true,
 	`createdAt` timestamp NOT NULL DEFAULT (now()),
 	CONSTRAINT `products_id` PRIMARY KEY(`id`)
@@ -113,6 +125,7 @@ CREATE TABLE `user` (
 	`email` varchar(255) NOT NULL,
 	`password` varchar(255) NOT NULL,
 	`mobile_no` varchar(15) NOT NULL,
+	`is_verified` boolean NOT NULL DEFAULT false,
 	`is_deleted` boolean NOT NULL DEFAULT false,
 	`deleted_at` timestamp,
 	`createdAt` timestamp NOT NULL DEFAULT (now()),

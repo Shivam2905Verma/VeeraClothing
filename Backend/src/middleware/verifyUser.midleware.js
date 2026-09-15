@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import jwt from "jsonwebtoken";
 
 export function verifyUser(req, res, next) {

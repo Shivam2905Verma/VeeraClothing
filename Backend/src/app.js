@@ -2,15 +2,21 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import productRouter from "./routes/main/product.route.js";
+import cartRouter from "./routes/main/cart.route.js";
+import userRouter from "./routes/main/auth.route.js";
 import productDashboardRouter from "./routes/dashboard/product.route.js";
 import categoriesDashboardRouter from "./routes/dashboard/categories.route.js";
 import authDashboardRouter from "./routes/dashboard/auth.route.js";
 import cookieParser from "cookie-parser";
-import { sendVerificationEmail } from "./service/mail.service.js";
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
 app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(express.json());
@@ -20,11 +26,11 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/main/product", productRouter);
+app.use("/api/main/cart", cartRouter);
+app.use("/api/main/auth", userRouter);
 
 app.use("/api/dashboard/product", productDashboardRouter);
 app.use("/api/dashboard/categories", categoriesDashboardRouter);
 app.use("/api/dashboard/auth", authDashboardRouter);
-
-sendVerificationEmail("shivam7355g@gmail.com");
 
 export default app;

@@ -1,7 +1,18 @@
 import style from "../../style/components/navbar.module.css";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { MainContext } from "../../context/MainContext";
 
 const Navbar = () => {
+  const { cartItems } = useContext(MainContext);
+
+  const totalCartCount = Array.isArray(cartItems)
+    ? cartItems.reduce((acc, item) => acc + (Number(item.quantity) || 0), 0)
+    : Object.values(cartItems || {}).reduce(
+        (acc, item) => acc + (Number(item?.quantity) || 0),
+        0,
+      );
+
   return (
     <>
       <div className={style.top}>
@@ -16,8 +27,10 @@ const Navbar = () => {
         <div className={style.topcenter}>VEERA CLOTHING</div>
         <div className={style.topright}>
           <i className="ri-search-line"></i>
-          <i className="ri-handbag-line"></i>
-          <div className={style.cartCount}>0</div>
+          <Link to="/cart" className={style.cart}>
+            <i className="ri-handbag-line"></i>
+            <div className={style.cartCount}>{totalCartCount}</div>
+          </Link>
         </div>
       </div>
       <div className={style.linkcontainer}>

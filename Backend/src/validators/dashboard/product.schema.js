@@ -5,6 +5,10 @@ export const createProductSchema = z.object({
   name: z.string().trim().min(2, "Product name must be at least 2 characters"),
   description: z.string().trim().optional(),
   category_id: z.coerce.number().int().positive("Invalid category ID"),
+  highlights: z.string().trim().min(1, "Highlights is required"),
+  composition: z.string().trim().min(1, "Composition is required"),
+  care: z.string().trim().min(1, "Care is required"),
+  extra_info: z.string().trim().min(1, "Extra info is required"),
   variants: z.preprocess(
     (val) => {
       if (typeof val === "string") {

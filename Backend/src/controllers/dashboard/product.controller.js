@@ -10,7 +10,16 @@ import { product_variants } from "../../models/product_variants.model.js";
 // Transaction = all operations succeed together, or none of them are applied.
 export async function createProduct(req, res) {
   try {
-    const { name, description, category_id, variants } = req.body;
+    const {
+      name,
+      description,
+      highlights,
+      composition,
+      care,
+      extra_info,
+      category_id,
+      variants,
+    } = req.body;
     const files = req.files;
 
     if (!files || files.length === 0) {
@@ -24,35 +33,56 @@ export async function createProduct(req, res) {
     const uploadPromises = files.map((file) => uploadToCloudinary(file.buffer));
     const imageUrls = await Promise.all(uploadPromises);
 
+    // 2. Compute aggregated product values
+    const frontImage = imageUrls[0];
+    const initialPrice = Number(variants[0].price);
+    const totalStock = variants.reduce(
+      (sum, variant) => sum + Number(variant.stock || 0),
+      0,
+    );
+
     const result = await db.transaction(async (tx) => {
-      // 1. Create product
+      // 3. Create product with front image, base price, and aggregated stock
       const [product] = await tx.insert(products).values({
         name,
         description,
-        category_id: parseInt(category_id),
+        category_id: parseInt(category_id, 10),
+        image_url: frontImage,
+        price: initialPrice,
+        stock: totalStock,
+        highlights,
+        composition,
+        care,
+        extra_info,
       });
 
-      // 2. Create variants using product.id
+      // 4. Create variants using product.insertId
       const variantValues = variants.map((variant) => ({
         product_id: product.insertId,
         color: variant.color,
-        price: variant.price,
-        stock: variant.stock,
+        price: Number(variant.price),
+        stock: Number(variant.stock),
       }));
 
       const createdVariants = await tx
         .insert(product_variants)
         .values(variantValues);
 
-      // Create image rows using the Cloudinary URLs
+      // 5. Create product image records
       const imageValues = imageUrls.map((url) => ({
         product_id: product.insertId,
         image_url: url,
       }));
+
       const createdImages = await tx.insert(product_images).values(imageValues);
 
       return {
-        product,
+        product: {
+          id: product.insertId,
+          name,
+          price: initialPrice,
+          stock: totalStock,
+        },
         variants: createdVariants,
         images: createdImages,
       };

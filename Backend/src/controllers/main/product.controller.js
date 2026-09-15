@@ -1,13 +1,17 @@
 import { db } from "../../config/DB.config.js";
 import { products } from "../../models/product.model.js";
+import { product_images } from "../../models/product_images.model.js";
+import { product_variants } from "../../models/product_variants.model.js";
 import { eq } from "drizzle-orm";
 
 export async function getAllProducts(req, res) {
+  console.log("run");
   try {
     const result = await db.select().from(products);
 
     return res.status(200).json({
       success: true,
+      message: "Products fetched successfully",
       products: result,
     });
   } catch (error) {
@@ -31,10 +35,17 @@ export async function getProductById(req, res) {
       });
     }
 
-    const [product] = await db
-      .select()
-      .from(products)
-      .where(eq(products.id, productId));
+    const [[product], images, variants] = await Promise.all([
+      db.select().from(products).where(eq(products.id, productId)),
+      db
+        .select()
+        .from(product_images)
+        .where(eq(product_images.product_id, productId)),
+      db
+        .select()
+        .from(product_variants)
+        .where(eq(product_variants.product_id, productId)),
+    ]);
 
     if (!product) {
       return res.status(404).json({
@@ -45,7 +56,12 @@ export async function getProductById(req, res) {
 
     return res.status(200).json({
       success: true,
-      product,
+      message: "Product fetched successfully",
+      product: {
+        ...product,
+        images,
+        variants,
+      },
     });
   } catch (error) {
     console.error("getProductById:", error);
