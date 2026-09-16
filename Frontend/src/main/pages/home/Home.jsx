@@ -1,9 +1,11 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import style from "../../style/pages/home.module.css";
 import Carousel from "../../components/home/Carousel";
 import Card from "../../components/common/Card";
 import useHorizontalScroll from "../../hooks/useHorizontalScroll";
 import { brandDetail } from "../../../common/brandDetail";
+import { getAllProducts } from "../../services/product.service";
 
 const CATEGORIES = [
   { id: 1, name: "Shirts", price: "499", img: "./c1.jpg" },
@@ -13,17 +15,31 @@ const CATEGORIES = [
   { id: 5, name: "Jackets", price: "1299", img: "./c1.jpg" },
 ];
 
-const NEW_ARRIVALS = [
-  { id: 101, name: "Linen Shirt", price: "599", img: "./c1.jpg" },
-  { id: 102, name: "Drop Shoulder Tee", price: "499", img: "./c2.jpg" },
-  { id: 103, name: "Cargo Pants", price: "899", img: "./c3.jpg" },
-  { id: 104, name: "Varsity Jacket", price: "1499", img: "./c4.jpg" },
-  { id: 105, name: "Denim Overshirt", price: "999", img: "./c1.jpg" },
-];
-
 const Home = () => {
   const categoryScrollRef = useHorizontalScroll();
   const arrivalsScrollRef = useHorizontalScroll();
+  const [newArrivals, setNewArrivals] = useState([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchArrivals = async () => {
+      try {
+        const data = await getAllProducts();
+        if (isMounted && data && data.products) {
+          const activeOnly = data.products.filter(
+            (item) => item.is_active === true || item.is_active === 1,
+          );
+          setNewArrivals(activeOnly);
+        }
+      } catch (error) {
+        console.error("Failed to fetch new arrivals:", error);
+      }
+    };
+    fetchArrivals();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <div className={style.container}>
@@ -36,11 +52,7 @@ const Home = () => {
         </div>
         <div ref={categoryScrollRef} className={style.cardsContainer}>
           {CATEGORIES.map((item) => (
-            <Link
-              key={item.id}
-              to={`/category/${item.id}`}
-              className={style.cardLink}
-            >
+            <Link key={item.id} to={`/shopall`} className={style.cardLink}>
               <Card img={item.img} name={item.name} price={item.price} />
             </Link>
           ))}
@@ -53,15 +65,25 @@ const Home = () => {
           <h2>New Arrivals</h2>
         </div>
         <div ref={arrivalsScrollRef} className={style.cardsContainer}>
-          {NEW_ARRIVALS.map((item) => (
-            <Link
-              key={item.id}
-              to={`/shop/${item.id}`}
-              className={style.cardLink}
-            >
-              <Card img={item.img} name={item.name} price={item.price} />
-            </Link>
-          ))}
+          {newArrivals.length > 0 ? (
+            newArrivals.map((item) => (
+              <Link
+                key={item.id}
+                to={`/shop/${item.id}`}
+                className={style.cardLink}
+              >
+                <Card
+                  img={item.image_url}
+                  name={item.name}
+                  price={item.price}
+                />
+              </Link>
+            ))
+          ) : (
+            <p style={{ padding: "20px", color: "#64748b" }}>
+              No active products available at the moment.
+            </p>
+          )}
         </div>
       </section>
 

@@ -1,4 +1,5 @@
 .container {
+  width: 100%;
   margin: 2rem auto;
   padding: 0 1.5rem;
 }
@@ -28,17 +29,18 @@
   cursor: pointer;
 }
 
-/* Layout container: align-items: flex-start enables sticky child to work */
+/* Main layout using CSS Grid with fixed sidebar column and fluid product grid */
 .mainLayout {
-  display: flex;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  align-items: start;
   gap: 2.5rem;
+  width: 100%;
 }
 
-/* Sticky filter sidebar */
+/* Filter sidebar locked in the first grid column */
 .filterSidebar {
-  width: 260px;
-  flex-shrink: 0;
+  width: 100%;
   background-color: #fafafa;
   padding: 1.5rem;
   border-radius: 8px;
@@ -68,9 +70,9 @@
   display: none;
 }
 
-/* Fluid responsive grid without arbitrary fixed heights */
+/* Fluid responsive product grid in the second column */
 .productsGrid {
-  flex-grow: 1;
+  width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1.5rem;
@@ -109,6 +111,7 @@
   }
 
   .mainLayout {
+    display: flex;
     flex-direction: column;
   }
 

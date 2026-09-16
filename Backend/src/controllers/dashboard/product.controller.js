@@ -7,6 +7,54 @@ import { products } from "../../models/product.model.js";
 import { product_images } from "../../models/product_images.model.js";
 import { product_variants } from "../../models/product_variants.model.js";
 
+export async function getAllDashboardProducts(req, res) {
+  try {
+    const result = await db.select().from(products);
+    return res.status(200).json({
+      success: true,
+      message: "All dashboard products fetched successfully",
+      products: result,
+    });
+  } catch (error) {
+    console.error("getAllDashboardProducts:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch dashboard products",
+    });
+  }
+}
+
+export async function getDashboardProductById(req, res) {
+  try {
+    const productId = Number(req.params.id);
+    if (!Number.isInteger(productId)) {
+      return res.status(400).json({ success: false, message: "Invalid product ID" });
+    }
+
+    const [[product], images, variants] = await Promise.all([
+      db.select().from(products).where(eq(products.id, productId)),
+      db.select().from(product_images).where(eq(product_images.product_id, productId)),
+      db.select().from(product_variants).where(eq(product_variants.product_id, productId)),
+    ]);
+
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      product: {
+        ...product,
+        images,
+        variants,
+      },
+    });
+  } catch (error) {
+    console.error("getDashboardProductById error:", error);
+    return res.status(500).json({ success: false, message: "Failed to fetch product" });
+  }
+}
+
 // Transaction = all operations succeed together, or none of them are applied.
 export async function createProduct(req, res) {
   try {
@@ -136,8 +184,15 @@ export async function createVariant(req, res) {
 export async function updateProduct(req, res) {
   try {
     const productId = parseInt(req.params.id);
-    const { name, description } = req.body;
-    const category_id = Number(req.body.category_id);
+    const {
+      name,
+      description,
+      highlights,
+      composition,
+      care,
+      extra_info,
+    } = req.body;
+    const category_id = req.body.category_id ? Number(req.body.category_id) : undefined;
 
     if (isNaN(productId)) {
       return res
@@ -145,13 +200,18 @@ export async function updateProduct(req, res) {
         .json({ success: false, message: "Invalid product ID" });
     }
 
+    const updateFields = {};
+    if (name !== undefined) updateFields.name = name;
+    if (description !== undefined) updateFields.description = description;
+    if (category_id !== undefined && !isNaN(category_id)) updateFields.category_id = category_id;
+    if (highlights !== undefined) updateFields.highlights = highlights;
+    if (composition !== undefined) updateFields.composition = composition;
+    if (care !== undefined) updateFields.care = care;
+    if (extra_info !== undefined) updateFields.extra_info = extra_info;
+
     await db
       .update(products)
-      .set({
-        name,
-        description,
-        category_id,
-      })
+      .set(updateFields)
       .where(eq(products.id, productId));
 
     return res.status(200).json({

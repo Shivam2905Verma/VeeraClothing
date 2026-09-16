@@ -15,7 +15,8 @@ const ProductDetail = () => {
   const [activeImage, setActiveImage] = useState("");
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [errorMsg, setErrorMsg] = useState("");
+  const [toast, setToast] = useState({ message: "", type: "error" });
+  const showToast = (message, type = "error") => setToast({ message, type });
 
   useEffect(() => {
     setQuantity(1);
@@ -33,27 +34,31 @@ const ProductDetail = () => {
           setProduct(fetchedProduct);
 
           // Extract image URLs array from product_images or fallback to main image_url
-          const imageList =
+          const images =
             fetchedProduct.images && fetchedProduct.images.length > 0
               ? fetchedProduct.images.map((img) => img.image_url)
-              : fetchedProduct.image_url
-                ? [fetchedProduct.image_url]
-                : [];
-
-          setActiveImage(imageList[0] || "");
+              : [fetchedProduct.image_url];
+          setActiveImage(images[0] || "");
+        } else if (isMounted) {
+          showToast(
+            response?.message || "Product not found or unavailable.",
+            "error",
+          );
         }
-      } catch (error) {
-        console.error("Failed to fetch product detail:", error);
-      } finally {
+      } catch (err) {
+        console.error("fetchProduct:", err);
         if (isMounted) {
-          setLoading(false);
+          showToast(
+            "Failed to load product details. Please try again later.",
+            "error",
+          );
         }
+      } finally {
+        if (isMounted) setLoading(false);
       }
     };
 
-    if (id) {
-      fetchProduct();
-    }
+    fetchProduct();
 
     return () => {
       isMounted = false;
@@ -63,9 +68,10 @@ const ProductDetail = () => {
   if (loading) {
     return (
       <div className={style.container}>
-        <p style={{ textAlign: "center", padding: "4rem 0" }}>
-          Loading product details...
-        </p>
+        <div className={style.loadingState}>
+          <div className={style.spinner} />
+          <p>Loading piece details...</p>
+        </div>
       </div>
     );
   }
@@ -73,40 +79,33 @@ const ProductDetail = () => {
   if (!product) {
     return (
       <div className={style.container}>
-        <p style={{ textAlign: "center", padding: "4rem 0" }}>
-          Product not found.
-        </p>
+        <div className={style.notFound}>
+          <h2>Product Not Found</h2>
+          <p>
+            The piece you are looking for is currently unavailable or has been
+            removed.
+          </p>
+        </div>
       </div>
     );
   }
 
-  // Derive image list
+  // Current selected variant
+  const currentVariant =
+    product.variants && product.variants.length > 0
+      ? product.variants[selectedVariantIndex] || product.variants[0]
+      : null;
+
+  const currentVariantId = currentVariant?.id || null;
+  const maxStock = Number(currentVariant?.stock || 0);
+  const isOutOfStock = maxStock <= 0;
+  const priceToDisplay = currentVariant?.price || product.price;
+
+  // Image list
   const imageList =
     product.images && product.images.length > 0
       ? product.images.map((img) => img.image_url)
-      : product.image_url
-        ? [product.image_url]
-        : [];
-
-  const currentVariant = product.variants?.[selectedVariantIndex];
-  const maxStock = currentVariant
-    ? Number(currentVariant.stock)
-    : Number(product.stock || 0);
-  const isOutOfStock = maxStock <= 0;
-  const priceToDisplay = currentVariant?.price ?? product.price;
-  const currentVariantId = currentVariant?.id;
-
-  const handleDecrement = () => {
-    setQuantity((prev) => Math.max(1, (Number(prev) || 1) - 1));
-  };
-
-  const handleIncrement = () => {
-    setQuantity((prev) => {
-      const current = Number(prev) || 1;
-      if (maxStock > 0 && current >= maxStock) return current;
-      return current + 1;
-    });
-  };
+      : [product.image_url];
 
   const handleQuantityChange = (e) => {
     const val = e.target.value;
@@ -114,16 +113,26 @@ const ProductDetail = () => {
       setQuantity("");
       return;
     }
-    const num = parseInt(val, 10);
-    if (!isNaN(num)) {
-      if (num < 1) {
-        setQuantity(1);
-      } else if (maxStock > 0 && num > maxStock) {
+    const num = Number(val);
+    if (!isNaN(num) && num >= 1) {
+      if (maxStock > 0 && num > maxStock) {
         setQuantity(maxStock);
       } else {
         setQuantity(num);
       }
     }
+  };
+
+  const handleIncrement = () => {
+    const current = typeof quantity === "number" ? quantity : 1;
+    if (maxStock > 0 && current >= maxStock) return;
+    setQuantity(current + 1);
+  };
+
+  const handleDecrement = () => {
+    const current = typeof quantity === "number" ? quantity : 1;
+    if (current <= 1) return;
+    setQuantity(current - 1);
   };
 
   const handleBlur = () => {
@@ -156,23 +165,24 @@ const ProductDetail = () => {
             },
           };
         });
+        showToast("Added to your shopping bag!", "success");
       } else if (res?.message) {
-        setErrorMsg(res.message);
+        showToast(res.message, "error");
       }
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "Failed to add item to cart";
-      setErrorMsg(errorMessage);
+      showToast(errorMessage, "error");
     }
   }
 
   return (
     <div className={style.container}>
       <Toast
-        message={errorMsg}
-        type="error"
+        message={toast.message}
+        type={toast.type}
         duration={5000}
-        onClose={() => setErrorMsg("")}
+        onClose={() => setToast({ message: "", type: "error" })}
       />
       <section className={style.mainSection}>
         {/* Gallery */}

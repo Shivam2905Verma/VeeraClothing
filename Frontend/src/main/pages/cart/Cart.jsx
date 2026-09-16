@@ -12,7 +12,8 @@ import ConfirmModal from "../../../common/ConfirmModal.jsx";
 
 const Cart = () => {
   const { cartItems, setCartItems } = useContext(MainContext);
-  const [errorMsg, setErrorMsg] = useState("");
+  const [toast, setToast] = useState({ message: "", type: "error" });
+  const showToast = (message, type = "error") => setToast({ message, type });
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [clearing, setClearing] = useState(false);
 
@@ -42,12 +43,12 @@ const Cart = () => {
           }));
         }
       } else if (res?.message) {
-        setErrorMsg(res.message);
+        showToast(res.message, "error");
       }
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "Failed to update item in cart";
-      setErrorMsg(errorMessage);
+      showToast(errorMessage, "error");
       console.log("Error while updating item in cart", errorMessage);
     }
   }
@@ -61,13 +62,14 @@ const Cart = () => {
           delete copy[variantId];
           return copy;
         });
+        showToast("Item removed from cart", "success");
       } else if (res?.message) {
-        setErrorMsg(res.message);
+        showToast(res.message, "error");
       }
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "Failed to remove item from cart";
-      setErrorMsg(errorMessage);
+      showToast(errorMessage, "error");
     }
   };
 
@@ -78,13 +80,14 @@ const Cart = () => {
       if (res?.success) {
         setCartItems({});
         setShowClearConfirm(false);
+        showToast("Shopping bag cleared", "success");
       } else if (res?.message) {
-        setErrorMsg(res.message);
+        showToast(res.message, "error");
       }
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "Failed to clear cart";
-      setErrorMsg(errorMessage);
+      showToast(errorMessage, "error");
     } finally {
       setClearing(false);
     }
@@ -100,10 +103,10 @@ const Cart = () => {
   return (
     <div className={style.container}>
       <Toast
-        message={errorMsg}
-        type="error"
+        message={toast.message}
+        type={toast.type}
         duration={5000}
-        onClose={() => setErrorMsg("")}
+        onClose={() => setToast({ message: "", type: "error" })}
       />
       <ConfirmModal
         isOpen={showClearConfirm}

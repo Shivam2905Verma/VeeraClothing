@@ -3,6 +3,23 @@ import { db } from "../../config/DB.config.js";
 import { categories } from "../../models/categories.model.js";
 import { products } from "../../models/product.model.js";
 
+export const getCategories = async (req, res) => {
+  try {
+    const result = await db.select().from(categories);
+    return res.status(200).json({
+      success: true,
+      message: "Categories fetched successfully",
+      categories: result,
+    });
+  } catch (error) {
+    console.error("Error in getCategories controller:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch categories",
+    });
+  }
+};
+
 export const createCategory = async (req, res) => {
   try {
     const { categoryName } = req.body;

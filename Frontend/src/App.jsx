@@ -9,6 +9,9 @@ import Register from "./main/pages/auth/Register";
 import VerifyEmail from "./main/pages/verifyEmail/VerifyEmail";
 import DashboardLayout from "./dashboard/layout/DashboardLayout";
 import Dashboard from "./dashboard/pages/dashboard/Dashboard";
+import Product from "./dashboard/pages/product/Product";
+import AddProduct from "./dashboard/pages/product/AddProduct";
+import EditProduct from "./dashboard/pages/product/EditProduct";
 
 const App = () => {
   return (
@@ -24,7 +27,9 @@ const App = () => {
       <Route path="verifyemail" element={<VerifyEmail />} />
       <Route path="dashboard" element={<DashboardLayout />}>
         <Route index element={<Dashboard />} />
-        {/* <Route path="products" element={<Products />} /> */}
+        <Route path="products" element={<Product />} />
+        <Route path="products/add" element={<AddProduct />} />
+        <Route path="products/edit/:id" element={<EditProduct />} />
         {/* <Route path="orders" element={<Orders />} /> */}
       </Route>
     </Routes>

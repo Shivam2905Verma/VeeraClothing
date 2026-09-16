@@ -20,8 +20,16 @@
     transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
     opacity 0.35s ease;
   pointer-events: auto;
-  border-left: 4px solid #e53e3e;
+  border-left: 4px solid #ef4444;
   font-family: inherit;
+}
+
+.toastError {
+  border-left-color: #ef4444;
+}
+
+.toastSuccess {
+  border-left-color: #10b981;
 }
 
 .toastContainer.visible {
@@ -52,7 +60,14 @@
   width: 20px;
   height: 20px;
   flex-shrink: 0;
-  color: #e53e3e;
+}
+
+.iconError {
+  color: #ef4444;
+}
+
+.iconSuccess {
+  color: #10b981;
 }
 
 .closeBtn {

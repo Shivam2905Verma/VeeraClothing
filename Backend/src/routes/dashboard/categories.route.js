@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  getCategories,
   createCategory,
   updateCategory,
   deleteCategory,
@@ -13,6 +14,8 @@ import { verifyAdmin } from "../../middleware/verifyAdmin.middleware.js";
 const categoriesDashboardRouter = Router();
 
 categoriesDashboardRouter.use(verifyAdmin);
+
+categoriesDashboardRouter.get("/", getCategories);
 
 categoriesDashboardRouter.post(
   "/createcategory",

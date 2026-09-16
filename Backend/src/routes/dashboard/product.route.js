@@ -1,6 +1,8 @@
 import { Router } from "express";
 import multer from "multer";
 import {
+  getAllDashboardProducts,
+  getDashboardProductById,
   createProduct,
   createVariant,
   inactiveProduct,
@@ -28,6 +30,9 @@ export const upload = multer({
 });
 
 productDashboardRouter.use(verifyAdmin);
+
+productDashboardRouter.get("/", getAllDashboardProducts);
+productDashboardRouter.get("/:id", getDashboardProductById);
 
 productDashboardRouter.post(
   "/createproduct",

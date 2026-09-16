@@ -4,17 +4,6 @@ import Card from "../../components/common/Card";
 import style from "../../style/pages/shopall.module.css";
 import { getAllProducts } from "../../services/product.service";
 
-const PRODUCTS_DATA = [
-  { id: 1, name: "Casual Shirt", price: 499, img: "./c1.jpg" },
-  { id: 2, name: "Oxford Shirt", price: 699, img: "./c2.jpg" },
-  { id: 3, name: "Linen Shirt", price: 899, img: "./c3.jpg" },
-  { id: 4, name: "Denim Shirt", price: 999, img: "./c4.jpg" },
-  { id: 5, name: "Printed Shirt", price: 549, img: "./c1.jpg" },
-  { id: 6, name: "Camp Collar Shirt", price: 749, img: "./c2.jpg" },
-  { id: 7, name: "Flannel Shirt", price: 849, img: "./c3.jpg" },
-  { id: 8, name: "Oversized Shirt", price: 649, img: "./c4.jpg" },
-];
-
 const ShopAll = () => {
   const [maxPrice, setMaxPrice] = useState(1000);
   const [sortBy, setSortBy] = useState("default");
@@ -22,19 +11,29 @@ const ShopAll = () => {
   const [productsData, setProductsData] = useState([]);
 
   useEffect(() => {
+    let isMounted = true;
     const fetchProducts = async () => {
-      const products = await getAllProducts();
-      const data = products.products
-        ?.filter((item) => item.price <= maxPrice)
-        ?.sort((a, b) => {
-          if (sortBy === "low-to-high") return a.price - b.price;
-          if (sortBy === "high-to-low") return b.price - a.price;
-          return 0;
-        });
-      setProductsData(data);
+      try {
+        const products = await getAllProducts();
+        if (isMounted && products && products.products) {
+          const data = products.products
+            ?.filter((item) => (item.is_active === true || item.is_active === 1) && item.price <= maxPrice)
+            ?.sort((a, b) => {
+              if (sortBy === "low-to-high") return a.price - b.price;
+              if (sortBy === "high-to-low") return b.price - a.price;
+              return 0;
+            });
+          setProductsData(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+      }
     };
     fetchProducts();
-  }, [sortBy]);
+    return () => {
+      isMounted = false;
+    };
+  }, [sortBy, maxPrice]);
 
   return (
     <div className={style.container}>
