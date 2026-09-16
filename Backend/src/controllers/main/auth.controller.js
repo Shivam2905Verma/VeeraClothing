@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import { db } from "../../config/DB.config.js";
 import { user } from "../../models/user.model.js";
 import { eq } from "drizzle-orm";
@@ -7,7 +8,7 @@ import { sendVerificationEmail } from "../../service/mail.service.js";
 
 export async function registerUser(req, res) {
   try {
-    const { name, email, password, mobile_no } = req.body;
+    const { name, email, password } = req.body;
 
     const existingUser = await db
       .select()
@@ -26,10 +27,9 @@ export async function registerUser(req, res) {
       name,
       email,
       password: hashedPassword,
-      mobile_no,
     });
 
-    const emailToken = generateTokenForUser(result.insertId, email);
+    const emailToken = generateTokenForUser(result.insertId, email, false);
 
     await sendVerificationEmail(email, emailToken);
 
@@ -40,7 +40,6 @@ export async function registerUser(req, res) {
         id: result.insertId,
         name,
         email,
-        mobile_no,
       },
     });
   } catch (error) {
@@ -54,7 +53,7 @@ export async function registerUser(req, res) {
 
 export async function verifyEmail(req, res) {
   try {
-    const { token } = req.body;
+    const { token } = req.query;
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET_USER);
 
@@ -62,18 +61,19 @@ export async function verifyEmail(req, res) {
       return res.status(400).json({ success: false, message: "Invalid token" });
     }
 
-    const [user] = await db
+    const email = decoded.userEmail || decoded.email;
+    const [foundUser] = await db
       .select()
       .from(user)
-      .where(eq(user.email, decoded.email));
+      .where(eq(user.email, email));
 
-    if (!user) {
+    if (!foundUser) {
       return res
         .status(400)
         .json({ success: false, message: "User not found" });
     }
 
-    if (user.is_verified) {
+    if (foundUser.is_verified) {
       return res
         .status(400)
         .json({ success: false, message: "User already verified" });
@@ -82,11 +82,27 @@ export async function verifyEmail(req, res) {
     await db
       .update(user)
       .set({ is_verified: true })
-      .where(eq(user.id, user.id));
+      .where(eq(user.id, foundUser.id));
+
+    // Generate new token with is_verified: true to overwrite old cookie
+    const newToken = generateTokenForUser(foundUser.id, foundUser.email, true);
+
+    res.cookie("token", newToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+      maxAge: 3 * 24 * 60 * 60 * 1000,
+    });
 
     return res.status(200).json({
       success: true,
       message: "Email verified successfully",
+      data: {
+        id: foundUser.id,
+        name: foundUser.name,
+        email: foundUser.email,
+        is_verified: true,
+      },
     });
   } catch (error) {
     console.log("Error from verify email controller: ", error.message);
@@ -125,6 +141,7 @@ export async function loginUser(req, res) {
     const token = generateTokenForUser(
       existingUser[0].id,
       existingUser[0].email,
+      existingUser[0].is_verified,
     );
 
     res.cookie("token", token, {
@@ -163,23 +180,41 @@ export function logoutUser(req, res) {
 
 export async function getMe(req, res) {
   try {
-    const { id } = req.user;
+    let userId = req.user?.userId || req.user?.id;
 
-    const user = await db.select().from(user).where(eq(user.id, id));
+    if (!userId) {
+      const token = req.cookies.token;
+      if (!token) {
+        return res
+          .status(401)
+          .json({ success: false, message: "Unauthorized" });
+      }
+      const decoded = jwt.verify(token, process.env.JWT_SECRET_USER);
+      userId = decoded?.userId;
+    }
+
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const [foundUser] = await db.select().from(user).where(eq(user.id, userId));
+
+    if (!foundUser) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
 
     return res.status(200).json({
       success: true,
       data: {
-        id: user[0].id,
-        name: user[0].name,
-        email: user[0].email,
-        mobile_no: user[0].mobile_no,
+        id: foundUser.id,
+        name: foundUser.name,
+        email: foundUser.email,
+        is_verified: foundUser.is_verified,
       },
     });
   } catch (error) {
-    console.log("Error from get me controller: ", error.message);
-    return res
-      .status(500)
-      .json({ success: false, message: "Internal Server Error" });
+    return res.status(401).json({ success: false, message: "Unauthorized" });
   }
 }

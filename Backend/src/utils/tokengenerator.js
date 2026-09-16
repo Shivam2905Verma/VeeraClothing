@@ -9,8 +9,12 @@ export const generateTokenForAdmin = (adminId) => {
   });
 };
 
-export const generateTokenForUser = (userId, userEmail) => {
-  return jwt.sign({ userId, userEmail }, process.env.JWT_SECRET_USER, {
-    expiresIn: "3d",
-  });
+export const generateTokenForUser = (userId, userEmail, is_verified) => {
+  return jwt.sign(
+    { userId, userEmail, is_verified },
+    process.env.JWT_SECRET_USER,
+    {
+      expiresIn: "3d",
+    },
+  );
 };

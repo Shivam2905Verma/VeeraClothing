@@ -1,0 +1,308 @@
+.authPage {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1.5rem 3rem 1.5rem;
+  background-color: #fbfbfb;
+  box-sizing: border-box;
+}
+
+.homeNavBtn {
+  position: absolute;
+  top: 2rem;
+  right: 2.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #111111;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.55rem 1.15rem;
+  border: 1px solid #e2e2e2;
+  border-radius: 40px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.homeNavBtn:hover {
+  background-color: #111111;
+  color: #ffffff;
+  border-color: #111111;
+  transform: translateX(2px);
+}
+
+.homeNavBtn i {
+  font-size: 1.05rem;
+  transition: transform 0.2s ease;
+}
+
+.homeNavBtn:hover i {
+  transform: translateX(3px);
+}
+
+.authCard {
+  width: 100%;
+  max-width: 460px;
+  background-color: #ffffff;
+  border: 1px solid #eaeaea;
+  border-radius: 6px;
+  padding: 2.75rem 2.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
+}
+
+.authHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.subheading {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #888888;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: #111111;
+  margin: 0;
+}
+
+.authSubtitle {
+  font-size: 0.88rem;
+  color: #666666;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+  line-height: 1.4;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  text-align: left;
+}
+
+.label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #333333;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  height: 2.9rem;
+  padding: 0 0.9rem;
+  border: 1px solid #dcdcdc;
+  border-radius: 4px;
+  font-size: 0.92rem;
+  color: #111111;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #111111;
+  box-shadow: 0 0 0 1px #111111;
+}
+
+.input::placeholder {
+  color: #aaa;
+  font-weight: 300;
+}
+
+.passwordToggle {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: #777777;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: color 0.15s ease;
+}
+
+.passwordToggle:hover {
+  color: #111111;
+}
+
+.extraRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  margin-top: -0.25rem;
+}
+
+.rememberMe {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #555555;
+  cursor: pointer;
+  user-select: none;
+}
+
+.rememberMe input[type="checkbox"] {
+  accent-color: #111111;
+  cursor: pointer;
+}
+
+.forgotLink {
+  color: #555555;
+  text-decoration: none;
+  font-size: 0.82rem;
+  transition: color 0.15s ease;
+}
+
+.forgotLink:hover {
+  color: #111111;
+  text-decoration: underline;
+}
+
+.submitBtn {
+  width: 100%;
+  height: 3.1rem;
+  background-color: #111111;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background-color: #2a2a2a;
+}
+
+.submitBtn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 1.75rem 0 1.25rem 0;
+  color: #999999;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background-color: #e5e5e5;
+}
+
+.divider span {
+  padding: 0 0.8rem;
+}
+
+.switchPrompt {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #666666;
+  margin: 0;
+}
+
+.switchLink {
+  color: #111111;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  margin-left: 0.35rem;
+  transition: opacity 0.15s ease;
+}
+
+.switchLink:hover {
+  opacity: 0.75;
+}
+
+.benefitsList {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.benefitItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  color: #777777;
+  text-align: center;
+}
+
+.benefitItem i {
+  font-size: 1.2rem;
+  color: #222222;
+}
+
+@media screen and (max-width: 480px) {
+  .homeNavBtn {
+    top: 1rem;
+    right: 1rem;
+    font-size: 0.75rem;
+    padding: 0.4rem 0.85rem;
+  }
+
+  .authCard {
+    padding: 2rem 1.5rem;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .authPage {
+    padding: 4rem 1rem 2rem 1rem;
+    background-color: #ffffff;
+  }
+}

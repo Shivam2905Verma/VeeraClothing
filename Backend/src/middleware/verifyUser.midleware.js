@@ -17,6 +17,14 @@ export function verifyUser(req, res, next) {
       return res.status(401).json({ success: false, message: "Unauthorized" });
     }
 
+    if (!decoded.is_verified) {
+      return res.status(401).json({
+        success: false,
+        message:
+          "Verify your email first that we have sent on your registerd email address",
+      });
+    }
+
     req.user = decoded;
     next();
   } catch (error) {

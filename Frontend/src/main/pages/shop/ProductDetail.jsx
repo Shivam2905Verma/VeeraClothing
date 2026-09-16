@@ -156,6 +156,8 @@ const ProductDetail = () => {
             },
           };
         });
+      } else if (res?.message) {
+        setErrorMsg(res.message);
       }
     } catch (error) {
       const errorMessage =

@@ -41,6 +41,8 @@ const Cart = () => {
             [variantId]: { ...prev[variantId], quantity: nextQty },
           }));
         }
+      } else if (res?.message) {
+        setErrorMsg(res.message);
       }
     } catch (error) {
       const errorMessage =
@@ -59,6 +61,8 @@ const Cart = () => {
           delete copy[variantId];
           return copy;
         });
+      } else if (res?.message) {
+        setErrorMsg(res.message);
       }
     } catch (error) {
       const errorMessage =
@@ -74,6 +78,8 @@ const Cart = () => {
       if (res?.success) {
         setCartItems({});
         setShowClearConfirm(false);
+      } else if (res?.message) {
+        setErrorMsg(res.message);
       }
     } catch (error) {
       const errorMessage =

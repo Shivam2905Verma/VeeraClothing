@@ -20,9 +20,9 @@ const Navbar = () => {
           <span className={style.mobileonly + " " + style.menubar}>
             <i className="ri-menu-line"></i>
           </span>
-          <span className={style.login + " " + style.computeronly}>
+          <Link to="/login" className={style.login + " " + style.computeronly}>
             <i className="ri-user-line"></i> Login / Register
-          </span>
+          </Link>
         </div>
         <div className={style.topcenter}>VEERA CLOTHING</div>
         <div className={style.topright}>
