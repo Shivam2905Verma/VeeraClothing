@@ -236,19 +236,7 @@ const EditProduct = () => {
             className={style.backLink}
             title="Back to Products"
           >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="19" y1="12" x2="5" y2="12" />
-              <polyline points="12 19 5 12 12 5" />
-            </svg>
+            <i className="ri-arrow-left-line" style={{ fontSize: "1.25rem" }} />
           </Link>
           <div>
             <h1 className={style.headerTitle}>Edit Product</h1>
@@ -270,40 +258,15 @@ const EditProduct = () => {
           >
             {isSubmitting ? (
               <>
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  style={{ animation: "spin 1s linear infinite" }}
-                >
-                  <line x1="12" y1="2" x2="12" y2="6" />
-                  <line x1="12" y1="18" x2="12" y2="22" />
-                  <line x1="4.93" y1="4.93" x2="7.76" y2="7.76" />
-                  <line x1="16.24" y1="16.24" x2="19.07" y2="19.07" />
-                  <line x1="2" y1="12" x2="6" y2="12" />
-                  <line x1="18" y1="12" x2="22" y2="12" />
-                </svg>
+                <i
+                  className="ri-loader-4-line ri-spin"
+                  style={{ fontSize: "1.1rem" }}
+                />
                 <span>Updating Product...</span>
               </>
             ) : (
               <>
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
+                <i className="ri-check-line" style={{ fontSize: "1.1rem" }} />
                 <span>Save Changes</span>
               </>
             )}
@@ -514,46 +477,17 @@ const EditProduct = () => {
                       onClick={(e) => handleRemoveImage(index, e)}
                       title="Remove image"
                     >
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <line x1="18" y1="6" x2="6" y2="18" />
-                        <line x1="6" y1="6" x2="18" y2="18" />
-                      </svg>
+                      <i className="ri-close-line" />
                     </button>
                   </>
                 ) : (
                   <>
                     <div className={style.uploadPrompt}>
                       <div className={style.uploadIcon}>
-                        <svg
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.8"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <rect
-                            x="3"
-                            y="3"
-                            width="18"
-                            height="18"
-                            rx="2"
-                            ry="2"
-                          />
-                          <circle cx="8.5" cy="8.5" r="1.5" />
-                          <polyline points="21 15 16 10 5 21" />
-                        </svg>
+                        <i
+                          className="ri-image-add-line"
+                          style={{ fontSize: "1.5rem" }}
+                        />
                       </div>
                       <span className={style.uploadText}>
                         {index === 0 ? "+ Add Cover" : "+ Add Image"}

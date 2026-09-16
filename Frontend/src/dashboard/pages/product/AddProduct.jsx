@@ -240,19 +240,7 @@ const AddProduct = () => {
             className={style.backLink}
             title="Back to Products"
           >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="19" y1="12" x2="5" y2="12" />
-              <polyline points="12 19 5 12 12 5" />
-            </svg>
+            <i className="ri-arrow-left-line" style={{ fontSize: "1.25rem" }} />
           </Link>
           <div>
             <h1 className={style.headerTitle}>Add New Product</h1>
@@ -275,40 +263,15 @@ const AddProduct = () => {
           >
             {isSubmitting ? (
               <>
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  style={{ animation: "spin 1s linear infinite" }}
-                >
-                  <line x1="12" y1="2" x2="12" y2="6" />
-                  <line x1="12" y1="18" x2="12" y2="22" />
-                  <line x1="4.93" y1="4.93" x2="7.76" y2="7.76" />
-                  <line x1="16.24" y1="16.24" x2="19.07" y2="19.07" />
-                  <line x1="2" y1="12" x2="6" y2="12" />
-                  <line x1="18" y1="12" x2="22" y2="12" />
-                </svg>
+                <i
+                  className="ri-loader-4-line ri-spin"
+                  style={{ fontSize: "1.1rem" }}
+                />
                 <span>Creating Product...</span>
               </>
             ) : (
               <>
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
+                <i className="ri-check-line" style={{ fontSize: "1.1rem" }} />
                 <span>Save Product</span>
               </>
             )}
@@ -526,46 +489,17 @@ const AddProduct = () => {
                       onClick={(e) => handleRemoveImage(index, e)}
                       title="Remove image"
                     >
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <line x1="18" y1="6" x2="6" y2="18" />
-                        <line x1="6" y1="6" x2="18" y2="18" />
-                      </svg>
+                      <i className="ri-close-line" />
                     </button>
                   </>
                 ) : (
                   <>
                     <div className={style.uploadPrompt}>
                       <div className={style.uploadIcon}>
-                        <svg
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.8"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <rect
-                            x="3"
-                            y="3"
-                            width="18"
-                            height="18"
-                            rx="2"
-                            ry="2"
-                          />
-                          <circle cx="8.5" cy="8.5" r="1.5" />
-                          <polyline points="21 15 16 10 5 21" />
-                        </svg>
+                        <i
+                          className="ri-image-add-line"
+                          style={{ fontSize: "1.5rem" }}
+                        />
                       </div>
                       <span className={style.uploadText}>
                         {index === 0 ? "+ Add Cover" : "+ Add Image"}
@@ -600,19 +534,7 @@ const AddProduct = () => {
               onClick={handleAddVariant}
               className={style.addVariantBtn}
             >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
+              <i className="ri-add-line" style={{ fontSize: "1.1rem" }} />
               <span>Add Variant</span>
             </button>
           </div>
@@ -678,19 +600,7 @@ const AddProduct = () => {
                       cursor: variants.length <= 1 ? "not-allowed" : "pointer",
                     }}
                   >
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <polyline points="3 6 5 6 21 6" />
-                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                    </svg>
+                    <i className="ri-delete-bin-line" />
                   </button>
                 </div>
               </div>

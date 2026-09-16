@@ -144,19 +144,7 @@ const Product = () => {
             <span className={style.totalBadge}>Total: {products.length}</span>
           </div>
           <Link to="/dashboard/products/add" className={style.addProductBtn}>
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
+            <i className="ri-add-line" style={{ fontSize: "1rem" }} />
             <span>Add Product</span>
           </Link>
         </div>
@@ -164,19 +152,7 @@ const Product = () => {
         <div className={style.topRight}>
           <div className={style.searchContainer}>
             <span className={style.searchIcon}>
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-              </svg>
+              <i className="ri-search-line" />
             </span>
             <input
               type="text"
@@ -192,19 +168,7 @@ const Product = () => {
                 onClick={() => setSearchQuery("")}
                 aria-label="Clear search"
               >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
+                <i className="ri-close-line" />
               </button>
             )}
           </div>
@@ -214,44 +178,15 @@ const Product = () => {
       {/* PRODUCTS LIST (RECTANGLE CARDS: 3 BUTTONS, NAME AT CENTER, IMAGE AT RIGHT) */}
       {loading ? (
         <div className={style.loadingSpinner}>
-          <svg
-            width="32"
-            height="32"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{ animation: "spin 1s linear infinite" }}
-          >
-            <line x1="12" y1="2" x2="12" y2="6" />
-            <line x1="12" y1="18" x2="12" y2="22" />
-            <line x1="4.93" y1="4.93" x2="7.76" y2="7.76" />
-            <line x1="16.24" y1="16.24" x2="19.07" y2="19.07" />
-            <line x1="2" y1="12" x2="6" y2="12" />
-            <line x1="18" y1="12" x2="22" y2="12" />
-            <line x1="4.93" y1="19.07" x2="7.76" y2="16.24" />
-            <line x1="16.24" y1="7.76" x2="19.07" y2="4.93" />
-          </svg>
+          <i
+            className="ri-loader-4-line ri-spin"
+            style={{ fontSize: "2rem" }}
+          />
         </div>
       ) : filteredProducts.length === 0 ? (
         <div className={style.emptyContainer}>
           <div className={style.emptyIcon}>
-            <svg
-              width="40"
-              height="40"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <path d="M16 10a4 4 0 0 1-8 0" />
-            </svg>
+            <i className="ri-inbox-line" style={{ fontSize: "2.5rem" }} />
           </div>
           <h3 className={style.emptyTitle}>No Products Found</h3>
           <p className={style.emptySubtitle}>
@@ -277,19 +212,7 @@ const Product = () => {
                   className={`${style.btn} ${style.editBtn}`}
                   title="Edit product"
                 >
-                  <svg
-                    width="15"
-                    height="15"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                  </svg>
+                  <i className="ri-edit-line" />
                   <span>Edit</span>
                 </Link>
 
@@ -310,36 +233,12 @@ const Product = () => {
                 >
                   {product.is_active ? (
                     <>
-                      <svg
-                        width="15"
-                        height="15"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                        <polyline points="22 4 12 14.01 9 11.01" />
-                      </svg>
+                      <i className="ri-checkbox-circle-line" />
                       <span>Active</span>
                     </>
                   ) : (
                     <>
-                      <svg
-                        width="15"
-                        height="15"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <circle cx="12" cy="12" r="10" />
-                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
-                      </svg>
+                      <i className="ri-close-circle-line" />
                       <span>Deactive</span>
                     </>
                   )}
@@ -352,21 +251,7 @@ const Product = () => {
                   onClick={() => handleOpenDelete(product)}
                   title="Delete product permanently"
                 >
-                  <svg
-                    width="15"
-                    height="15"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="3 6 5 6 21 6" />
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                    <line x1="10" y1="11" x2="10" y2="17" />
-                    <line x1="14" y1="11" x2="14" y2="17" />
-                  </svg>
+                  <i className="ri-delete-bin-line" />
                   <span>Delete</span>
                 </button>
               </div>
@@ -429,20 +314,10 @@ const Product = () => {
                   />
                 ) : (
                   <div className={style.placeholderImg}>
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                      <circle cx="8.5" cy="8.5" r="1.5" />
-                      <polyline points="21 15 16 10 5 21" />
-                    </svg>
+                    <i
+                      className="ri-image-line"
+                      style={{ fontSize: "1.5rem" }}
+                    />
                   </div>
                 )}
               </div>
