@@ -147,9 +147,74 @@
   cursor: pointer;
 }
 
-.addToBagBtn {
-  height: 3rem;
+.actionRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   margin-top: 1.25rem;
+}
+
+.quantityCounter {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 3rem;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+.qtyBtn {
+  background: none;
+  border: none;
+  width: 2.25rem;
+  height: 100%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #111;
+  transition: background-color 0.15s ease;
+}
+
+.qtyBtn:hover:not(:disabled) {
+  background-color: #f2f2f2;
+}
+
+.qtyBtn:disabled {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.qtyInput {
+  width: 2.75rem;
+  height: 100%;
+  border: none;
+  border-left: 1px solid #eee;
+  border-right: 1px solid #eee;
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #111;
+  background: transparent;
+  padding: 0;
+  -moz-appearance: textfield;
+}
+
+.qtyInput::-webkit-outer-spin-button,
+.qtyInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.qtyInput:focus {
+  outline: none;
+}
+
+.addToBagBtn {
+  flex: 1;
+  height: 3rem;
   background-color: #111;
   color: #fff;
   border: none;

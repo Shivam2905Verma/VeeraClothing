@@ -14,7 +14,12 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState("");
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
+  const [quantity, setQuantity] = useState(1);
   const [errorMsg, setErrorMsg] = useState("");
+
+  useEffect(() => {
+    setQuantity(1);
+  }, [selectedVariantIndex]);
 
   useEffect(() => {
     let isMounted = true;
@@ -84,17 +89,56 @@ const ProductDetail = () => {
         : [];
 
   const currentVariant = product.variants?.[selectedVariantIndex];
-  const isOutOfStock = currentVariant
-    ? Number(currentVariant.stock) === 0
-    : Number(product.stock) === 0;
+  const maxStock = currentVariant
+    ? Number(currentVariant.stock)
+    : Number(product.stock || 0);
+  const isOutOfStock = maxStock <= 0;
   const priceToDisplay = currentVariant?.price ?? product.price;
   const currentVariantId = currentVariant?.id;
 
+  const handleDecrement = () => {
+    setQuantity((prev) => Math.max(1, (Number(prev) || 1) - 1));
+  };
+
+  const handleIncrement = () => {
+    setQuantity((prev) => {
+      const current = Number(prev) || 1;
+      if (maxStock > 0 && current >= maxStock) return current;
+      return current + 1;
+    });
+  };
+
+  const handleQuantityChange = (e) => {
+    const val = e.target.value;
+    if (val === "") {
+      setQuantity("");
+      return;
+    }
+    const num = parseInt(val, 10);
+    if (!isNaN(num)) {
+      if (num < 1) {
+        setQuantity(1);
+      } else if (maxStock > 0 && num > maxStock) {
+        setQuantity(maxStock);
+      } else {
+        setQuantity(num);
+      }
+    }
+  };
+
+  const handleBlur = () => {
+    if (quantity === "" || Number(quantity) < 1) {
+      setQuantity(1);
+    }
+  };
+
   async function handleAddToCart() {
     if (!currentVariantId) return;
+    const finalQty =
+      typeof quantity === "number" && quantity >= 1 ? quantity : 1;
 
     try {
-      const res = await addToCart(currentVariantId, 1);
+      const res = await addToCart(currentVariantId, finalQty);
       if (res?.success) {
         setCartItems((prevItems) => {
           const currentQty = prevItems[currentVariantId]?.quantity || 0;
@@ -104,7 +148,7 @@ const ProductDetail = () => {
               cartItemId: res.cartItemId,
               productId: id,
               variantId: currentVariant.id,
-              quantity: currentQty + 1,
+              quantity: currentQty + finalQty,
               price: currentVariant.price,
               name: product.name,
               color: currentVariant.color,
@@ -117,7 +161,6 @@ const ProductDetail = () => {
       const errorMessage =
         error.response?.data?.message || "Failed to add item to cart";
       setErrorMsg(errorMessage);
-      console.log("Error while adding item to cart", errorMessage);
     }
   }
 
@@ -190,14 +233,50 @@ const ProductDetail = () => {
             </div>
           )}
 
-          <button
-            type="button"
-            onClick={handleAddToCart}
-            className={style.addToBagBtn}
-            disabled={isOutOfStock}
-          >
-            {isOutOfStock ? "Out of Stock" : "Add to Bag"}
-          </button>
+          <div className={style.actionRow}>
+            <div className={style.quantityCounter}>
+              <button
+                type="button"
+                onClick={handleDecrement}
+                disabled={isOutOfStock || quantity <= 1}
+                className={style.qtyBtn}
+                aria-label="Decrease quantity"
+              >
+                -
+              </button>
+              <input
+                type="number"
+                min="1"
+                max={maxStock > 0 ? maxStock : undefined}
+                value={quantity}
+                onChange={handleQuantityChange}
+                onBlur={handleBlur}
+                disabled={isOutOfStock}
+                className={style.qtyInput}
+                aria-label="Product quantity"
+              />
+              <button
+                type="button"
+                onClick={handleIncrement}
+                disabled={
+                  isOutOfStock || (maxStock > 0 && quantity >= maxStock)
+                }
+                className={style.qtyBtn}
+                aria-label="Increase quantity"
+              >
+                +
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              className={style.addToBagBtn}
+              disabled={isOutOfStock}
+            >
+              {isOutOfStock ? "Out of Stock" : "Add to Bag"}
+            </button>
+          </div>
 
           <div className={style.metaList}>
             <p className={style.deliveryText}>

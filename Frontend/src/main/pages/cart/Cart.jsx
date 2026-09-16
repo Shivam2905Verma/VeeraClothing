@@ -2,12 +2,19 @@ import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import style from "../../style/pages/cart.module.css";
 import { MainContext } from "../../context/MainContext";
-import { updateCart } from "../../services/cart.service";
+import {
+  clearCart,
+  removeItemFromCart,
+  updateCart,
+} from "../../services/cart.service";
 import Toast from "../../components/common/Toast";
+import ConfirmModal from "../../components/common/ConfirmModal";
 
 const Cart = () => {
   const { cartItems, setCartItems } = useContext(MainContext);
   const [errorMsg, setErrorMsg] = useState("");
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [clearing, setClearing] = useState(false);
 
   const itemsList = Object.values(cartItems);
 
@@ -15,10 +22,13 @@ const Cart = () => {
     const target = cartItems[variantId];
     if (!target) return;
     const nextQty = target.quantity + delta;
+    await applyQuantity(cartItemId, variantId, nextQty);
+  }
 
+  async function applyQuantity(cartItemId, variantId, nextQty) {
     try {
       const res = await updateCart(cartItemId, nextQty);
-      if (res.success) {
+      if (res?.success) {
         if (nextQty <= 0) {
           setCartItems((prev) => {
             const copy = { ...prev };
@@ -40,12 +50,38 @@ const Cart = () => {
     }
   }
 
-  const removeItem = (variantId) => {
-    setCartItems((prev) => {
-      const copy = { ...prev };
-      delete copy[variantId];
-      return copy;
-    });
+  const removeItem = async (variantId, cartItemId) => {
+    try {
+      const res = await removeItemFromCart(cartItemId);
+      if (res?.success) {
+        setCartItems((prev) => {
+          const copy = { ...prev };
+          delete copy[variantId];
+          return copy;
+        });
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Failed to remove item from cart";
+      setErrorMsg(errorMessage);
+    }
+  };
+
+  const handleClearCart = async () => {
+    setClearing(true);
+    try {
+      const res = await clearCart();
+      if (res?.success) {
+        setCartItems({});
+        setShowClearConfirm(false);
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Failed to clear cart";
+      setErrorMsg(errorMessage);
+    } finally {
+      setClearing(false);
+    }
   };
 
   const subtotal = itemsList.reduce(
@@ -63,12 +99,35 @@ const Cart = () => {
         duration={5000}
         onClose={() => setErrorMsg("")}
       />
+      <ConfirmModal
+        isOpen={showClearConfirm}
+        title="Clear Shopping Bag"
+        message="Are you sure you want to remove all items from your shopping bag? This action cannot be undone."
+        confirmText="Clear Bag"
+        cancelText="Keep Items"
+        isDestructive={true}
+        isLoading={clearing}
+        onConfirm={handleClearCart}
+        onCancel={() => setShowClearConfirm(false)}
+      />
       {/* Page Header */}
       <div className={style.header}>
         <h1 className={style.pageTitle}>Shopping Bag</h1>
-        <Link to="/shop" className={style.continueShopping}>
-          Continue Shopping
-        </Link>
+        <div className={style.headerActions}>
+          {itemsList.length > 0 && (
+            <button
+              type="button"
+              className={style.clearCartBtn}
+              onClick={() => setShowClearConfirm(true)}
+            >
+              <i className="ri-delete-bin-line" />
+              Clear Cart
+            </button>
+          )}
+          <Link to="/shopall" className={style.continueShopping}>
+            Continue Shopping
+          </Link>
+        </div>
       </div>
 
       {itemsList.length === 0 ? (
@@ -126,7 +185,9 @@ const Cart = () => {
                     <button
                       type="button"
                       className={style.removeBtn}
-                      onClick={() => removeItem(item.variantId)}
+                      onClick={() =>
+                        removeItem(item.variantId, item.cartItemId)
+                      }
                       aria-label="Remove item"
                     >
                       <i className="ri-close-line" />
@@ -140,6 +201,7 @@ const Cart = () => {
                           onClick={() =>
                             updateQuantity(item.cartItemId, item.variantId, -1)
                           }
+                          aria-label="Decrease quantity"
                         >
                           -
                         </button>
@@ -149,6 +211,7 @@ const Cart = () => {
                           onClick={() =>
                             updateQuantity(item.cartItemId, item.variantId, 1)
                           }
+                          aria-label="Increase quantity"
                         >
                           +
                         </button>

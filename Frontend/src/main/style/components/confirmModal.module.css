@@ -1,0 +1,183 @@
+/* Backdrop Overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+  box-sizing: border-box;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.overlay.leaving {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Modal Window */
+.modal {
+  position: relative;
+  background: #ffffff;
+  width: 100%;
+  max-width: 440px;
+  border-radius: 8px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  box-sizing: border-box;
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+}
+
+.overlay.visible .modal {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.overlay.leaving .modal {
+  transform: scale(0);
+  opacity: 0;
+}
+
+/* Close Icon */
+.closeBtn {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: none;
+  border: none;
+  color: #777;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.closeBtn:hover {
+  color: #111;
+  background-color: #f2f2f2;
+}
+
+/* Icon / Header Graphic */
+.iconWrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  background-color: #f8f8f8;
+  color: #111;
+}
+
+.iconWrapper.destructive {
+  background-color: #fff0f0;
+  color: #d32f2f;
+}
+
+/* Content */
+.title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111;
+  letter-spacing: -0.01em;
+}
+
+.message {
+  margin: 0 0 1.75rem 0;
+  font-size: 0.92rem;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* Actions Footer */
+.actionGroup {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.cancelBtn {
+  flex: 1;
+  height: 2.75rem;
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.cancelBtn:hover:not(:disabled) {
+  background-color: #ececec;
+  color: #111;
+}
+
+.confirmBtn {
+  flex: 1;
+  height: 2.75rem;
+  background-color: #111;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
+}
+
+.confirmBtn:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+.confirmBtn.destructive {
+  background-color: #d32f2f;
+  color: #fff;
+}
+
+.confirmBtn.destructive:hover:not(:disabled) {
+  background-color: #b71c1c;
+}
+
+.cancelBtn:disabled,
+.confirmBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media screen and (max-width: 480px) {
+  .modal {
+    padding: 1.5rem;
+  }
+
+  .actionGroup {
+    flex-direction: column-reverse;
+  }
+
+  .cancelBtn,
+  .confirmBtn {
+    width: 100%;
+  }
+}

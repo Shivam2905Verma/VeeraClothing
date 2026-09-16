@@ -79,13 +79,6 @@ export async function addToCart(req, res) {
 
     const { variant_id, quantity = 1 } = req.body;
 
-    if (!variant_id || quantity <= 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid variant ID or quantity",
-      });
-    }
-
     // 1. Verify variant exists and check stock
     const [variant] = await db
       .select()
@@ -111,8 +104,8 @@ export async function addToCart(req, res) {
       );
 
     const newQuantity = existingCartItem
-      ? existingCartItem.quantity + Number(quantity)
-      : Number(quantity);
+      ? existingCartItem.quantity + quantity
+      : quantity;
 
     if (newQuantity > variant.stock) {
       return res.status(400).json({
@@ -160,22 +153,8 @@ export async function updateCartItemQuantity(req, res) {
     const userId = getUserId(req);
     const { cartItemId, quantity } = req.body;
 
-    if (!Number.isInteger(cartItemId)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid cart item ID",
-      });
-    }
-
-    if (quantity === undefined || Number(quantity) < 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Please provide a valid quantity",
-      });
-    }
-
     // If quantity is 0, remove the item
-    if (Number(quantity) === 0) {
+    if (quantity === 0) {
       await db
         .delete(cart_items)
         .where(
@@ -210,7 +189,7 @@ export async function updateCartItemQuantity(req, res) {
       });
     }
 
-    if (Number(quantity) > item.stock) {
+    if (quantity > item.stock) {
       return res.status(400).json({
         success: false,
         message: `Only ${item.stock} items available in stock`,
@@ -219,7 +198,7 @@ export async function updateCartItemQuantity(req, res) {
 
     await db
       .update(cart_items)
-      .set({ quantity: Number(quantity) })
+      .set({ quantity })
       .where(eq(cart_items.id, cartItemId));
 
     return res.status(200).json({
@@ -241,16 +220,9 @@ export async function updateCartItemQuantity(req, res) {
 export async function removeCartItem(req, res) {
   try {
     const userId = getUserId(req);
-    const cartItemId = Number(req.params.id);
+    const { id: cartItemId } = req.params;
 
-    if (!Number.isInteger(cartItemId)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid cart item ID",
-      });
-    }
-
-    const [deletedItem] = await db
+    await db
       .delete(cart_items)
       .where(
         and(eq(cart_items.id, cartItemId), eq(cart_items.user_id, userId)),
@@ -287,77 +259,6 @@ export async function clearCart(req, res) {
     return res.status(500).json({
       success: false,
       message: "Failed to clear cart",
-    });
-  }
-}
-
-/**
- * Sync guest localStorage cart to user DB cart after login
- */
-export async function syncCart(req, res) {
-  try {
-    const userId = getUserId(req);
-    const { items } = req.body; // Expected: [{ variant_id: 1, quantity: 2 }]
-
-    if (!Array.isArray(items) || items.length === 0) {
-      return res.status(200).json({
-        success: true,
-        message: "No local cart items to sync",
-      });
-    }
-
-    for (const item of items) {
-      const { variant_id, quantity } = item;
-      if (!variant_id || !quantity || quantity <= 0) continue;
-
-      // Check variant stock
-      const [variant] = await db
-        .select()
-        .from(product_variants)
-        .where(eq(product_variants.id, variant_id));
-
-      if (!variant) continue;
-
-      // Check if item already exists in DB cart
-      const [existingCartItem] = await db
-        .select()
-        .from(cart_items)
-        .where(
-          and(
-            eq(cart_items.user_id, userId),
-            eq(cart_items.variant_id, variant_id),
-          ),
-        );
-
-      const targetQuantity = existingCartItem
-        ? existingCartItem.quantity + Number(quantity)
-        : Number(quantity);
-
-      const validQuantity = Math.min(targetQuantity, variant.stock);
-
-      if (existingCartItem) {
-        await db
-          .update(cart_items)
-          .set({ quantity: validQuantity })
-          .where(eq(cart_items.id, existingCartItem.id));
-      } else {
-        await db.insert(cart_items).values({
-          user_id: userId,
-          variant_id: variant_id,
-          quantity: validQuantity,
-        });
-      }
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: "Cart synced successfully",
-    });
-  } catch (error) {
-    console.error("Error in syncCart:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to sync cart",
     });
   }
 }

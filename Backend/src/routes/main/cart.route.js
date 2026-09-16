@@ -6,8 +6,12 @@ import {
   updateCartItemQuantity,
   removeCartItem,
   clearCart,
-  syncCart,
 } from "../../controllers/main/cart.controller.js";
+import {
+  addToCartSchema,
+  updateCartItemQuantitySchema,
+} from "../../validators/main/cart.schema.js";
+import { zodValidateData } from "../../middleware/validateData.middleware.js";
 
 const cartRouter = Router();
 
@@ -15,10 +19,13 @@ const cartRouter = Router();
 cartRouter.use(verifyUser);
 
 cartRouter.get("/", getCart);
-cartRouter.post("/add", addToCart);
-cartRouter.put("/:id", updateCartItemQuantity);
+cartRouter.post("/add", zodValidateData(addToCartSchema), addToCart);
+cartRouter.patch(
+  "/updatequantity",
+  zodValidateData(updateCartItemQuantitySchema),
+  updateCartItemQuantity,
+);
 cartRouter.delete("/clear", clearCart);
-cartRouter.delete("/:id", removeCartItem);
-cartRouter.post("/sync", syncCart);
+cartRouter.delete("/removeitem/:id", removeCartItem);
 
 export default cartRouter;
