@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import style from "../../style/pages/auth.module.css";
 import { registerUser } from "../../services/auth.service";
-import Toast from "../../components/common/Toast";
+import Toast from "../../../common/Toast";
 
 const Register = () => {
   const navigate = useNavigate();

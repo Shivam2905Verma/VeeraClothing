@@ -7,8 +7,8 @@ import {
   removeItemFromCart,
   updateCart,
 } from "../../services/cart.service";
-import Toast from "../../components/common/Toast";
-import ConfirmModal from "../../components/common/ConfirmModal";
+import Toast from "../../../common/Toast.jsx";
+import ConfirmModal from "../../../common/ConfirmModal.jsx";
 
 const Cart = () => {
   const { cartItems, setCartItems } = useContext(MainContext);

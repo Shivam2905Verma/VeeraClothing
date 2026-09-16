@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import style from "../../style/components/toast.module.css";
+import style from "../style/toast.module.css";
 
 const Toast = ({ message, type = "error", duration = 5000, onClose }) => {
   const [visible, setVisible] = useState(false);
@@ -17,9 +17,12 @@ const Toast = ({ message, type = "error", duration = 5000, onClose }) => {
     setLeaving(false);
 
     // Slide back up 450ms before duration expires
-    const leaveTimer = setTimeout(() => {
-      setLeaving(true);
-    }, Math.max(duration - 450, 0));
+    const leaveTimer = setTimeout(
+      () => {
+        setLeaving(true);
+      },
+      Math.max(duration - 450, 0),
+    );
 
     // Reset and trigger onClose after duration completes
     const closeTimer = setTimeout(() => {

@@ -5,7 +5,7 @@ import { getProduct } from "../../services/product.service";
 import { MainContext } from "../../context/MainContext";
 import { useContext } from "react";
 import { addToCart } from "../../services/cart.service";
-import Toast from "../../components/common/Toast";
+import Toast from "../../../common/Toast.jsx";
 
 const ProductDetail = () => {
   const { setCartItems } = useContext(MainContext);

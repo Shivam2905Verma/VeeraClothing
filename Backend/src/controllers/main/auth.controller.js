@@ -53,7 +53,11 @@ export async function registerUser(req, res) {
 
 export async function verifyEmail(req, res) {
   try {
-    const { token } = req.query;
+    const token = req.query.token || req.body?.token;
+
+    if (!token) {
+      return res.status(400).json({ success: false, message: "Token is required" });
+    }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET_USER);
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import style from "../../style/components/confirmModal.module.css";
+import style from "../style/confirmModal.module.css";
 
 const ConfirmModal = ({
   isOpen,

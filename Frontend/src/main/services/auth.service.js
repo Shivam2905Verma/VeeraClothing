@@ -39,3 +39,15 @@ export async function getMe() {
     throw error;
   }
 }
+
+export async function verifyEmail(token) {
+  try {
+    const res = await axiosClient.post(`/auth/verifyemail?token=${token}`, {
+      token,
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Error in verifyEmail:", error);
+    throw error;
+  }
+}

@@ -6,6 +6,9 @@ import ShopAll from "./main/pages/shop/ShopAll";
 import Cart from "./main/pages/cart/Cart";
 import Login from "./main/pages/auth/Login";
 import Register from "./main/pages/auth/Register";
+import VerifyEmail from "./main/pages/verifyEmail/VerifyEmail";
+import DashboardLayout from "./dashboard/layout/DashboardLayout";
+import Dashboard from "./dashboard/pages/dashboard/Dashboard";
 
 const App = () => {
   return (
@@ -18,6 +21,12 @@ const App = () => {
       </Route>
       <Route path="login" element={<Login />} />
       <Route path="register" element={<Register />} />
+      <Route path="verifyemail" element={<VerifyEmail />} />
+      <Route path="dashboard" element={<DashboardLayout />}>
+        <Route index element={<Dashboard />} />
+        {/* <Route path="products" element={<Products />} /> */}
+        {/* <Route path="orders" element={<Orders />} /> */}
+      </Route>
     </Routes>
   );
 };

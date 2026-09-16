@@ -46,6 +46,11 @@
   font-size: 1.3rem;
 }
 
+.cart {
+  text-decoration: none;
+  color: inherit;
+}
+
 .cartCount {
   min-width: 18px;
   height: 18px;
