@@ -1,5 +1,8 @@
-import { eq, inArray } from "drizzle-orm";
-import { uploadToCloudinary } from "../../config/cloudinary.config.js";
+import { eq, inArray, and } from "drizzle-orm";
+import {
+  uploadToCloudinary,
+  deleteFromCloudinary,
+} from "../../config/cloudinary.config.js";
 import { db } from "../../config/DB.config.js";
 import { cart_items } from "../../models/cart_items.model.js";
 import { order_items } from "../../models/order_items.model.js";
@@ -28,17 +31,27 @@ export async function getDashboardProductById(req, res) {
   try {
     const productId = Number(req.params.id);
     if (!Number.isInteger(productId)) {
-      return res.status(400).json({ success: false, message: "Invalid product ID" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid product ID" });
     }
 
     const [[product], images, variants] = await Promise.all([
       db.select().from(products).where(eq(products.id, productId)),
-      db.select().from(product_images).where(eq(product_images.product_id, productId)),
-      db.select().from(product_variants).where(eq(product_variants.product_id, productId)),
+      db
+        .select()
+        .from(product_images)
+        .where(eq(product_images.product_id, productId)),
+      db
+        .select()
+        .from(product_variants)
+        .where(eq(product_variants.product_id, productId)),
     ]);
 
     if (!product) {
-      return res.status(404).json({ success: false, message: "Product not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
     }
 
     return res.status(200).json({
@@ -51,7 +64,9 @@ export async function getDashboardProductById(req, res) {
     });
   } catch (error) {
     console.error("getDashboardProductById error:", error);
-    return res.status(500).json({ success: false, message: "Failed to fetch product" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch product" });
   }
 }
 
@@ -79,10 +94,10 @@ export async function createProduct(req, res) {
 
     // 1. Upload all image buffers in parallel to Cloudinary
     const uploadPromises = files.map((file) => uploadToCloudinary(file.buffer));
-    const imageUrls = await Promise.all(uploadPromises);
+    const uploadedImages = await Promise.all(uploadPromises);
 
     // 2. Compute aggregated product values
-    const frontImage = imageUrls[0];
+    const frontImage = uploadedImages[0].secure_url;
     const initialPrice = Number(variants[0].price);
     const totalStock = variants.reduce(
       (sum, variant) => sum + Number(variant.stock || 0),
@@ -116,10 +131,11 @@ export async function createProduct(req, res) {
         .insert(product_variants)
         .values(variantValues);
 
-      // 5. Create product image records
-      const imageValues = imageUrls.map((url) => ({
+      // 5. Create product image records with image_url and public_id
+      const imageValues = uploadedImages.map((image) => ({
         product_id: product.insertId,
-        image_url: url,
+        image_url: image.secure_url,
+        public_id: image.public_id,
       }));
 
       const createdImages = await tx.insert(product_images).values(imageValues);
@@ -184,15 +200,11 @@ export async function createVariant(req, res) {
 export async function updateProduct(req, res) {
   try {
     const productId = parseInt(req.params.id);
-    const {
-      name,
-      description,
-      highlights,
-      composition,
-      care,
-      extra_info,
-    } = req.body;
-    const category_id = req.body.category_id ? Number(req.body.category_id) : undefined;
+    const { name, description, highlights, composition, care, extra_info } =
+      req.body;
+    const category_id = req.body.category_id
+      ? Number(req.body.category_id)
+      : undefined;
 
     if (isNaN(productId)) {
       return res
@@ -200,14 +212,15 @@ export async function updateProduct(req, res) {
         .json({ success: false, message: "Invalid product ID" });
     }
 
-    const updateFields = {};
-    if (name !== undefined) updateFields.name = name;
-    if (description !== undefined) updateFields.description = description;
-    if (category_id !== undefined && !isNaN(category_id)) updateFields.category_id = category_id;
-    if (highlights !== undefined) updateFields.highlights = highlights;
-    if (composition !== undefined) updateFields.composition = composition;
-    if (care !== undefined) updateFields.care = care;
-    if (extra_info !== undefined) updateFields.extra_info = extra_info;
+    const updateFields = {
+      name,
+      description,
+      category_id,
+      highlights,
+      composition,
+      care,
+      extra_info,
+    };
 
     await db
       .update(products)
@@ -258,6 +271,169 @@ export async function updateVariant(req, res) {
     return res.status(500).json({
       success: false,
       message: "Failed to update variant",
+    });
+  }
+}
+
+export async function deleteProductImage(req, res) {
+  try {
+    const productId = parseInt(req.params.id);
+    const imageId = parseInt(req.params.imageId);
+    const is_cover = req.body.is_cover;
+
+    console.log(is_cover);
+    console.log(req.body);
+
+    if (isNaN(productId) || isNaN(imageId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid product ID or image ID",
+      });
+    }
+
+    // 1. Find the image in product_images
+    const [image] = await db
+      .select()
+      .from(product_images)
+      .where(
+        and(
+          eq(product_images.id, imageId),
+          eq(product_images.product_id, productId),
+        ),
+      );
+
+    if (!image) {
+      return res.status(404).json({
+        success: false,
+        message: "Product image not found",
+      });
+    }
+
+    // 2. Delete image from Cloudinary
+    if (image.public_id) {
+      try {
+        await deleteFromCloudinary(image.public_id);
+      } catch (cloudErr) {
+        console.error("Cloudinary delete error:", cloudErr);
+      }
+    }
+
+    // 3. Delete from database
+    await db.delete(product_images).where(eq(product_images.id, imageId));
+
+    // 4. If this image was set as product cover image (products.image_url), update with another image
+    if (is_cover) {
+      const [remainingImage] = await db
+        .select()
+        .from(product_images)
+        .where(eq(product_images.product_id, productId))
+        .limit(1);
+
+      if (remainingImage) {
+        await db
+          .update(products)
+          .set({ image_url: remainingImage.image_url })
+          .where(eq(products.id, productId));
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Product image deleted successfully",
+      deletedImageId: imageId,
+    });
+  } catch (error) {
+    console.error("deleteProductImage:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to delete product image",
+    });
+  }
+}
+
+export async function uploadNewProductImage(req, res) {
+  try {
+    const productId = parseInt(req.params.id);
+    const { isCover } = req.body;
+    let image_isCover = [];
+    if (isCover) {
+      try {
+        image_isCover =
+          typeof isCover === "string" ? JSON.parse(isCover) : isCover;
+      } catch (e) {
+        image_isCover = [];
+      }
+    }
+    if (!Array.isArray(image_isCover)) {
+      image_isCover = [Boolean(image_isCover)];
+    }
+
+    console.log("image_isCover:", image_isCover);
+
+    if (isNaN(productId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid product ID",
+      });
+    }
+
+    // Verify product exists
+    const [product] = await db
+      .select()
+      .from(products)
+      .where(eq(products.id, productId));
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    const files = req.files;
+
+    if (!files || files.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "At least one image file is required",
+      });
+    }
+
+    const uploadPromises = files.map((file) => uploadToCloudinary(file.buffer));
+    const uploadedImages = await Promise.all(uploadPromises);
+
+    const coverUpdates = image_isCover.map(async (item, index) => {
+      if (item && uploadedImages[index]) {
+        await db
+          .update(products)
+          .set({
+            image_url: uploadedImages[index].secure_url,
+          })
+          .where(eq(products.id, productId));
+      }
+    });
+
+    await Promise.all(coverUpdates);
+
+    const imagePromises = uploadedImages.map((image) =>
+      db.insert(product_images).values({
+        product_id: productId,
+        image_url: image.secure_url,
+        public_id: image.public_id,
+      }),
+    );
+
+    await Promise.all(imagePromises);
+
+    return res.status(201).json({
+      success: true,
+      message: "Product images uploaded successfully",
+    });
+  } catch (error) {
+    console.error("uploadNewProductImage error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to upload product image",
     });
   }
 }

@@ -8,9 +8,7 @@ import MainContextProvider from "./main/context/MainContext.jsx";
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <MainContextProvider>
-      <StrictMode>
-        <App />
-      </StrictMode>
+      <App />
     </MainContextProvider>
   </BrowserRouter>,
 );

@@ -13,6 +13,8 @@ import {
   updateVariant,
   permanentDeleteProduct,
   permanentDeleteVariant,
+  uploadNewProductImage,
+  deleteProductImage,
 } from "../../controllers/dashboard/product.controller.js";
 import { zodValidateData } from "../../middleware/validateData.middleware.js";
 import {
@@ -63,15 +65,12 @@ productDashboardRouter.patch("/inactivevariant/:id", inactiveVariant);
 productDashboardRouter.patch("/activevariant/:id", activateVariant);
 productDashboardRouter.delete("/deletevariant/:id", permanentDeleteVariant);
 
-//To-DO
-// productDashboardRouter.post(
-//   "/product/:id/update-image/:imageId",
-//   upload.array("images", 5),
-//   updateProductImage,
-// );
-// productDashboardRouter.delete(
-//   "/product/:id/delete-image/:imageId",
-//   deleteProductImage,
-// );
+// images
+productDashboardRouter.post(
+  "/:id/uploadImage",
+  upload.array("images", 5),
+  uploadNewProductImage,
+);
+productDashboardRouter.delete("/:id/deleteimage/:imageId", deleteProductImage);
 
 export default productDashboardRouter;

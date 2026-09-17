@@ -1,0 +1,1 @@
+ALTER TABLE `product_images` ADD `public_id` varchar(255) NOT NULL;

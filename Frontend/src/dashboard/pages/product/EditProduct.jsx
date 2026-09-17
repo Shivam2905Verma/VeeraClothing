@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getProductById, updateProduct } from "../../service/product.service";
 import { getCategories } from "../../service/category.service";
 import Toast from "../../../common/Toast";
-import style from "../../style/page/addProduct.module.css";
+import EditProductImagesSection from "../../components/products/editproduct/EditProductImagesSection";
+import EditProductVariantsSection from "../../components/products/editproduct/EditProductVariantsSection";
+import style from "../../style/page/editProduct.module.css";
 
 const TOTAL_IMAGE_SLOTS = 5;
 
@@ -21,9 +23,13 @@ const EditProduct = () => {
     care: "",
     extra_info: "",
   });
+  const [initialFormData, setInitialFormData] = useState(null);
 
   // 5 Image Upload Slots (each is null or { file: File, preview: string, existing?: boolean })
   const [images, setImages] = useState(Array(TOTAL_IMAGE_SLOTS).fill(null));
+
+  // Variants Data
+  const [variants, setVariants] = useState([]);
 
   // Categories Dropdown Data
   const [categories, setCategories] = useState([]);
@@ -35,13 +41,37 @@ const EditProduct = () => {
   const [toast, setToast] = useState({ message: "", type: "error" });
   const showToast = (message, type = "error") => setToast({ message, type });
 
+  // Helper to populate image slots from product payload
+  const populateImagesFromProduct = useCallback((p) => {
+    const initialSlots = Array(TOTAL_IMAGE_SLOTS).fill(null);
+    if (p.images && p.images.length > 0) {
+      p.images.slice(0, TOTAL_IMAGE_SLOTS).forEach((imgObj, idx) => {
+        initialSlots[idx] = {
+          id: imgObj.id,
+          public_id: imgObj.public_id,
+          file: null,
+          preview: imgObj.image_url,
+          existing: true,
+        };
+      });
+    } else if (p.image_url) {
+      initialSlots[0] = {
+        id: null,
+        public_id: null,
+        file: null,
+        preview: p.image_url,
+        existing: true,
+      };
+    }
+    setImages(initialSlots);
+  }, []);
+
   // Fetch product data and categories on mount
   useEffect(() => {
     let isMounted = true;
 
     const loadData = async () => {
       try {
-        // Fetch categories and product concurrently
         const [catData, prodData] = await Promise.all([
           getCategories(),
           getProductById(id),
@@ -53,7 +83,7 @@ const EditProduct = () => {
 
         if (isMounted && prodData?.product) {
           const p = prodData.product;
-          setFormData({
+          const initialData = {
             name: p.name || "",
             description: p.description || "",
             category_id: p.category_id ? String(p.category_id) : "",
@@ -61,26 +91,17 @@ const EditProduct = () => {
             composition: p.composition || "",
             care: p.care || "",
             extra_info: p.extra_info || "",
-          });
+          };
+          setFormData(initialData);
+          setInitialFormData(initialData);
 
           // Populate existing images into slots
-          const initialSlots = Array(TOTAL_IMAGE_SLOTS).fill(null);
-          if (p.images && p.images.length > 0) {
-            p.images.slice(0, TOTAL_IMAGE_SLOTS).forEach((imgObj, idx) => {
-              initialSlots[idx] = {
-                file: null,
-                preview: imgObj.image_url,
-                existing: true,
-              };
-            });
-          } else if (p.image_url) {
-            initialSlots[0] = {
-              file: null,
-              preview: p.image_url,
-              existing: true,
-            };
+          populateImagesFromProduct(p);
+
+          // Populate existing variants
+          if (p.variants && p.variants.length > 0) {
+            setVariants(p.variants);
           }
-          setImages(initialSlots);
         } else if (isMounted) {
           showToast("Product not found.", "error");
         }
@@ -108,18 +129,7 @@ const EditProduct = () => {
     return () => {
       isMounted = false;
     };
-  }, [id]);
-
-  // Cleanup newly created object URLs on unmount
-  useEffect(() => {
-    return () => {
-      images.forEach((img) => {
-        if (img && img.preview && !img.existing) {
-          URL.revokeObjectURL(img.preview);
-        }
-      });
-    };
-  }, [images]);
+  }, [id, populateImagesFromProduct]);
 
   // Handle standard text inputs
   const handleInputChange = (e) => {
@@ -127,46 +137,17 @@ const EditProduct = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle Image Upload for a specific slot
-  const handleImageChange = (index, e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (file.size > 5 * 1024 * 1024) {
-      showToast("Image size must be less than 5MB.", "error");
-      return;
-    }
-
-    const preview = URL.createObjectURL(file);
-
-    setImages((prev) => {
-      const updated = [...prev];
-      if (updated[index]?.preview && !updated[index]?.existing) {
-        URL.revokeObjectURL(updated[index].preview);
-      }
-      updated[index] = { file, preview, existing: false };
-      return updated;
-    });
-  };
-
-  // Remove image from a specific slot
-  const handleRemoveImage = (index, e) => {
-    e.stopPropagation();
-    setImages((prev) => {
-      const updated = [...prev];
-      if (updated[index]?.preview && !updated[index]?.existing) {
-        URL.revokeObjectURL(updated[index].preview);
-      }
-      updated[index] = null;
-      return updated;
-    });
-  };
+  // Determine if form data has been modified
+  const isFormChanged = initialFormData
+    ? Object.keys(initialFormData).some(
+        (key) => (formData[key] || "") !== (initialFormData[key] || ""),
+      )
+    : false;
 
   // Form Submit Handler
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 1. Validation: Category selection
     if (!formData.category_id) {
       showToast("Please select a category for this product.", "error");
       return;
@@ -194,7 +175,6 @@ const EditProduct = () => {
 
       showToast("Product updated successfully!", "success");
 
-      // Redirect after brief delay
       setTimeout(() => {
         navigate("/dashboard/products");
       }, 1000);
@@ -212,7 +192,13 @@ const EditProduct = () => {
   if (isLoadingProduct) {
     return (
       <div className={style.pageContainer}>
-        <div style={{ textAlign: "center", padding: "60px 20px", color: "#64748b" }}>
+        <div
+          style={{
+            textAlign: "center",
+            padding: "60px 20px",
+            color: "#64748b",
+          }}
+        >
           <p>Loading product details from database...</p>
         </div>
       </div>
@@ -244,33 +230,6 @@ const EditProduct = () => {
               Update product specifications, category, and information.
             </p>
           </div>
-        </div>
-
-        <div className={style.headerActions}>
-          <Link to="/dashboard/products" className={style.cancelBtn}>
-            Cancel
-          </Link>
-          <button
-            type="button"
-            onClick={handleSubmit}
-            className={style.submitBtn}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <>
-                <i
-                  className="ri-loader-4-line ri-spin"
-                  style={{ fontSize: "1.1rem" }}
-                />
-                <span>Updating Product...</span>
-              </>
-            ) : (
-              <>
-                <i className="ri-check-line" style={{ fontSize: "1.1rem" }} />
-                <span>Save Changes</span>
-              </>
-            )}
-          </button>
         </div>
       </div>
 
@@ -362,7 +321,9 @@ const EditProduct = () => {
                 <label htmlFor="highlights" className={style.formLabel}>
                   Highlights *
                 </label>
-                <span className={style.helperBadge}>separate info by comma ( , )</span>
+                <span className={style.helperBadge}>
+                  separate info by comma ( , )
+                </span>
               </div>
               <input
                 id="highlights"
@@ -381,7 +342,9 @@ const EditProduct = () => {
                 <label htmlFor="composition" className={style.formLabel}>
                   Composition *
                 </label>
-                <span className={style.helperBadge}>separate info by comma ( , )</span>
+                <span className={style.helperBadge}>
+                  separate info by comma ( , )
+                </span>
               </div>
               <input
                 id="composition"
@@ -420,7 +383,9 @@ const EditProduct = () => {
                 <label htmlFor="extra_info" className={style.formLabel}>
                   Extra Info *
                 </label>
-                <span className={style.helperBadge}>separate info by comma ( , )</span>
+                <span className={style.helperBadge}>
+                  separate info by comma ( , )
+                </span>
               </div>
               <input
                 id="extra_info"
@@ -436,78 +401,6 @@ const EditProduct = () => {
           </div>
         </div>
 
-        {/* SECTION 3: 5 IMAGE UPLOAD BOXES WITH PREVIEWS */}
-        <div className={style.formCard} style={{ marginTop: "24px" }}>
-          <div className={style.cardHeader}>
-            <div>
-              <h2 className={style.cardTitle}>Product Images (5 Slots)</h2>
-              <p className={style.cardSubtitle}>
-                Current images loaded from the database.
-              </p>
-            </div>
-          </div>
-
-          <div className={style.imageBoxesGrid}>
-            {images.map((img, index) => (
-              <div
-                key={index}
-                className={`${style.imageBox} ${
-                  img ? style.imageBoxFilled : ""
-                }`}
-              >
-                {/* Slot Tag */}
-                <span
-                  className={`${style.slotTag} ${
-                    index === 0 ? style.primarySlotTag : ""
-                  }`}
-                >
-                  {index === 0 ? "Cover (1)" : `Image ${index + 1}`}
-                </span>
-
-                {img ? (
-                  <>
-                    <img
-                      src={img.preview}
-                      alt={`Slot ${index + 1} Preview`}
-                      className={style.previewImg}
-                    />
-                    <button
-                      type="button"
-                      className={style.removeImageBtn}
-                      onClick={(e) => handleRemoveImage(index, e)}
-                      title="Remove image"
-                    >
-                      <i className="ri-close-line" />
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <div className={style.uploadPrompt}>
-                      <div className={style.uploadIcon}>
-                        <i
-                          className="ri-image-add-line"
-                          style={{ fontSize: "1.5rem" }}
-                        />
-                      </div>
-                      <span className={style.uploadText}>
-                        {index === 0 ? "+ Add Cover" : "+ Add Image"}
-                      </span>
-                    </div>
-
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => handleImageChange(index, e)}
-                      className={style.hiddenFileInput}
-                      title={`Upload Image ${index + 1}`}
-                    />
-                  </>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* Bottom Form Actions */}
         <div className={style.bottomActions}>
           <Link to="/dashboard/products" className={style.cancelBtn}>
@@ -516,11 +409,32 @@ const EditProduct = () => {
           <button
             type="submit"
             className={style.submitBtn}
-            disabled={isSubmitting}
+            disabled={!isFormChanged || isSubmitting}
+            title={
+              !isFormChanged
+                ? "No changes made to product details"
+                : "Save changes"
+            }
           >
             {isSubmitting ? "Updating Product..." : "Save Changes"}
           </button>
         </div>
+
+        {/* SECTION 3: PRODUCT IMAGES (Extracted Component) */}
+        <EditProductImagesSection
+          productId={id}
+          images={images}
+          setImages={setImages}
+          populateImagesFromProduct={populateImagesFromProduct}
+          showToast={showToast}
+        />
+
+        {/* SECTION 4: PRODUCT VARIANTS (Extracted Component) */}
+        <EditProductVariantsSection
+          variants={variants}
+          setVariants={setVariants}
+          showToast={showToast}
+        />
       </form>
     </div>
   );

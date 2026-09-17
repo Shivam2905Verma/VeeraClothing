@@ -15,6 +15,13 @@
       "when": 1789552165283,
       "tag": "0001_dazzling_aqueduct",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1789635507169,
+      "tag": "0002_fast_mister_sinister",
+      "breakpoints": true
     }
   ]
 }

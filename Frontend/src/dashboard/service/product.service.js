@@ -57,3 +57,81 @@ export async function updateProduct(id, productData) {
     throw error;
   }
 }
+
+export async function uploadProductImage(productId, formData) {
+  try {
+    const res = await dashboardAxiosClient.post(
+      `/product/${productId}/uploadImage`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
+    );
+    return res.data;
+  } catch (error) {
+    console.log("Error in uploadProductImage service", error);
+    throw error;
+  }
+}
+
+export async function updateProductImage(productId, imageId, formData) {
+  try {
+    const res = await dashboardAxiosClient.post(
+      `/product/product/${productId}/update-image/${imageId}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
+    );
+    return res.data;
+  } catch (error) {
+    console.log("Error in updateProductImage service", error);
+    throw error;
+  }
+}
+
+export async function deleteProductImage(productId, imageId, is_cover) {
+  try {
+    const res = await dashboardAxiosClient.delete(
+      `/product/${productId}/deleteimage/${imageId}`,
+      {
+        data: {
+          is_cover,
+        },
+      },
+    );
+    return res.data;
+  } catch (error) {
+    console.log("Error in deleteProductImage service", error);
+    throw error;
+  }
+}
+
+export async function updateVariant(variantId, variantData) {
+  try {
+    const res = await dashboardAxiosClient.put(
+      `/product/updatevariant/${variantId}`,
+      variantData,
+    );
+    return res.data;
+  } catch (error) {
+    console.log("Error in updateVariant service", error);
+    throw error;
+  }
+}
+
+export async function deleteVariant(variantId) {
+  try {
+    const res = await dashboardAxiosClient.delete(
+      `/product/deletevariant/${variantId}`,
+    );
+    return res.data;
+  } catch (error) {
+    console.log("Error in deleteVariant service", error);
+    throw error;
+  }
+}

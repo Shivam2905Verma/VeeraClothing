@@ -12,9 +12,17 @@ export const uploadToCloudinary = (fileBuffer, folder = "products") => {
       { folder, resource_type: "image" },
       (error, result) => {
         if (error) return reject(error);
-        resolve(result.secure_url);
+        resolve({
+          secure_url: result.secure_url,
+          public_id: result.public_id,
+        });
       },
     );
     uploadStream.end(fileBuffer);
   });
 };
+
+export const deleteFromCloudinary = (publicId) => {
+  return cloudinary.uploader.destroy(publicId);
+};
+

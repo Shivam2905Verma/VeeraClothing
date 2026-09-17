@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createProduct } from "../../service/product.service";
-import Toast from "../../../common/Toast";
-import style from "../../style/page/addProduct.module.css";
 import { getCategories } from "../../service/category.service";
+import Toast from "../../../common/Toast";
+import AddProductBasicInfo from "../../components/products/addproduct/AddProductBasicInfo";
+import AddProductSpecifications from "../../components/products/addproduct/AddProductSpecifications";
+import AddProductImagesSection from "../../components/products/addproduct/AddProductImagesSection";
+import AddProductVariantsSection from "../../components/products/addproduct/AddProductVariantsSection";
+import style from "../../style/page/addProduct.module.css";
 
 const TOTAL_IMAGE_SLOTS = 5;
 
@@ -61,79 +65,10 @@ const AddProduct = () => {
     };
   }, []);
 
-  // Cleanup object URLs on unmount to prevent memory leaks
-  useEffect(() => {
-    return () => {
-      images.forEach((img) => {
-        if (img && img.preview) {
-          URL.revokeObjectURL(img.preview);
-        }
-      });
-    };
-  }, [images]);
-
   // Handle standard text inputs
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  // Handle Image Upload for a specific slot
-  const handleImageChange = (index, e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (file.size > 5 * 1024 * 1024) {
-      showToast("Image size must be less than 5MB.", "error");
-      return;
-    }
-
-    const preview = URL.createObjectURL(file);
-
-    setImages((prev) => {
-      const updated = [...prev];
-      if (updated[index]?.preview) {
-        URL.revokeObjectURL(updated[index].preview);
-      }
-      updated[index] = { file, preview };
-      return updated;
-    });
-  };
-
-  // Remove image from a specific slot
-  const handleRemoveImage = (index, e) => {
-    e.stopPropagation();
-    setImages((prev) => {
-      const updated = [...prev];
-      if (updated[index]?.preview) {
-        URL.revokeObjectURL(updated[index].preview);
-      }
-      updated[index] = null;
-      return updated;
-    });
-  };
-
-  // Add new Variant row
-  const handleAddVariant = () => {
-    setVariants((prev) => [...prev, { color: "", price: "", stock: "" }]);
-  };
-
-  // Update a field inside a variant
-  const handleVariantChange = (index, field, value) => {
-    setVariants((prev) => {
-      const updated = [...prev];
-      updated[index] = { ...updated[index], [field]: value };
-      return updated;
-    });
-  };
-
-  // Remove a variant row (keep at least 1)
-  const handleRemoveVariant = (index) => {
-    if (variants.length <= 1) {
-      showToast("At least one variant is required for a product.", "error");
-      return;
-    }
-    setVariants((prev) => prev.filter((_, i) => i !== index));
   };
 
   // Form Submit Handler
@@ -250,363 +185,36 @@ const AddProduct = () => {
             </p>
           </div>
         </div>
-
-        <div className={style.headerActions}>
-          <Link to="/dashboard/products" className={style.cancelBtn}>
-            Cancel
-          </Link>
-          <button
-            type="button"
-            onClick={handleSubmit}
-            className={style.submitBtn}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <>
-                <i
-                  className="ri-loader-4-line ri-spin"
-                  style={{ fontSize: "1.1rem" }}
-                />
-                <span>Creating Product...</span>
-              </>
-            ) : (
-              <>
-                <i className="ri-check-line" style={{ fontSize: "1.1rem" }} />
-                <span>Save Product</span>
-              </>
-            )}
-          </button>
-        </div>
       </div>
 
       <form onSubmit={handleSubmit}>
         {/* SECTION 1: BASIC INFORMATION */}
-        <div className={style.formCard}>
-          <div className={style.cardHeader}>
-            <div>
-              <h2 className={style.cardTitle}>Basic Information</h2>
-              <p className={style.cardSubtitle}>
-                General product details and assigned category
-              </p>
-            </div>
-          </div>
-
-          <div className={style.grid2}>
-            <div className={style.formGroup}>
-              <label htmlFor="name" className={style.formLabel}>
-                Product Name *
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                required
-                placeholder="e.g. Classic Oxford Cotton Shirt"
-                value={formData.name}
-                onChange={handleInputChange}
-                className={style.formInput}
-              />
-            </div>
-
-            <div className={style.formGroup}>
-              <label htmlFor="category_id" className={style.formLabel}>
-                Category *
-              </label>
-              <select
-                id="category_id"
-                name="category_id"
-                required
-                value={formData.category_id}
-                onChange={handleInputChange}
-                className={style.formSelect}
-              >
-                <option value="">
-                  {categoriesLoading
-                    ? "Loading categories..."
-                    : "-- Select Product Category --"}
-                </option>
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className={style.formGroup}>
-            <label htmlFor="description" className={style.formLabel}>
-              Description
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              rows={3}
-              placeholder="Provide an overview of the product style, fit, and appearance..."
-              value={formData.description}
-              onChange={handleInputChange}
-              className={style.formTextarea}
-            />
-          </div>
-        </div>
+        <AddProductBasicInfo
+          formData={formData}
+          handleInputChange={handleInputChange}
+          categories={categories}
+          categoriesLoading={categoriesLoading}
+        />
 
         {/* SECTION 2: PRODUCT SPECIFICATIONS */}
-        <div className={style.formCard} style={{ marginTop: "24px" }}>
-          <div className={style.cardHeader}>
-            <div>
-              <h2 className={style.cardTitle}>Product Specifications</h2>
-              <p className={style.cardSubtitle}>
-                Key features, fabric details, and care guide
-              </p>
-            </div>
-          </div>
+        <AddProductSpecifications
+          formData={formData}
+          handleInputChange={handleInputChange}
+        />
 
-          <div className={style.grid2}>
-            <div className={style.formGroup}>
-              <div className={style.labelWrapper}>
-                <label htmlFor="highlights" className={style.formLabel}>
-                  Highlights *
-                </label>
-                <span className={style.helperBadge}>
-                  separate info by comma ( , )
-                </span>
-              </div>
-              <input
-                id="highlights"
-                name="highlights"
-                type="text"
-                required
-                placeholder="e.g. Breathable cotton fabric, Button-down collar, Regular fit"
-                value={formData.highlights}
-                onChange={handleInputChange}
-                className={style.formInput}
-              />
-            </div>
-
-            <div className={style.formGroup}>
-              <div className={style.labelWrapper}>
-                <label htmlFor="composition" className={style.formLabel}>
-                  Composition *
-                </label>
-                <span className={style.helperBadge}>
-                  separate info by comma ( , )
-                </span>
-              </div>
-              <input
-                id="composition"
-                name="composition"
-                type="text"
-                required
-                placeholder="e.g. 100% Premium Cotton, 180 GSM woven fabric"
-                value={formData.composition}
-                onChange={handleInputChange}
-                className={style.formInput}
-              />
-            </div>
-          </div>
-
-          <div className={style.grid2} style={{ marginTop: "8px" }}>
-            <div className={style.formGroup}>
-              <div className={style.labelWrapper}>
-                <label htmlFor="care" className={style.formLabel}>
-                  Care *
-                </label>
-              </div>
-              <input
-                id="care"
-                name="care"
-                type="text"
-                required
-                placeholder="e.g. Machine wash cold with like colors, Do not bleach"
-                value={formData.care}
-                onChange={handleInputChange}
-                className={style.formInput}
-              />
-            </div>
-
-            <div className={style.formGroup}>
-              <div className={style.labelWrapper}>
-                <label htmlFor="extra_info" className={style.formLabel}>
-                  Extra Info *
-                </label>
-                <span className={style.helperBadge}>
-                  separate info by comma ( , )
-                </span>
-              </div>
-              <input
-                id="extra_info"
-                name="extra_info"
-                type="text"
-                required
-                placeholder="e.g. Model is 6ft wearing size L, Made in India"
-                value={formData.extra_info}
-                onChange={handleInputChange}
-                className={style.formInput}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* SECTION 3: 5 IMAGE UPLOAD BOXES WITH PREVIEWS */}
-        <div className={style.formCard} style={{ marginTop: "24px" }}>
-          <div className={style.cardHeader}>
-            <div>
-              <h2 className={style.cardTitle}>Product Images (5 Slots)</h2>
-              <p className={style.cardSubtitle}>
-                Attach up to 5 high-resolution images. The first box will be the
-                primary cover image.
-              </p>
-            </div>
-          </div>
-
-          <div className={style.imageBoxesGrid}>
-            {images.map((img, index) => (
-              <div
-                key={index}
-                className={`${style.imageBox} ${
-                  img ? style.imageBoxFilled : ""
-                }`}
-              >
-                {/* Slot Tag */}
-                <span
-                  className={`${style.slotTag} ${
-                    index === 0 ? style.primarySlotTag : ""
-                  }`}
-                >
-                  {index === 0 ? "Cover (1)" : `Image ${index + 1}`}
-                </span>
-
-                {img ? (
-                  <>
-                    <img
-                      src={img.preview}
-                      alt={`Slot ${index + 1} Preview`}
-                      className={style.previewImg}
-                    />
-                    <button
-                      type="button"
-                      className={style.removeImageBtn}
-                      onClick={(e) => handleRemoveImage(index, e)}
-                      title="Remove image"
-                    >
-                      <i className="ri-close-line" />
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <div className={style.uploadPrompt}>
-                      <div className={style.uploadIcon}>
-                        <i
-                          className="ri-image-add-line"
-                          style={{ fontSize: "1.5rem" }}
-                        />
-                      </div>
-                      <span className={style.uploadText}>
-                        {index === 0 ? "+ Add Cover" : "+ Add Image"}
-                      </span>
-                    </div>
-
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => handleImageChange(index, e)}
-                      className={style.hiddenFileInput}
-                      title={`Upload Image ${index + 1}`}
-                    />
-                  </>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* SECTION 3: PRODUCT IMAGES (5 SLOTS) */}
+        <AddProductImagesSection
+          images={images}
+          setImages={setImages}
+          showToast={showToast}
+        />
 
         {/* SECTION 4: PRODUCT VARIANTS */}
-        <div className={style.formCard} style={{ marginTop: "24px" }}>
-          <div className={style.cardHeader}>
-            <div>
-              <h2 className={style.cardTitle}>Product Variants</h2>
-              <p className={style.cardSubtitle}>
-                Add color variants with specific price and stock amounts
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={handleAddVariant}
-              className={style.addVariantBtn}
-            >
-              <i className="ri-add-line" style={{ fontSize: "1.1rem" }} />
-              <span>Add Variant</span>
-            </button>
-          </div>
-
-          <div className={style.variantsContainer}>
-            {variants.map((v, index) => (
-              <div key={v.id} className={style.variantRow}>
-                <div className={style.variantCol}>
-                  <label className={style.variantLabel}>
-                    Color {index + 1} *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Navy Blue / Olive / White"
-                    value={v.color}
-                    onChange={(e) =>
-                      handleVariantChange(index, "color", e.target.value)
-                    }
-                    className={style.variantInput}
-                  />
-                </div>
-
-                <div className={style.variantCol}>
-                  <label className={style.variantLabel}>Price (₹) *</label>
-                  <input
-                    type="number"
-                    min="1"
-                    required
-                    placeholder="e.g. 799"
-                    value={v.price}
-                    onChange={(e) =>
-                      handleVariantChange(index, "price", e.target.value)
-                    }
-                    className={style.variantInput}
-                  />
-                </div>
-
-                <div className={style.variantCol}>
-                  <label className={style.variantLabel}>Stock *</label>
-                  <input
-                    type="number"
-                    min="0"
-                    required
-                    placeholder="e.g. 50"
-                    value={v.stock}
-                    onChange={(e) =>
-                      handleVariantChange(index, "stock", e.target.value)
-                    }
-                    className={style.variantInput}
-                  />
-                </div>
-
-                <div className={style.variantDeleteCol}>
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveVariant(index)}
-                    disabled={variants.length <= 1}
-                    className={style.removeVariantBtn}
-                    title="Remove this variant"
-                    style={{
-                      opacity: variants.length <= 1 ? 0.4 : 1,
-                      cursor: variants.length <= 1 ? "not-allowed" : "pointer",
-                    }}
-                  >
-                    <i className="ri-delete-bin-line" />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <AddProductVariantsSection
+          variants={variants}
+          setVariants={setVariants}
+          showToast={showToast}
+        />
 
         {/* Bottom Form Actions */}
         <div className={style.bottomActions}>

@@ -1,5 +1,4 @@
 import { useEffect, useState, useMemo } from "react";
-import { Link } from "react-router-dom";
 import {
   getAllProducts,
   activateProduct,
@@ -8,6 +7,8 @@ import {
 } from "../../service/product.service";
 import ConfirmModal from "../../../common/ConfirmModal";
 import Toast from "../../../common/Toast";
+import ProductTopBar from "../../components/products/product/ProductTopBar";
+import ProductCard from "../../components/products/product/ProductCard";
 import style from "../../style/page/product.module.css";
 
 const Product = () => {
@@ -55,7 +56,7 @@ const Product = () => {
     };
   }, []);
 
-  // Filter products based on search query (name or id)
+  // Filter products based on search query (name, description, id, or price)
   const filteredProducts = useMemo(() => {
     if (!searchQuery.trim()) return products;
     const query = searchQuery.toLowerCase().trim();
@@ -96,13 +97,13 @@ const Product = () => {
     }
   };
 
-  // Open delete confirmation
+  // Open delete confirmation modal
   const handleOpenDelete = (product) => {
     setProductToDelete(product);
     setDeleteModalOpen(true);
   };
 
-  // Confirm delete
+  // Confirm permanent delete
   const handleConfirmDelete = async () => {
     if (!productToDelete) return;
     try {
@@ -136,46 +137,14 @@ const Product = () => {
         duration={4000}
       />
 
-      {/* TOP BAR: Total Count at Left, Search Bar at Right */}
-      <div className={style.topBar}>
-        <div className={style.topLeft}>
-          <div className={style.titleGroup}>
-            <h1 className={style.pageTitle}>Products</h1>
-            <span className={style.totalBadge}>Total: {products.length}</span>
-          </div>
-          <Link to="/dashboard/products/add" className={style.addProductBtn}>
-            <i className="ri-add-line" style={{ fontSize: "1rem" }} />
-            <span>Add Product</span>
-          </Link>
-        </div>
+      {/* TOP BAR Component */}
+      <ProductTopBar
+        totalCount={products.length}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
 
-        <div className={style.topRight}>
-          <div className={style.searchContainer}>
-            <span className={style.searchIcon}>
-              <i className="ri-search-line" />
-            </span>
-            <input
-              type="text"
-              placeholder="Search products by name or price..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className={style.searchInput}
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                className={style.clearSearchBtn}
-                onClick={() => setSearchQuery("")}
-                aria-label="Clear search"
-              >
-                <i className="ri-close-line" />
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* PRODUCTS LIST (RECTANGLE CARDS: 3 BUTTONS, NAME AT CENTER, IMAGE AT RIGHT) */}
+      {/* PRODUCTS LIST */}
       {loading ? (
         <div className={style.loadingSpinner}>
           <i
@@ -198,130 +167,12 @@ const Product = () => {
       ) : (
         <div className={style.productList}>
           {filteredProducts.map((product) => (
-            <div
+            <ProductCard
               key={product.id}
-              className={`${style.productCard} ${
-                !product.is_active ? style.inactiveCard : ""
-              }`}
-            >
-              {/* Three Action Buttons: Edit, Active/Deactivate, Delete */}
-              <div className={style.actionButtons}>
-                {/* 1. Edit Button (Links to EditProduct page) */}
-                <Link
-                  to={`/dashboard/products/edit/${product.id}`}
-                  className={`${style.btn} ${style.editBtn}`}
-                  title="Edit product"
-                >
-                  <i className="ri-edit-line" />
-                  <span>Edit</span>
-                </Link>
-
-                {/* 2. Active / Deactive Toggle Button */}
-                <button
-                  type="button"
-                  className={`${style.btn} ${
-                    product.is_active
-                      ? style.toggleBtnActive
-                      : style.toggleBtnInactive
-                  }`}
-                  onClick={() => handleToggleStatus(product)}
-                  title={
-                    product.is_active
-                      ? "Click to deactivate product"
-                      : "Click to activate product"
-                  }
-                >
-                  {product.is_active ? (
-                    <>
-                      <i className="ri-checkbox-circle-line" />
-                      <span>Active</span>
-                    </>
-                  ) : (
-                    <>
-                      <i className="ri-close-circle-line" />
-                      <span>Deactive</span>
-                    </>
-                  )}
-                </button>
-
-                {/* 3. Delete Button */}
-                <button
-                  type="button"
-                  className={`${style.btn} ${style.deleteBtn}`}
-                  onClick={() => handleOpenDelete(product)}
-                  title="Delete product permanently"
-                >
-                  <i className="ri-delete-bin-line" />
-                  <span>Delete</span>
-                </button>
-              </div>
-
-              {/* Product Details (Name at Center) */}
-              <div className={style.cardCenter}>
-                <div className={style.nameRow}>
-                  <h2 className={style.productName}>{product.name}</h2>
-                  <span
-                    className={`${style.statusPill} ${
-                      product.is_active
-                        ? style.statusPillActive
-                        : style.statusPillInactive
-                    }`}
-                  >
-                    {product.is_active ? "Live" : "Disabled"}
-                  </span>
-                </div>
-
-                <div className={style.productMeta}>
-                  <span className={style.productPrice}>₹{product.price}</span>
-                  <span
-                    className={`${style.productStock} ${
-                      product.stock <= 0 ? style.stockOut : ""
-                    }`}
-                  >
-                    {product.stock > 0
-                      ? `Stock: ${product.stock}`
-                      : "Out of stock"}
-                  </span>
-                  {product.description && (
-                    <span
-                      style={{
-                        fontSize: "0.8rem",
-                        color: "#64748b",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        maxWidth: "300px",
-                      }}
-                    >
-                      {product.description}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Product Image at Right */}
-              <div className={style.cardRight}>
-                {product.image_url ? (
-                  <img
-                    src={product.image_url}
-                    alt={product.name}
-                    className={style.productImg}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src =
-                        "https://via.placeholder.com/90?text=Product";
-                    }}
-                  />
-                ) : (
-                  <div className={style.placeholderImg}>
-                    <i
-                      className="ri-image-line"
-                      style={{ fontSize: "1.5rem" }}
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
+              product={product}
+              onToggleStatus={handleToggleStatus}
+              onDelete={handleOpenDelete}
+            />
           ))}
         </div>
       )}

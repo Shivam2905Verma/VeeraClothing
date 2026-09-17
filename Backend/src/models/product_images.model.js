@@ -7,4 +7,5 @@ export const product_images = mysqlTable("product_images", {
     .notNull()
     .references(() => products.id, { onDelete: "cascade" }),
   image_url: varchar({ length: 255 }).notNull(),
+  public_id: varchar({ length: 255 }).notNull(),
 });

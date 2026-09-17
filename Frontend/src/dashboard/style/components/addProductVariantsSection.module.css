@@ -1,0 +1,151 @@
+/* =========================================
+   PRODUCT VARIANTS SECTION
+========================================= */
+.formCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.cardTitle {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cardSubtitle {
+  font-size: 0.825rem;
+  color: #64748b;
+}
+
+.variantsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.addVariantBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #0f172a;
+  color: #ffffff;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 0.825rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.addVariantBtn:hover {
+  background: #334155;
+}
+
+.variantRow {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1.5fr auto;
+  gap: 12px;
+  align-items: end;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 14px 16px;
+  transition: border-color 0.2s ease;
+}
+
+.variantRow:hover {
+  border-color: #cbd5e1;
+}
+
+.variantCol {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.variantLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.variantInput {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 0.875rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #1e293b;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.variantInput:focus {
+  border-color: #0f172a;
+}
+
+.variantDeleteCol {
+  display: flex;
+  align-items: center;
+}
+
+.removeVariantBtn {
+  background: #fee2e2;
+  color: #ef4444;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  height: 38px;
+  width: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.removeVariantBtn:hover:not(:disabled) {
+  background: #ef4444;
+  color: #ffffff;
+  border-color: #ef4444;
+}
+
+.removeVariantBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .variantRow {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .variantDeleteCol {
+    grid-column: span 2;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .removeVariantBtn {
+    width: 100%;
+    height: 34px;
+    gap: 6px;
+  }
+}

@@ -1,0 +1,333 @@
+/* =========================================
+   FORM SECTION CARD
+========================================= */
+.formCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.cardTitle {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cardSubtitle {
+  font-size: 0.825rem;
+  color: #64748b;
+}
+
+.emptyVariants {
+  text-align: center;
+  padding: 30px 20px;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.emptyIcon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 8px;
+  color: #94a3b8;
+}
+
+/* =========================================
+   VARIANT CARDS & SLIDING EDIT PANEL
+========================================= */
+.variantCardsList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.variantCard {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #ffffff;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.variantCard:hover {
+  border-color: #cbd5e1;
+}
+
+.variantCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: #f8fafc;
+  flex-wrap: wrap;
+  gap: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.variantCardHeaderActive {
+  background: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.variantInfoLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.variantColorBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: #0f172a;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.variantColorName {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
+.variantMetaBadge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #334155;
+  background: #e2e8f0;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+
+.stockInBadge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #15803d;
+  background: #dcfce7;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+
+.stockOutBadge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #b91c1c;
+  background: #fee2e2;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+
+.variantActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.editVariantBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #0f172a;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.editVariantBtn:hover {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+
+.editVariantBtnActive {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+
+.deleteVariantBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #ef4444;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.deleteVariantBtn:hover {
+  background: #ef4444;
+  color: #ffffff;
+  border-color: #ef4444;
+}
+
+/* Sliding Edit Panel */
+.variantSlidePanel {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.25s ease,
+    padding 0.3s ease;
+  background: #ffffff;
+  padding: 0 20px;
+}
+
+.variantSlidePanelOpen {
+  max-height: 300px;
+  opacity: 1;
+  padding: 20px;
+}
+
+.variantInputsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.formInput {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #1e293b;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.formInput:focus {
+  background: #ffffff;
+  border-color: #0f172a;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
+}
+
+.variantSlideActions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.variantSaveBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: #0f172a;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.variantSaveBtn:hover:not(:disabled) {
+  background: #334155;
+}
+
+.variantSaveBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.variantCancelBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #64748b;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.variantCancelBtn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+/* =========================================
+   RESPONSIVE DESIGN (TABLET & MOBILE)
+========================================= */
+@media (max-width: 900px) {
+  .variantInputsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .variantCardHeader {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .variantActions {
+    justify-content: stretch;
+  }
+
+  .editVariantBtn,
+  .deleteVariantBtn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .variantInputsGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
