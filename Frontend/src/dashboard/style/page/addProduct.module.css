@@ -1,8 +1,8 @@
 .pageContainer {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  max-width: 1100px;
+  gap: 20px;
+  max-width: 1000px;
   margin: 0 auto;
   width: 100%;
   padding-bottom: 40px;
@@ -18,95 +18,96 @@
   flex-wrap: wrap;
   gap: 16px;
   background: #ffffff;
-  padding: 20px 24px;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  padding: 16px 20px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
 }
 
 .headerLeft {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .backLink {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
-  color: #334155;
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #4b5563;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .backLink:hover {
-  background: #0f172a;
+  background: #111827;
   color: #ffffff;
-  border-color: #0f172a;
+  border-color: #111827;
 }
 
 .headerTitle {
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #111827;
+  letter-spacing: -0.01em;
 }
 
 .headerSubtitle {
-  font-size: 0.85rem;
-  color: #64748b;
+  font-size: 0.8rem;
+  color: #6b7280;
   margin-top: 2px;
 }
 
 .headerActions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .cancelBtn {
-  padding: 9px 18px;
-  font-size: 0.875rem;
+  padding: 7px 14px;
+  font-size: 0.825rem;
   font-weight: 500;
-  color: #475569;
+  color: #4b5563;
   background: #ffffff;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
   text-decoration: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .cancelBtn:hover {
-  background: #f1f5f9;
-  color: #0f172a;
+  background: #f9fafb;
+  color: #111827;
+  border-color: #d1d5db;
 }
 
 .submitBtn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 9px 22px;
-  font-size: 0.875rem;
+  gap: 6px;
+  padding: 7px 16px;
+  font-size: 0.825rem;
   font-weight: 600;
   color: #ffffff;
-  background: #0f172a;
+  background: #111827;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .submitBtn:hover:not(:disabled) {
-  background: #334155;
+  background: #1f2937;
 }
 
 .submitBtn:disabled {
-  opacity: 0.7;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -116,8 +117,8 @@
 .bottomActions {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
-  margin-top: 24px;
+  gap: 10px;
+  margin-top: 16px;
 }
 
 /* =========================================
@@ -127,7 +128,7 @@
   .headerBar {
     flex-direction: column;
     align-items: stretch;
-    padding: 16px;
+    padding: 14px;
   }
 
   .headerActions {

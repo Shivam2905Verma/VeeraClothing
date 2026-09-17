@@ -1,16 +1,9 @@
 import { useState } from "react";
-import {
-  updateVariant,
-  deleteVariant,
-} from "../../../service/product.service";
+import { updateVariant, deleteVariant } from "../../../service/product.service";
 import ConfirmModal from "../../../../common/ConfirmModal";
 import style from "../../../style/components/editProductVariantsSection.module.css";
 
-const EditProductVariantsSection = ({
-  variants,
-  setVariants,
-  showToast,
-}) => {
+const EditProductVariantsSection = ({ variants, setVariants, showToast }) => {
   // Editing state for accordion
   const [editingVariantId, setEditingVariantId] = useState(null);
   const [editVariantForm, setEditVariantForm] = useState({
@@ -204,7 +197,9 @@ const EditProductVariantsSection = ({
                         {v.color ? v.color.charAt(0).toUpperCase() : "V"}
                       </div>
                       <div>
-                        <span className={style.variantColorName}>{v.color}</span>
+                        <span className={style.variantColorName}>
+                          {v.color}
+                        </span>
                       </div>
                       <span className={style.variantMetaBadge}>
                         ₹{Number(v.price).toLocaleString()}
@@ -265,10 +260,7 @@ const EditProductVariantsSection = ({
                           placeholder="e.g. Navy Blue"
                           value={isEditing ? editVariantForm.color : ""}
                           onChange={(e) =>
-                            handleEditVariantFormChange(
-                              "color",
-                              e.target.value,
-                            )
+                            handleEditVariantFormChange("color", e.target.value)
                           }
                           className={style.formInput}
                         />
@@ -285,10 +277,7 @@ const EditProductVariantsSection = ({
                           placeholder="e.g. 799"
                           value={isEditing ? editVariantForm.price : ""}
                           onChange={(e) =>
-                            handleEditVariantFormChange(
-                              "price",
-                              e.target.value,
-                            )
+                            handleEditVariantFormChange("price", e.target.value)
                           }
                           className={style.formInput}
                         />
@@ -305,10 +294,7 @@ const EditProductVariantsSection = ({
                           placeholder="e.g. 50"
                           value={isEditing ? editVariantForm.stock : ""}
                           onChange={(e) =>
-                            handleEditVariantFormChange(
-                              "stock",
-                              e.target.value,
-                            )
+                            handleEditVariantFormChange("stock", e.target.value)
                           }
                           className={style.formInput}
                         />

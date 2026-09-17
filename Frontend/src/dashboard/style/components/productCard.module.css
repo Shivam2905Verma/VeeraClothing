@@ -1,223 +1,246 @@
 /* =========================================
-   PRODUCT CARD
+   PRODUCT TABLE ROW (ENTERPRISE DATA TABLE)
 ========================================= */
-.productCard {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 16px 20px;
-  gap: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+.tableRow {
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.15s ease;
 }
 
-.productCard:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.inactiveCard {
+.tableRow:hover {
   background-color: #fafafa;
-  opacity: 0.85;
-  border-style: dashed;
 }
 
-/* Three action buttons section */
-.actionButtons {
+.rowSelected {
+  background-color: #f8fafc !important;
+}
+
+.rowInactive {
+  opacity: 0.75;
+}
+
+/* Checkbox Cell */
+.checkboxCell {
+  padding: 10px 14px;
+  width: 40px;
+  text-align: center;
+}
+
+.rowCheckbox {
+  cursor: pointer;
+  accent-color: #111827;
+  width: 15px;
+  height: 15px;
+  border-radius: 4px;
+}
+
+/* Product Info Cell */
+.productCell {
+  padding: 10px 16px;
+}
+
+.productInfoWrapper {
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
+  gap: 12px;
 }
 
-.btn {
+.thumbnailWrapper {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.productThumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbPlaceholder {
+  color: #9ca3af;
+  font-size: 1rem;
+}
+
+.productDetails {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.productNameLink {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #111827;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 280px;
+  transition: color 0.15s ease;
+}
+
+.productNameLink:hover {
+  color: #2563eb;
+}
+
+.productId {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  font-family: ui-monospace, monospace;
+}
+
+/* Status Cell */
+.statusCell {
+  padding: 10px 16px;
+  white-space: nowrap;
+}
+
+.statusBadge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 12px;
-  font-size: 0.825rem;
-  font-weight: 500;
-  border-radius: 6px;
-  border: 1px solid transparent;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-decoration: none;
-}
-
-.editBtn {
-  background-color: #f1f5f9;
-  color: #334155;
-  border-color: #e2e8f0;
-}
-
-.editBtn:hover {
-  background-color: #e2e8f0;
-  color: #0f172a;
-}
-
-.toggleBtnActive {
-  background-color: #ecfdf5;
-  color: #059669;
-  border-color: #a7f3d0;
-}
-
-.toggleBtnActive:hover {
-  background-color: #d1fae5;
-  color: #047857;
-}
-
-.toggleBtnInactive {
-  background-color: #fef2f2;
-  color: #dc2626;
-  border-color: #fecaca;
-}
-
-.toggleBtnInactive:hover {
-  background-color: #fee2e2;
-  color: #b91c1c;
-}
-
-.deleteBtn {
-  background-color: #ffffff;
-  color: #ef4444;
-  border-color: #fee2e2;
-}
-
-.deleteBtn:hover {
-  background-color: #ef4444;
-  color: #ffffff;
-  border-color: #ef4444;
-}
-
-/* Center Details */
-.cardCenter {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 0;
-  padding: 0 12px;
-}
-
-.nameRow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.productName {
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: #0f172a;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.statusPill {
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 2px 8px;
+  padding: 3px 8px;
   border-radius: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 
-.statusPillActive {
-  background-color: #dcfce7;
-  color: #15803d;
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
 }
 
-.statusPillInactive {
-  background-color: #fee2e2;
-  color: #b91c1c;
+.statusActive {
+  background-color: #ecfdf5;
+  color: #065f46;
 }
 
-.productMeta {
-  display: flex;
-  align-items: center;
-  gap: 16px;
+.statusActive .statusDot {
+  background-color: #10b981;
+}
+
+.statusInactive {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+.statusInactive .statusDot {
+  background-color: #9ca3af;
+}
+
+/* Category Cell */
+.categoryCell {
+  padding: 10px 16px;
+  font-size: 0.825rem;
+  color: #4b5563;
+  white-space: nowrap;
+}
+
+.categoryTag {
+  background-color: #f3f4f6;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.775rem;
+  color: #374151;
+}
+
+/* Price Cell */
+.priceCell {
+  padding: 10px 16px;
   font-size: 0.85rem;
-  color: #64748b;
-  flex-wrap: wrap;
-}
-
-.productPrice {
   font-weight: 600;
-  color: #0f172a;
+  color: #111827;
+  white-space: nowrap;
 }
 
-.productStock {
-  color: #475569;
+.priceValue {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Stock Cell */
+.stockCell {
+  padding: 10px 16px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.stockBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.stockOk {
+  color: #374151;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+.stockLow {
+  color: #b45309;
+  background-color: #fef3c7;
 }
 
 .stockOut {
-  color: #dc2626;
-  font-weight: 600;
+  color: #b91c1c;
+  background-color: #fee2e2;
 }
 
-.productDesc {
-  font-size: 0.8rem;
-  color: #64748b;
-  overflow: hidden;
-  text-overflow: ellipsis;
+/* Actions Cell */
+.actionsCell {
+  padding: 10px 14px;
+  text-align: right;
   white-space: nowrap;
-  max-width: 300px;
 }
 
-/* Right Image */
-.cardRight {
-  flex-shrink: 0;
-  display: flex;
+.actionButtons {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.actionIconBtn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: all 0.15s ease;
 }
 
-.productImg {
-  width: 90px;
-  height: 90px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
-  background-color: #f8fafc;
+.actionIconBtn:hover {
+  background-color: #f3f4f6;
+  color: #111827;
 }
 
-.placeholderImg {
-  width: 90px;
-  height: 90px;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
-  background-color: #f1f5f9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #94a3b8;
+.activeToggleBtn:hover {
+  background-color: #fef2f2;
+  color: #dc2626;
 }
 
-@media (max-width: 768px) {
-  .productCard {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 14px;
-  }
-  .actionButtons {
-    order: 3;
-    justify-content: stretch;
-  }
-  .btn {
-    flex: 1;
-    justify-content: center;
-  }
-  .cardCenter {
-    padding: 0;
-    order: 2;
-  }
-  .cardRight {
-    order: 1;
-    justify-content: flex-start;
-  }
+.inactiveToggleBtn:hover {
+  background-color: #ecfdf5;
+  color: #059669;
+}
+
+.deleteActionBtn:hover {
+  background-color: #fee2e2;
+  color: #dc2626;
 }

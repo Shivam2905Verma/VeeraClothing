@@ -15,6 +15,10 @@ const Product = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [sortField, setSortField] = useState("id");
+  const [sortDirection, setSortDirection] = useState("desc");
+  const [selectedIds, setSelectedIds] = useState(new Set());
 
   // Toast State
   const [toast, setToast] = useState({ message: "", type: "error" });
@@ -25,49 +29,106 @@ const Product = () => {
   const [productToDelete, setProductToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const loadProducts = async () => {
-      try {
-        const data = await getAllProducts();
-        if (isMounted && data && data.products) {
-          setProducts(data.products);
-        }
-      } catch (error) {
-        console.error("Failed to fetch products:", error);
-        if (isMounted) {
-          showToast(
-            "Failed to load products. Please check your network.",
-            "error",
-          );
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const data = await getAllProducts();
+      if (data && data.products) {
+        setProducts(data.products);
       }
-    };
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+      showToast(
+        "Failed to load products. Please check your network.",
+        "error",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    loadProducts();
-
-    return () => {
-      isMounted = false;
-    };
+  useEffect(() => {
+    fetchProducts();
   }, []);
 
-  // Filter products based on search query (name, description, id, or price)
+  // Filter products based on search query & status filter
   const filteredProducts = useMemo(() => {
-    if (!searchQuery.trim()) return products;
-    const query = searchQuery.toLowerCase().trim();
-    return products.filter(
-      (item) =>
-        item.name?.toLowerCase().includes(query) ||
-        item.description?.toLowerCase().includes(query) ||
-        String(item.id).includes(query) ||
-        String(item.price).includes(query),
-    );
-  }, [products, searchQuery]);
+    let result = [...products];
+
+    // 1. Status Filter
+    if (statusFilter === "ACTIVE") {
+      result = result.filter((p) => p.is_active);
+    } else if (statusFilter === "INACTIVE") {
+      result = result.filter((p) => !p.is_active);
+    } else if (statusFilter === "IN_STOCK") {
+      result = result.filter((p) => Number(p.stock) > 0);
+    } else if (statusFilter === "OUT_OF_STOCK") {
+      result = result.filter((p) => Number(p.stock) <= 0);
+    }
+
+    // 2. Search Query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      result = result.filter(
+        (item) =>
+          item.name?.toLowerCase().includes(query) ||
+          item.description?.toLowerCase().includes(query) ||
+          String(item.id).includes(query) ||
+          String(item.price).includes(query) ||
+          item.category?.name?.toLowerCase().includes(query) ||
+          item.category_name?.toLowerCase().includes(query),
+      );
+    }
+
+    // 3. Sorting
+    result.sort((a, b) => {
+      let aVal = a[sortField];
+      let bVal = b[sortField];
+
+      if (typeof aVal === "string") {
+        aVal = aVal.toLowerCase();
+        bVal = (bVal || "").toLowerCase();
+      }
+
+      if (aVal < bVal) return sortDirection === "asc" ? -1 : 1;
+      if (aVal > bVal) return sortDirection === "asc" ? 1 : -1;
+      return 0;
+    });
+
+    return result;
+  }, [products, searchQuery, statusFilter, sortField, sortDirection]);
+
+  // Handle Sort Change
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
+    }
+  };
+
+  // Selection Handlers
+  const handleToggleSelectAll = () => {
+    if (selectedIds.size === filteredProducts.length && filteredProducts.length > 0) {
+      setSelectedIds(new Set());
+    } else {
+      const allIds = new Set(filteredProducts.map((p) => p.id));
+      setSelectedIds(allIds);
+    }
+  };
+
+  const handleToggleSelect = (id) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
 
   // Toggle Active / Deactive handler
   const handleToggleStatus = async (product) => {
@@ -112,6 +173,11 @@ const Product = () => {
       setProducts((prev) =>
         prev.filter((item) => item.id !== productToDelete.id),
       );
+      setSelectedIds((prev) => {
+        const next = new Set(prev);
+        next.delete(productToDelete.id);
+        return next;
+      });
       showToast(`"${productToDelete.name}" deleted permanently.`, "success");
       setDeleteModalOpen(false);
       setProductToDelete(null);
@@ -126,6 +192,10 @@ const Product = () => {
       setIsDeleting(false);
     }
   };
+
+  const isAllSelected =
+    filteredProducts.length > 0 &&
+    selectedIds.size === filteredProducts.length;
 
   return (
     <div className={style.productPage}>
@@ -142,14 +212,17 @@ const Product = () => {
         totalCount={products.length}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        onRefresh={fetchProducts}
       />
 
-      {/* PRODUCTS LIST */}
+      {/* PRODUCTS TABLE */}
       {loading ? (
         <div className={style.loadingSpinner}>
           <i
             className="ri-loader-4-line ri-spin"
-            style={{ fontSize: "2rem" }}
+            style={{ fontSize: "1.75rem", color: "#6b7280" }}
           />
         </div>
       ) : filteredProducts.length === 0 ? (
@@ -165,15 +238,118 @@ const Product = () => {
           </p>
         </div>
       ) : (
-        <div className={style.productList}>
-          {filteredProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onToggleStatus={handleToggleStatus}
-              onDelete={handleOpenDelete}
-            />
-          ))}
+        <div className={style.tableWrapper}>
+          <table className={style.table}>
+            <thead>
+              <tr className={style.tableHeaderRow}>
+                {/* Select All Checkbox */}
+                <th className={style.checkboxHeader}>
+                  <input
+                    type="checkbox"
+                    checked={isAllSelected}
+                    onChange={handleToggleSelectAll}
+                    className={style.headerCheckbox}
+                  />
+                </th>
+
+                {/* Product Column */}
+                <th
+                  className={`${style.tableHeader} ${style.sortableHeader}`}
+                  onClick={() => handleSort("name")}
+                >
+                  <div className={style.headerContent}>
+                    <span>Product</span>
+                    {sortField === "name" && (
+                      <i
+                        className={
+                          sortDirection === "asc"
+                            ? "ri-arrow-up-line"
+                            : "ri-arrow-down-line"
+                        }
+                      />
+                    )}
+                  </div>
+                </th>
+
+                {/* Status Column */}
+                <th className={style.tableHeader}>
+                  <div className={style.headerContent}>
+                    <span>Status</span>
+                  </div>
+                </th>
+
+                {/* Category Column */}
+                <th className={style.tableHeader}>
+                  <div className={style.headerContent}>
+                    <span>Category</span>
+                  </div>
+                </th>
+
+                {/* Price Column */}
+                <th
+                  className={`${style.tableHeader} ${style.sortableHeader}`}
+                  onClick={() => handleSort("price")}
+                >
+                  <div className={style.headerContent}>
+                    <span>Price</span>
+                    {sortField === "price" && (
+                      <i
+                        className={
+                          sortDirection === "asc"
+                            ? "ri-arrow-up-line"
+                            : "ri-arrow-down-line"
+                        }
+                      />
+                    )}
+                  </div>
+                </th>
+
+                {/* Stock Column */}
+                <th
+                  className={`${style.tableHeader} ${style.sortableHeader}`}
+                  onClick={() => handleSort("stock")}
+                >
+                  <div className={style.headerContent}>
+                    <span>Stock</span>
+                    {sortField === "stock" && (
+                      <i
+                        className={
+                          sortDirection === "asc"
+                            ? "ri-arrow-up-line"
+                            : "ri-arrow-down-line"
+                        }
+                      />
+                    )}
+                  </div>
+                </th>
+
+                {/* Actions Column */}
+                <th className={`${style.tableHeader} ${style.actionsHeader}`}>
+                  <span>Actions</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  isSelected={selectedIds.has(product.id)}
+                  onToggleSelect={handleToggleSelect}
+                  onToggleStatus={handleToggleStatus}
+                  onDelete={handleOpenDelete}
+                />
+              ))}
+            </tbody>
+          </table>
+
+          {/* Table Footer with Summary */}
+          <div className={style.tableFooter}>
+            <span className={style.footerInfo}>
+              Showing {filteredProducts.length} of {products.length} products
+              {selectedIds.size > 0 && ` (${selectedIds.size} selected)`}
+            </span>
+          </div>
         </div>
       )}
 

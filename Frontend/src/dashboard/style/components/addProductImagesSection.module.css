@@ -3,33 +3,32 @@
 ========================================= */
 .formCard {
   background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
 }
 
 .cardHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   padding-bottom: 12px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid #f3f4f6;
 }
 
 .cardTitle {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: #0f172a;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .cardSubtitle {
-  font-size: 0.825rem;
-  color: #64748b;
+  font-size: 0.8rem;
+  color: #6b7280;
 }
 
 /* =========================================
@@ -38,54 +37,52 @@
 .imageBoxesGrid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 16px;
-  margin-top: 10px;
+  gap: 12px;
+  margin-top: 6px;
 }
 
 .imageBox {
   position: relative;
   aspect-ratio: 1 / 1;
-  border: 2px dashed #cbd5e1;
-  border-radius: 10px;
-  background: #f8fafc;
+  border: 1.5px dashed #d1d5db;
+  border-radius: 6px;
+  background: #f9fafb;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .imageBox:hover {
-  border-color: #0f172a;
-  background: #f1f5f9;
+  border-color: #111827;
+  background: #f3f4f6;
 }
 
 .imageBoxFilled {
   border-style: solid;
-  border-color: #e2e8f0;
+  border-color: #e5e7eb;
   background: #ffffff;
 }
 
 .slotTag {
   position: absolute;
-  top: 8px;
-  left: 8px;
-  background: rgba(15, 23, 42, 0.75);
+  top: 6px;
+  left: 6px;
+  background: rgba(17, 24, 39, 0.8);
   color: #ffffff;
-  font-size: 0.7rem;
+  font-size: 0.675rem;
   font-weight: 600;
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 1px 5px;
+  border-radius: 3px;
   z-index: 2;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
 }
 
 .primarySlotTag {
-  background: #0f172a;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  background: #111827;
 }
 
 .uploadPrompt {
@@ -93,18 +90,18 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 12px;
+  gap: 6px;
+  padding: 8px;
   text-align: center;
-  color: #64748b;
+  color: #6b7280;
 }
 
 .uploadIcon {
-  color: #94a3b8;
+  color: #9ca3af;
 }
 
 .uploadText {
-  font-size: 0.75rem;
+  font-size: 0.725rem;
   font-weight: 500;
 }
 
@@ -120,34 +117,34 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.2s;
+  transition: transform 0.15s;
 }
 
 .imageBox:hover .previewImg {
-  transform: scale(1.03);
+  transform: scale(1.02);
 }
 
 .removeImageBtn {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  background: rgba(239, 68, 68, 0.9);
+  top: 6px;
+  right: 6px;
+  background: rgba(220, 38, 38, 0.9);
   color: #ffffff;
   border: none;
   border-radius: 50%;
-  width: 26px;
-  height: 26px;
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 4;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s, background-color 0.2s;
+  font-size: 0.75rem;
+  transition: transform 0.15s, background-color 0.15s;
 }
 
 .removeImageBtn:hover {
-  background: #dc2626;
+  background: #b91c1c;
   transform: scale(1.1);
 }
 

@@ -1,137 +1,209 @@
 /* =========================================
-   TOP BAR: TOTAL PRODUCTS + SEARCH
+   PAGE HEADER & TOOLBAR (ENTERPRISE THEME)
 ========================================= */
-.topBar {
+.headerRow {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
-  background: #ffffff;
-  padding: 18px 24px;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  margin-bottom: 20px;
 }
 
-.topLeft {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.titleGroup {
+.titleArea {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
 .pageTitle {
-  font-size: 1.35rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #111827;
+  letter-spacing: -0.02em;
 }
 
-.totalBadge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #0f172a;
-  color: #ffffff;
-  font-size: 0.85rem;
+.countBadge {
+  font-size: 0.775rem;
   font-weight: 600;
-  padding: 4px 12px;
-  border-radius: 20px;
-  letter-spacing: 0.02em;
+  color: #6b7280;
+  background-color: #f3f4f6;
+  padding: 2px 8px;
+  border-radius: 12px;
 }
 
-.addProductBtn {
+.primaryActionBtn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background-color: #0f172a;
+  background-color: #111827;
   color: #ffffff;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  font-weight: 500;
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-size: 0.825rem;
+  font-weight: 600;
   text-decoration: none;
-  transition: background-color 0.2s;
+  transition: background-color 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-.addProductBtn:hover {
-  background-color: #334155;
+.primaryActionBtn:hover {
+  background-color: #1f2937;
 }
 
-.topRight {
+/* Toolbar Row: Filter input + Filter Pills + View controls */
+.toolbarRow {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
 }
 
-.searchContainer {
+.toolbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filterInputWrapper {
   position: relative;
-  width: 280px;
+  width: 220px;
 }
 
-.searchIcon {
+.filterIcon {
   position: absolute;
-  left: 12px;
+  left: 10px;
   top: 50%;
   transform: translateY(-50%);
-  color: #94a3b8;
+  color: #9ca3af;
   display: flex;
   align-items: center;
   pointer-events: none;
-}
-
-.searchInput {
-  width: 100%;
-  padding: 10px 14px 10px 38px;
   font-size: 0.9rem;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  background: #f8fafc;
-  color: #1e293b;
+}
+
+.filterInput {
+  width: 100%;
+  padding: 6px 12px 6px 30px;
+  font-size: 0.825rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #111827;
   outline: none;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
-.searchInput:focus {
-  background: #ffffff;
-  border-color: #0f172a;
-  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
+.filterInput:focus {
+  border-color: #111827;
+  box-shadow: 0 0 0 1px #111827;
 }
 
-.clearSearchBtn {
+.clearBtn {
   position: absolute;
-  right: 10px;
+  right: 8px;
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
-  color: #94a3b8;
+  color: #9ca3af;
   cursor: pointer;
   padding: 2px;
-  border-radius: 50%;
   display: flex;
   align-items: center;
 }
 
-.clearSearchBtn:hover {
-  color: #475569;
+.clearBtn:hover {
+  color: #4b5563;
+}
+
+/* Filter Dropdown Pills */
+.filterPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 0.825rem;
+  font-weight: 500;
+  color: #374151;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.filterPill:hover {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.filterPillActive {
+  background-color: #f3f4f6;
+  border-color: #111827;
+  color: #111827;
+  font-weight: 600;
+}
+
+.iconOnlyPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: #6b7280;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.iconOnlyPill:hover {
+  background-color: #f9fafb;
+  color: #111827;
+}
+
+/* Toolbar Right (Actions / Refresh) */
+.toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.viewBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: #6b7280;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.viewBtn:hover {
+  background-color: #f9fafb;
+  color: #111827;
+  border-color: #d1d5db;
 }
 
 @media (max-width: 768px) {
-  .topBar {
+  .headerRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .toolbarRow {
     flex-direction: column;
     align-items: stretch;
-    padding: 16px;
   }
-  .topLeft {
-    justify-content: space-between;
-  }
-  .searchContainer {
+  .filterInputWrapper {
     width: 100%;
   }
 }
