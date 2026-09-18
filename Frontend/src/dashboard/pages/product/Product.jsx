@@ -37,9 +37,8 @@ const Product = () => {
         setProducts(data.products);
       }
     } catch (error) {
-      console.error("Failed to fetch products:", error);
       showToast(
-        "Failed to load products. Please check your network.",
+        error?.response?.data?.message || "Failed to load products.",
         "error",
       );
     } finally {
@@ -60,10 +59,6 @@ const Product = () => {
       result = result.filter((p) => p.is_active);
     } else if (statusFilter === "INACTIVE") {
       result = result.filter((p) => !p.is_active);
-    } else if (statusFilter === "IN_STOCK") {
-      result = result.filter((p) => Number(p.stock) > 0);
-    } else if (statusFilter === "OUT_OF_STOCK") {
-      result = result.filter((p) => Number(p.stock) <= 0);
     }
 
     // 2. Search Query
@@ -110,7 +105,10 @@ const Product = () => {
 
   // Selection Handlers
   const handleToggleSelectAll = () => {
-    if (selectedIds.size === filteredProducts.length && filteredProducts.length > 0) {
+    if (
+      selectedIds.size === filteredProducts.length &&
+      filteredProducts.length > 0
+    ) {
       setSelectedIds(new Set());
     } else {
       const allIds = new Set(filteredProducts.map((p) => p.id));
@@ -194,8 +192,7 @@ const Product = () => {
   };
 
   const isAllSelected =
-    filteredProducts.length > 0 &&
-    selectedIds.size === filteredProducts.length;
+    filteredProducts.length > 0 && selectedIds.size === filteredProducts.length;
 
   return (
     <div className={style.productPage}>
@@ -293,25 +290,6 @@ const Product = () => {
                   <div className={style.headerContent}>
                     <span>Price</span>
                     {sortField === "price" && (
-                      <i
-                        className={
-                          sortDirection === "asc"
-                            ? "ri-arrow-up-line"
-                            : "ri-arrow-down-line"
-                        }
-                      />
-                    )}
-                  </div>
-                </th>
-
-                {/* Stock Column */}
-                <th
-                  className={`${style.tableHeader} ${style.sortableHeader}`}
-                  onClick={() => handleSort("stock")}
-                >
-                  <div className={style.headerContent}>
-                    <span>Stock</span>
-                    {sortField === "stock" && (
                       <i
                         className={
                           sortDirection === "asc"

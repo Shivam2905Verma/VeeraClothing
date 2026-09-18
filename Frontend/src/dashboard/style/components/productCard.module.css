@@ -165,37 +165,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Stock Cell */
-.stockCell {
-  padding: 10px 16px;
-  font-size: 0.8rem;
-  white-space: nowrap;
-}
-
-.stockBadge {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.stockOk {
-  color: #374151;
-  background-color: #f9fafb;
-  border: 1px solid #e5e7eb;
-}
-
-.stockLow {
-  color: #b45309;
-  background-color: #fef3c7;
-}
-
-.stockOut {
-  color: #b91c1c;
-  background-color: #fee2e2;
-}
-
 /* Actions Cell */
 .actionsCell {
   padding: 10px 14px;

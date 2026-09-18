@@ -17,6 +17,7 @@ const EditProduct = () => {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
+    price: "",
     category_id: "",
     highlights: "",
     composition: "",
@@ -86,6 +87,8 @@ const EditProduct = () => {
           const initialData = {
             name: p.name || "",
             description: p.description || "",
+            price:
+              p.price !== undefined && p.price !== null ? String(p.price) : "",
             category_id: p.category_id ? String(p.category_id) : "",
             highlights: p.highlights || "",
             composition: p.composition || "",
@@ -148,13 +151,18 @@ const EditProduct = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.category_id) {
-      showToast("Please select a category for this product.", "error");
+    if (!formData.name.trim()) {
+      showToast("Product name cannot be empty.", "error");
       return;
     }
 
-    if (!formData.name.trim()) {
-      showToast("Product name cannot be empty.", "error");
+    if (!formData.price || Number(formData.price) <= 0) {
+      showToast("Please enter a valid display price (> 0).", "error");
+      return;
+    }
+
+    if (!formData.category_id) {
+      showToast("Please select a category for this product.", "error");
       return;
     }
 
@@ -164,6 +172,7 @@ const EditProduct = () => {
       const updatePayload = {
         name: formData.name.trim(),
         description: formData.description.trim(),
+        price: Number(formData.price),
         category_id: Number(formData.category_id),
         highlights: formData.highlights.trim(),
         composition: formData.composition.trim(),
@@ -240,12 +249,12 @@ const EditProduct = () => {
             <div>
               <h2 className={style.cardTitle}>Basic Information</h2>
               <p className={style.cardSubtitle}>
-                General product details and assigned category
+                General product details, display price, and assigned category
               </p>
             </div>
           </div>
 
-          <div className={style.grid2}>
+          <div className={style.grid3}>
             <div className={style.formGroup}>
               <label htmlFor="name" className={style.formLabel}>
                 Product Name *
@@ -257,6 +266,24 @@ const EditProduct = () => {
                 required
                 placeholder="e.g. Classic Oxford Cotton Shirt"
                 value={formData.name}
+                onChange={handleInputChange}
+                className={style.formInput}
+              />
+            </div>
+
+            <div className={style.formGroup}>
+              <label htmlFor="price" className={style.formLabel}>
+                Display Price (₹) *
+              </label>
+              <input
+                id="price"
+                name="price"
+                type="number"
+                min="1"
+                step="1"
+                required
+                placeholder="e.g. 1299"
+                value={formData.price}
                 onChange={handleInputChange}
                 className={style.formInput}
               />

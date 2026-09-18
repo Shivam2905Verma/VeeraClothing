@@ -99,10 +99,6 @@ export async function createProduct(req, res) {
     // 2. Compute aggregated product values
     const frontImage = uploadedImages[0].secure_url;
     const initialPrice = Number(variants[0].price);
-    const totalStock = variants.reduce(
-      (sum, variant) => sum + Number(variant.stock || 0),
-      0,
-    );
 
     const result = await db.transaction(async (tx) => {
       // 3. Create product with front image, base price, and aggregated stock
@@ -112,7 +108,6 @@ export async function createProduct(req, res) {
         category_id: parseInt(category_id, 10),
         image_url: frontImage,
         price: initialPrice,
-        stock: totalStock,
         highlights,
         composition,
         care,
@@ -200,8 +195,15 @@ export async function createVariant(req, res) {
 export async function updateProduct(req, res) {
   try {
     const productId = parseInt(req.params.id);
-    const { name, description, highlights, composition, care, extra_info } =
-      req.body;
+    const {
+      name,
+      description,
+      price,
+      highlights,
+      composition,
+      care,
+      extra_info,
+    } = req.body;
     const category_id = req.body.category_id
       ? Number(req.body.category_id)
       : undefined;
@@ -215,6 +217,7 @@ export async function updateProduct(req, res) {
     const updateFields = {
       name,
       description,
+      price,
       category_id,
       highlights,
       composition,

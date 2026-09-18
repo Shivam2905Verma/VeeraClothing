@@ -33,8 +33,6 @@ const ProductTopBar = ({
     { label: "All Products", value: "ALL" },
     { label: "Live (Active)", value: "ACTIVE" },
     { label: "Disabled", value: "INACTIVE" },
-    { label: "In Stock", value: "IN_STOCK" },
-    { label: "Out of Stock", value: "OUT_OF_STOCK" },
   ];
 
   const filteredOptions = filterOptions.filter((opt) =>
@@ -98,11 +96,7 @@ const ProductTopBar = ({
                   ? "State"
                   : statusFilter === "ACTIVE"
                   ? "Live"
-                  : statusFilter === "INACTIVE"
-                  ? "Disabled"
-                  : statusFilter === "IN_STOCK"
-                  ? "In Stock"
-                  : "Out of Stock"}
+                  : "Disabled"}
               </span>
               <i
                 className="ri-arrow-down-s-line"

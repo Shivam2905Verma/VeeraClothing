@@ -1,10 +1,12 @@
 import { useState, useMemo } from "react";
 import { Outlet, NavLink, Link, useLocation } from "react-router-dom";
 import { brandDetail } from "../../common/brandDetail";
+import { useDashboard } from "../context/DashboardContext";
 import style from "../style/layout/dashboardLayout.module.css";
 
 const DashboardLayout = () => {
   const location = useLocation();
+  const { adminData, logout } = useDashboard();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
@@ -185,16 +187,16 @@ const DashboardLayout = () => {
 
         {/* User Profile Tile at Bottom of Sidebar */}
         <div className={style.sidebarFooter}>
-          <div className={style.userProfileTile}>
+          <div className={style.userProfileTile} onClick={logout} title="Click to Sign Out">
             <div className={style.userAvatar}>
-              {brandDetail.brandName ? brandDetail.brandName.charAt(0).toUpperCase() : "A"}
+              {adminData?.admin_id ? adminData.admin_id.charAt(0).toUpperCase() : "A"}
             </div>
             <div className={style.userInfo}>
-              <span className={style.userName}>Admin</span>
+              <span className={style.userName}>{adminData?.admin_id || "Admin"}</span>
               <span className={style.userRole}>Store Manager</span>
             </div>
-            <div className={style.userChevron}>
-              <i className="ri-expand-up-down-line" />
+            <div className={style.userChevron} title="Sign Out">
+              <i className="ri-logout-box-r-line" />
             </div>
           </div>
         </div>
@@ -265,9 +267,10 @@ const DashboardLayout = () => {
             <button
               type="button"
               className={style.iconBtn}
-              title="Notifications"
+              onClick={logout}
+              title="Sign Out"
             >
-              <i className="ri-notification-3-line" />
+              <i className="ri-logout-box-r-line" />
             </button>
           </div>
         </header>

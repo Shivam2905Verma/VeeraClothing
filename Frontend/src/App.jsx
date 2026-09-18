@@ -12,6 +12,8 @@ import Dashboard from "./dashboard/pages/dashboard/Dashboard";
 import Product from "./dashboard/pages/product/Product";
 import AddProduct from "./dashboard/pages/product/AddProduct";
 import EditProduct from "./dashboard/pages/product/EditProduct";
+import DashboardLogin from "./dashboard/pages/auth/Login";
+import ProtectedDashboardRoute from "./dashboard/components/protected/ProtectedDashboardRoute";
 
 const App = () => {
   return (
@@ -25,7 +27,15 @@ const App = () => {
       <Route path="login" element={<Login />} />
       <Route path="register" element={<Register />} />
       <Route path="verifyemail" element={<VerifyEmail />} />
-      <Route path="dashboard" element={<DashboardLayout />}>
+      <Route path="dashboard/login" element={<DashboardLogin />} />
+      <Route
+        path="dashboard"
+        element={
+          <ProtectedDashboardRoute>
+            <DashboardLayout />
+          </ProtectedDashboardRoute>
+        }
+      >
         <Route index element={<Dashboard />} />
         <Route path="products" element={<Product />} />
         <Route path="products/add" element={<AddProduct />} />

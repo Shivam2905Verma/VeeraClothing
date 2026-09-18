@@ -44,8 +44,7 @@ const ProductCard = ({
                 className={style.productThumb}
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src =
-                    "https://via.placeholder.com/40?text=P";
+                  e.target.src = "https://via.placeholder.com/40?text=P";
                 }}
               />
             ) : (
@@ -73,9 +72,7 @@ const ProductCard = ({
       <td className={style.statusCell}>
         <span
           className={`${style.statusBadge} ${
-            product.is_active
-              ? style.statusActive
-              : style.statusInactive
+            product.is_active ? style.statusActive : style.statusInactive
           }`}
         >
           <span className={style.statusDot} />
@@ -95,22 +92,7 @@ const ProductCard = ({
         <span className={style.priceValue}>{formattedPrice}</span>
       </td>
 
-      {/* 6. Stock Column */}
-      <td className={style.stockCell}>
-        <span
-          className={`${style.stockBadge} ${
-            product.stock <= 0
-              ? style.stockOut
-              : product.stock <= 5
-              ? style.stockLow
-              : style.stockOk
-          }`}
-        >
-          {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
-        </span>
-      </td>
-
-      {/* 7. Actions Column */}
+      {/* 6. Actions Column */}
       <td className={style.actionsCell}>
         <div className={style.actionButtons}>
           {/* Edit */}
@@ -126,10 +108,14 @@ const ProductCard = ({
           <button
             type="button"
             className={`${style.actionIconBtn} ${
-              product.is_active ? style.activeToggleBtn : style.inactiveToggleBtn
+              product.is_active
+                ? style.activeToggleBtn
+                : style.inactiveToggleBtn
             }`}
             onClick={() => onToggleStatus(product)}
-            title={product.is_active ? "Deactivate product" : "Activate product"}
+            title={
+              product.is_active ? "Deactivate product" : "Activate product"
+            }
           >
             {product.is_active ? (
               <i className="ri-eye-line" />

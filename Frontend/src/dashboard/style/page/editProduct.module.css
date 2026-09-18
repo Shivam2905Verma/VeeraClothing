@@ -150,6 +150,12 @@
   gap: 16px;
 }
 
+.grid3 {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 16px;
+}
+
 .formGroup {
   display: flex;
   flex-direction: column;
@@ -235,7 +241,8 @@
     justify-content: center;
   }
 
-  .grid2 {
+  .grid2,
+  .grid3 {
     grid-template-columns: 1fr;
     gap: 0;
   }

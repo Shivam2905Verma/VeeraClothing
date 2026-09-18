@@ -46,6 +46,7 @@ export const createVariantSchema = z.object({
 export const updateProductSchema = z.object({
   name: z.string().trim().min(2, "Product name must be at least 2 characters"),
   description: z.string().trim().optional(),
+  price: z.coerce.number().positive("Price must be greater than 0").optional(),
   category_id: z.coerce.number().int().positive("Invalid category ID"),
   highlights: z.string().trim().min(1, "Highlights is required").optional(),
   composition: z.string().trim().min(1, "Composition is required").optional(),

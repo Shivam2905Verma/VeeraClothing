@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import style from "../../style/components/carousel.module.css";
 
-const IMAGES = ["/i1.jpg", "/i2.jpg", "/i3.jpg", "/i4.jpg"];
+const IMAGES = ["/i1.webp", "/i2.webp", "/i3.webp", "/i4.webp"];
 
 const Carousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);

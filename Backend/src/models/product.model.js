@@ -18,7 +18,6 @@ export const products = mysqlTable("products", {
     .references(() => categories.id),
   price: int().notNull(),
   image_url: varchar({ length: 255 }).notNull(),
-  stock: int().notNull(),
   highlights: varchar({ length: 500 }).notNull(),
   composition: varchar({ length: 500 }).notNull(),
   care: varchar({ length: 200 }).notNull(),

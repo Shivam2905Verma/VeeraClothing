@@ -47,3 +47,32 @@ export const logout = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const getme = async (req, res) => {
+  try {
+    const { id } = req.admin;
+    const [adminData] = await db
+      .select({
+        admin_id: admin.admin_id,
+      })
+      .from(admin)
+      .where(eq(admin.admin_id, id));
+
+    if (!adminData) {
+      return res.status(404).json({
+        success: false,
+        message: "Admin not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Admin fetched successfully",
+      admin: adminData,
+    });
+  } catch (error) {
+    console.error("Getme error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+

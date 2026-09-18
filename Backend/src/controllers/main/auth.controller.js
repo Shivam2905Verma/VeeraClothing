@@ -56,7 +56,9 @@ export async function verifyEmail(req, res) {
     const token = req.query.token || req.body?.token;
 
     if (!token) {
-      return res.status(400).json({ success: false, message: "Token is required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Token is required" });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET_USER);
@@ -125,6 +127,10 @@ export async function loginUser(req, res) {
       .from(user)
       .where(eq(user.email, email));
 
+    console.log("Existing User: ", existingUser);
+    console.log("Email from login body:", email);
+    console.log("Password from login body:", password);
+
     if (existingUser.length === 0) {
       return res
         .status(400)
@@ -185,17 +191,6 @@ export function logoutUser(req, res) {
 export async function getMe(req, res) {
   try {
     let userId = req.user?.userId || req.user?.id;
-
-    if (!userId) {
-      const token = req.cookies.token;
-      if (!token) {
-        return res
-          .status(401)
-          .json({ success: false, message: "Unauthorized" });
-      }
-      const decoded = jwt.verify(token, process.env.JWT_SECRET_USER);
-      userId = decoded?.userId;
-    }
 
     if (!userId) {
       return res.status(401).json({ success: false, message: "Unauthorized" });

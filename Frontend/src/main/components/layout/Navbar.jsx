@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { MainContext } from "../../context/MainContext";
 
 const Navbar = () => {
-  const { cartItems } = useContext(MainContext);
+  const { cartItems, user } = useContext(MainContext);
 
   const totalCartCount = Array.isArray(cartItems)
     ? cartItems.reduce((acc, item) => acc + (Number(item.quantity) || 0), 0)
@@ -20,9 +20,15 @@ const Navbar = () => {
           <span className={style.mobileonly + " " + style.menubar}>
             <i className="ri-menu-line"></i>
           </span>
-          <Link to="/login" className={style.login + " " + style.computeronly}>
-            <i className="ri-user-line"></i> Login / Register
-          </Link>
+          {user ? (
+            <span className={style.login + " " + style.computeronly}>
+              <i className="ri-user-line"></i> Hi {user.name}!
+            </span>
+          ) : (
+            <Link to="/login" className={style.login + " " + style.computeronly}>
+              <i className="ri-user-line"></i> Login / Register
+            </Link>
+          )}
         </div>
         <div className={style.topcenter}>VEERA CLOTHING</div>
         <div className={style.topright}>

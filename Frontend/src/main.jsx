@@ -4,11 +4,14 @@ import "./App.css";
 import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
 import MainContextProvider from "./main/context/MainContext.jsx";
+import { DashboardContextProvider } from "./dashboard/context/DashboardContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <MainContextProvider>
-      <App />
+      <DashboardContextProvider>
+        <App />
+      </DashboardContextProvider>
     </MainContextProvider>
   </BrowserRouter>,
 );

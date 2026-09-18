@@ -1,8 +1,13 @@
 import dashboardAxiosClient from "../config/axios.config";
 
 export async function getAllProducts() {
-  const res = await dashboardAxiosClient.get("/product");
-  return res.data;
+  try {
+    const res = await dashboardAxiosClient.get("/product");
+    return res.data;
+  } catch (error) {
+    console.log("Error in getAllProducts service", error);
+    throw error;
+  }
 }
 
 export async function getProductById(id) {
