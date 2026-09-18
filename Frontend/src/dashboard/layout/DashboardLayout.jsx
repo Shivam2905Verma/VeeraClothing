@@ -30,6 +30,16 @@ const DashboardLayout = () => {
           path: "/dashboard/products",
           icon: <i className="ri-shopping-bag-3-line" />,
         },
+        {
+          title: "Categories",
+          path: "/dashboard/categories",
+          icon: <i className="ri-folders-line" />,
+        },
+        {
+          title: "Measurements",
+          path: "/dashboard/measurements",
+          icon: <i className="ri-ruler-2-line" />,
+        },
       ],
     },
     {
@@ -96,6 +106,18 @@ const DashboardLayout = () => {
     }
     if (path.startsWith("/dashboard/products")) {
       return ["Catalog", "Products"];
+    }
+    if (path.startsWith("/dashboard/categories/add")) {
+      return ["Catalog", "Categories", "Add Category"];
+    }
+    if (path.startsWith("/dashboard/categories")) {
+      return ["Catalog", "Categories"];
+    }
+    if (path.startsWith("/dashboard/measurements/add")) {
+      return ["Catalog", "Measurements", "Add Measurement"];
+    }
+    if (path.startsWith("/dashboard/measurements")) {
+      return ["Catalog", "Measurements"];
     }
     if (path.startsWith("/dashboard/orders")) {
       return ["Sales", "Orders"];

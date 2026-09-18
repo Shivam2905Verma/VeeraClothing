@@ -7,6 +7,7 @@ import userRouter from "./routes/main/auth.route.js";
 import productDashboardRouter from "./routes/dashboard/product.route.js";
 import categoriesDashboardRouter from "./routes/dashboard/categories.route.js";
 import authDashboardRouter from "./routes/dashboard/auth.route.js";
+import measurementDashboardroute from "./routes/dashboard/measurement.route.js";
 import cookieParser from "cookie-parser";
 
 const app = express();
@@ -32,5 +33,6 @@ app.use("/api/main/auth", userRouter);
 app.use("/api/dashboard/product", productDashboardRouter);
 app.use("/api/dashboard/categories", categoriesDashboardRouter);
 app.use("/api/dashboard/auth", authDashboardRouter);
+app.use("/api/dashboard/measurement", measurementDashboardroute);
 
 export default app;

@@ -12,6 +12,10 @@ import Dashboard from "./dashboard/pages/dashboard/Dashboard";
 import Product from "./dashboard/pages/product/Product";
 import AddProduct from "./dashboard/pages/product/AddProduct";
 import EditProduct from "./dashboard/pages/product/EditProduct";
+import Category from "./dashboard/pages/category/Category";
+import AddCategory from "./dashboard/pages/category/AddCategory";
+import Measurement from "./dashboard/pages/measurement/Measurement";
+import AddMeasurement from "./dashboard/pages/measurement/AddMeasurement";
 import DashboardLogin from "./dashboard/pages/auth/Login";
 import ProtectedDashboardRoute from "./dashboard/components/protected/ProtectedDashboardRoute";
 
@@ -40,6 +44,10 @@ const App = () => {
         <Route path="products" element={<Product />} />
         <Route path="products/add" element={<AddProduct />} />
         <Route path="products/edit/:id" element={<EditProduct />} />
+        <Route path="categories" element={<Category />} />
+        <Route path="categories/add" element={<AddCategory />} />
+        <Route path="measurements" element={<Measurement />} />
+        <Route path="measurements/add" element={<AddMeasurement />} />
         {/* <Route path="orders" element={<Orders />} /> */}
       </Route>
     </Routes>
