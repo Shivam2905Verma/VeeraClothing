@@ -50,7 +50,8 @@ const SearchOverlay = ({ isOpen, onClose }) => {
     setLoadingProducts(true);
     const debounceTimer = setTimeout(async () => {
       try {
-        const res = await searchProducts(query);
+        const res = await searchProducts({ q: query, limit: 8 });
+        console.log(res);
         if (isMounted && res && res.products) {
           setSuggestedProducts(res.products);
         }
@@ -60,7 +61,7 @@ const SearchOverlay = ({ isOpen, onClose }) => {
       } finally {
         if (isMounted) setLoadingProducts(false);
       }
-    }, 250);
+    }, 350);
 
     return () => {
       isMounted = false;
@@ -108,7 +109,7 @@ const SearchOverlay = ({ isOpen, onClose }) => {
 
     if (catId) {
       navigate(
-        `/shopall?category=${encodeURIComponent(catName)}&categoryId=${catId}`
+        `/shopall?category=${encodeURIComponent(catName)}&categoryId=${catId}`,
       );
     } else {
       navigate(`/shopall?category=${encodeURIComponent(catName)}`);
@@ -193,7 +194,8 @@ const SearchOverlay = ({ isOpen, onClose }) => {
 
               {loadingProducts ? (
                 <div className={style.loadingState}>
-                  <i className="ri-loader-4-line ri-spin"></i> Searching products...
+                  <i className="ri-loader-4-line ri-spin"></i> Searching
+                  products...
                 </div>
               ) : suggestedProducts.length > 0 ? (
                 <div className={style.productsGrid}>
@@ -245,7 +247,9 @@ const SearchOverlay = ({ isOpen, onClose }) => {
                       onClick={() => handleCategoryClick(cat)}
                     >
                       <span className={style.categoryName}>{cat.name}</span>
-                      <i className={`ri-arrow-right-line ${style.categoryArrow}`}></i>
+                      <i
+                        className={`ri-arrow-right-line ${style.categoryArrow}`}
+                      ></i>
                     </div>
                   ))}
                 </div>

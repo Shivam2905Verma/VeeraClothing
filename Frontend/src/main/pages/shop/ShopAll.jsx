@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import ShopHeader from "../../components/shop/ShopHeader";
 import ShopFilter from "../../components/shop/ShopFilter";
 import ShopProductGrid from "../../components/shop/ShopProductGrid";
+import Toast from "../../../common/Toast";
 import style from "../../style/pages/shopall.module.css";
 import {
   getAllProducts,
@@ -11,14 +12,25 @@ import {
 } from "../../services/product.service";
 
 const ShopAll = () => {
+  const [toast, setToast] = useState({ message: "", type: "error" });
+  const showToast = (message, type = "error") => setToast({ message, type });
+
   const [searchParams] = useSearchParams();
-  const searchFilter = (
+  const searchQuery = (
     searchParams.get("query") ||
     searchParams.get("search") ||
-    searchParams.get("category") ||
+    searchParams.get("q") ||
     ""
   ).trim();
+  const categoryName = (searchParams.get("category") || "").trim();
   const categoryIdFilter = searchParams.get("categoryId");
+
+  // Display title: search query, or category name, or "All Products"
+  const pageTitle = searchQuery
+    ? `Search: "${searchQuery}"`
+    : categoryName
+      ? categoryName
+      : "All Products";
 
   const [minLimit, setMinLimit] = useState(0);
   const [maxLimit, setMaxLimit] = useState(2500);
@@ -31,19 +43,15 @@ const ShopAll = () => {
   const [productsData, setProductsData] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const hasUserFilteredPriceRef = useRef(false);
-  const isFirstMountRef = useRef(true);
-  const prevNonPriceDepsRef = useRef({
-    sortBy,
-    searchFilter,
-    categoryIdFilter,
-  });
+  const requestIdRef = useRef(0);
 
   // Reset price interaction flag when category or search changes
   useEffect(() => {
     hasUserFilteredPriceRef.current = false;
-  }, [searchFilter, categoryIdFilter]);
+  }, [searchQuery, categoryName, categoryIdFilter]);
 
   // Fetch initial min & max price range from backend
   useEffect(() => {
@@ -77,33 +85,12 @@ const ShopAll = () => {
 
   // Fetch products whenever sort, price range, search, or category changes
   useEffect(() => {
-    const isFirstMount = isFirstMountRef.current;
-    isFirstMountRef.current = false;
+    const currentRequestId = ++requestIdRef.current;
+    setIsLoading(true);
 
-    const nonPriceDepsChanged =
-      prevNonPriceDepsRef.current.sortBy !== sortBy ||
-      prevNonPriceDepsRef.current.searchFilter !== searchFilter ||
-      prevNonPriceDepsRef.current.categoryIdFilter !== categoryIdFilter;
-
-    prevNonPriceDepsRef.current = {
-      sortBy,
-      searchFilter,
-      categoryIdFilter,
-    };
-
-    // Skip redundant refetch when only price range was initialized from DB
-    if (
-      !isFirstMount &&
-      !nonPriceDepsChanged &&
-      !hasUserFilteredPriceRef.current
-    ) {
-      return;
-    }
-
-    let isMounted = true;
     const fetchProducts = async () => {
       try {
-        const hasUrlQuery = Boolean(searchFilter || categoryIdFilter);
+        const hasUrlQuery = Boolean(searchQuery || categoryIdFilter || categoryName);
         setPage(1);
 
         const queryParams = {
@@ -120,31 +107,46 @@ const ShopAll = () => {
 
         let res;
         if (hasUrlQuery) {
-          queryParams.q = searchFilter;
-          queryParams.categoryId = categoryIdFilter;
+          if (searchQuery) queryParams.q = searchQuery;
+          if (categoryIdFilter) queryParams.categoryId = categoryIdFilter;
+          else if (categoryName && !searchQuery) queryParams.q = categoryName;
+
           res = await searchProducts(queryParams);
         } else {
           res = await getAllProducts(queryParams);
         }
 
-        if (isMounted && res && res.products) {
-          setProductsData(res.products);
-          setHasMore(Boolean(res.hasMore));
+        console.log("Shop all search :- ", res);
+
+        // Only update state if this is the latest in-flight request
+        if (currentRequestId === requestIdRef.current) {
+          if (res && res.products) {
+            setProductsData(res.products);
+            setHasMore(Boolean(res.hasMore));
+          }
         }
       } catch (error) {
-        console.error("Failed to fetch products in ShopAll:", error);
+        if (currentRequestId === requestIdRef.current) {
+          console.error("Failed to fetch products in ShopAll:", error);
+          showToast(
+            error?.response?.data?.message || "Failed to fetch products",
+            "error",
+          );
+        }
+      } finally {
+        if (currentRequestId === requestIdRef.current) {
+          setIsLoading(false);
+        }
       }
     };
 
     fetchProducts();
-    return () => {
-      isMounted = false;
-    };
   }, [
     sortBy,
     debouncedMinPrice,
     debouncedMaxPrice,
-    searchFilter,
+    searchQuery,
+    categoryName,
     categoryIdFilter,
   ]);
 
@@ -154,7 +156,7 @@ const ShopAll = () => {
 
     try {
       const nextPage = page + 1;
-      const hasUrlQuery = Boolean(searchFilter || categoryIdFilter);
+      const hasUrlQuery = Boolean(searchQuery || categoryIdFilter || categoryName);
       const queryParams = {
         sortBy,
         page: nextPage,
@@ -168,8 +170,10 @@ const ShopAll = () => {
 
       let res;
       if (hasUrlQuery) {
-        queryParams.q = searchFilter;
-        queryParams.categoryId = categoryIdFilter;
+        if (searchQuery) queryParams.q = searchQuery;
+        if (categoryIdFilter) queryParams.categoryId = categoryIdFilter;
+        else if (categoryName && !searchQuery) queryParams.q = categoryName;
+
         res = await searchProducts(queryParams);
       } else {
         res = await getAllProducts(queryParams);
@@ -182,6 +186,10 @@ const ShopAll = () => {
       }
     } catch (error) {
       console.error("Failed to load more products:", error);
+      showToast(
+        error?.response?.data?.message || "Failed to load more products",
+        "error",
+      );
     } finally {
       setIsLoadingMore(false);
     }
@@ -200,7 +208,7 @@ const ShopAll = () => {
   return (
     <div className={style.container}>
       <ShopHeader
-        title={searchFilter ? `${searchFilter}` : "All Products"}
+        title={pageTitle}
         sortBy={sortBy}
         onSortChange={handleSortChange}
         isMobileFilterOpen={isMobileFilterOpen}
@@ -221,11 +229,18 @@ const ShopAll = () => {
 
         <ShopProductGrid
           products={productsData}
+          isLoading={isLoading}
           hasMore={hasMore}
           isLoadingMore={isLoadingMore}
           onLoadMore={handleLoadMore}
         />
       </div>
+
+      <Toast
+        message={toast.message}
+        type={toast.type}
+        onClose={() => setToast({ message: "", type: "error" })}
+      />
     </div>
   );
 };

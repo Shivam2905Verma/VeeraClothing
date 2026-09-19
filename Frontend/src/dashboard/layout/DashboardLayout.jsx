@@ -67,6 +67,11 @@ const DashboardLayout = () => {
       sectionTitle: "Marketing",
       items: [
         {
+          title: "Spotlights",
+          path: "/dashboard/spotlights",
+          icon: <i className="ri-layout-grid-fill" />,
+        },
+        {
           title: "Discounts & Offers",
           path: "/dashboard/marketing",
           icon: <i className="ri-percent-line" />,
@@ -121,6 +126,9 @@ const DashboardLayout = () => {
     }
     if (path.startsWith("/dashboard/orders")) {
       return ["Sales", "Orders"];
+    }
+    if (path.startsWith("/dashboard/spotlights")) {
+      return ["Marketing", "Spotlights"];
     }
     return ["Dashboard"];
   }, [location.pathname]);

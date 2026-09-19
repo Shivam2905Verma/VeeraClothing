@@ -4,6 +4,7 @@ import style from "../../style/components/shopProductGrid.module.css";
 
 const ShopProductGrid = ({
   products = [],
+  isLoading = false,
   hasMore = false,
   isLoadingMore = false,
   onLoadMore,
@@ -11,7 +12,11 @@ const ShopProductGrid = ({
   return (
     <section className={style.productsSection}>
       <div className={style.productsGrid}>
-        {products.length > 0 ? (
+        {isLoading ? (
+          <div className={style.loadingState}>
+            <i className="ri-loader-4-line ri-spin"></i> Loading products...
+          </div>
+        ) : products.length > 0 ? (
           products.map((item) => (
             <Link
               key={item.id}

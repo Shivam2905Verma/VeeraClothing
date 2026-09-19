@@ -1,7 +1,8 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import style from "../../style/components/carousel.module.css";
 
 const IMAGES = ["/i1.webp", "/i2.webp", "/i3.webp", "/i4.webp"];
+const AUTO_SLIDE_INTERVAL = 2000;
 
 const Carousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -10,6 +11,30 @@ const Carousel = () => {
 
   const startXRef = useRef(0);
   const containerRef = useRef(null);
+
+  const nextSlide = useCallback(() => {
+    setCurrentIndex((prev) => (prev + 1) % IMAGES.length);
+  }, []);
+
+  const prevSlide = useCallback(() => {
+    setCurrentIndex((prev) => (prev - 1 + IMAGES.length) % IMAGES.length);
+  }, []);
+
+  const goToSlide = (index) => {
+    setCurrentIndex(index);
+    setDragOffset(0);
+  };
+
+  // Auto slide timer (pauses while dragging)
+  useEffect(() => {
+    if (isDragging) return;
+
+    const timer = setInterval(() => {
+      nextSlide();
+    }, AUTO_SLIDE_INTERVAL);
+
+    return () => clearInterval(timer);
+  }, [isDragging, nextSlide, currentIndex]);
 
   // Helper to safely get touch or mouse X coordinate
   const getPositionX = (e) => {
@@ -34,10 +59,10 @@ const Carousel = () => {
 
     const threshold = (containerRef.current?.clientWidth || 300) * 0.2; // 20% swipe threshold
 
-    if (dragOffset < -threshold && currentIndex < IMAGES.length - 1) {
-      setCurrentIndex((prev) => prev + 1);
-    } else if (dragOffset > threshold && currentIndex > 0) {
-      setCurrentIndex((prev) => prev - 1);
+    if (dragOffset < -threshold) {
+      nextSlide();
+    } else if (dragOffset > threshold) {
+      prevSlide();
     }
 
     setDragOffset(0);
@@ -68,6 +93,21 @@ const Carousel = () => {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Indicator dots */}
+      <div className={style.dotsContainer}>
+        {IMAGES.map((_, index) => (
+          <button
+            key={index}
+            type="button"
+            className={`${style.dot} ${
+              index === currentIndex ? style.activeDot : ""
+            }`}
+            onClick={() => goToSlide(index)}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
       </div>
     </div>
   );

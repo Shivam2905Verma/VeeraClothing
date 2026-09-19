@@ -13,6 +13,8 @@ import measurementDashboardroute from "./routes/dashboard/measurement.route.js";
 import cookieParser from "cookie-parser";
 import addressRouter from "./routes/main/address.route.js";
 import measurementRouter from "./routes/main/measurement.route.js";
+import spotlightRouter from "./routes/main/spotlight.route.js";
+import spotlightDashboardRouter from "./routes/dashboard/spotlight.route.js";
 
 const app = express();
 
@@ -37,10 +39,12 @@ app.use("/api/main/categories", categoriesRouter);
 app.use("/api/main/checkout", checkoutRouter);
 app.use("/api/main/address", addressRouter);
 app.use("/api/main/measurement", measurementRouter);
+app.use("/api/main/spotlight", spotlightRouter);
 
 app.use("/api/dashboard/product", productDashboardRouter);
 app.use("/api/dashboard/categories", categoriesDashboardRouter);
 app.use("/api/dashboard/auth", authDashboardRouter);
 app.use("/api/dashboard/measurement", measurementDashboardroute);
+app.use("/api/dashboard/spotlight", spotlightDashboardRouter);
 
 export default app;

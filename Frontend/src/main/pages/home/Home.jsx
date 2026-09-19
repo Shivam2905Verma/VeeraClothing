@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 import style from "../../style/pages/home.module.css";
 import Carousel from "../../components/home/Carousel";
 import Card from "../../components/common/Card";
 import useHorizontalScroll from "../../hooks/useHorizontalScroll";
 import { brandDetail } from "../../../common/brandDetail";
-import { getAllProducts } from "../../services/product.service";
+import { MainContext } from "../../context/MainContext";
+
+import SpotlightSection from "../../components/home/SpotlightSection";
 
 const CATEGORIES = [
   { id: 1, name: "Shirts", price: "499", img: "./c1.jpg" },
@@ -18,28 +20,8 @@ const CATEGORIES = [
 const Home = () => {
   const categoryScrollRef = useHorizontalScroll();
   const arrivalsScrollRef = useHorizontalScroll();
-  const [newArrivals, setNewArrivals] = useState([]);
-
-  useEffect(() => {
-    let isMounted = true;
-    const fetchArrivals = async () => {
-      try {
-        const data = await getAllProducts();
-        if (isMounted && data && data.products) {
-          const activeOnly = data.products.filter(
-            (item) => item.is_active === true || item.is_active === 1,
-          );
-          setNewArrivals(activeOnly);
-        }
-      } catch (error) {
-        console.error("Failed to fetch new arrivals:", error);
-      }
-    };
-    fetchArrivals();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { newAravialProducts } = useContext(MainContext);
+  const newArrivals = newAravialProducts || [];
 
   return (
     <div className={style.container}>
@@ -58,6 +40,9 @@ const Home = () => {
           ))}
         </div>
       </section>
+
+      {/* Spotlight Dynamic 2-Card Container */}
+      <SpotlightSection />
 
       {/* New Arrivals Section */}
       <section className={style.productSection}>

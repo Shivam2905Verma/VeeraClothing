@@ -1,0 +1,78 @@
+.introOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #ffffff;
+  color: #111111;
+  z-index: 999999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  user-select: none;
+  pointer-events: all;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.introContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1.5rem;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+.welcomeSubtitle {
+  font-size: clamp(0.85rem, 2vw, 1.15rem);
+  font-weight: 500;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.6);
+  margin-bottom: 0.75rem;
+  display: flex;
+  gap: 0.4em;
+  overflow: hidden;
+}
+
+.brandTitle {
+  font-size: clamp(2rem, 6vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #111111;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35em;
+  line-height: 1.15;
+  overflow: hidden;
+}
+
+.word {
+  display: inline-flex;
+  overflow: hidden;
+}
+
+.char {
+  display: inline-block;
+  will-change: transform, opacity;
+  transform: translateY(110%);
+  opacity: 0;
+}
+
+.dividerLine {
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.85) 50%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  margin-top: 1.5rem;
+}

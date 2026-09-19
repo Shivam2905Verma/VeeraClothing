@@ -17,6 +17,7 @@ import Category from "./dashboard/pages/category/Category";
 import AddCategory from "./dashboard/pages/category/AddCategory";
 import Measurement from "./dashboard/pages/measurement/Measurement";
 import AddMeasurement from "./dashboard/pages/measurement/AddMeasurement";
+import Spotlight from "./dashboard/pages/spotlight/Spotlight";
 import DashboardLogin from "./dashboard/pages/auth/Login";
 import ProtectedDashboardRoute from "./dashboard/components/protected/ProtectedDashboardRoute";
 
@@ -50,6 +51,7 @@ const App = () => {
         <Route path="categories/add" element={<AddCategory />} />
         <Route path="measurements" element={<Measurement />} />
         <Route path="measurements/add" element={<AddMeasurement />} />
+        <Route path="spotlights" element={<Spotlight />} />
         {/* <Route path="orders" element={<Orders />} /> */}
       </Route>
     </Routes>

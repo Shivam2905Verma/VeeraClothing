@@ -62,17 +62,10 @@ export async function searchProducts(req, res) {
       .select({
         id: products.id,
         name: products.name,
-        description: products.description,
         price: products.price,
         image_url: products.image_url,
         category_id: products.category_id,
         category_name: categories.name,
-        highlights: products.highlights,
-        composition: products.composition,
-        care: products.care,
-        extra_info: products.extra_info,
-        is_active: products.is_active,
-        createdAt: products.createdAt,
       })
       .from(products)
       .leftJoin(categories, eq(products.category_id, categories.id))
@@ -131,6 +124,7 @@ export async function getAllProducts(req, res) {
     if (minPrice !== null && !isNaN(minPrice)) {
       conditions.push(gte(products.price, minPrice));
     }
+
     if (maxPrice !== null && !isNaN(maxPrice)) {
       conditions.push(lte(products.price, maxPrice));
     }
@@ -139,20 +133,10 @@ export async function getAllProducts(req, res) {
       .select({
         id: products.id,
         name: products.name,
-        description: products.description,
-        category_id: products.category_id,
-        category_name: categories.name,
         price: products.price,
         image_url: products.image_url,
-        highlights: products.highlights,
-        composition: products.composition,
-        care: products.care,
-        extra_info: products.extra_info,
-        is_active: products.is_active,
-        createdAt: products.createdAt,
       })
       .from(products)
-      .leftJoin(categories, eq(products.category_id, categories.id))
       .where(and(...conditions));
 
     if (sortBy === "low-to-high") {
@@ -270,3 +254,31 @@ export async function getMaxPrice(req, res) {
   }
 }
 
+export async function getNewArrivals(req, res) {
+  try {
+    const result = await db
+      .select({
+        id: products.id,
+        name: products.name,
+        price: products.price,
+        image_url: products.image_url,
+      })
+      .from(products)
+      .leftJoin(categories, eq(products.category_id, categories.id))
+      .where(eq(products.is_active, true))
+      .orderBy(desc(products.createdAt))
+      .limit(6);
+
+    return res.status(200).json({
+      success: true,
+      message: "New arrivals fetched successfully",
+      products: result,
+    });
+  } catch (error) {
+    console.error("getNewArrivals error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch new arrivals",
+    });
+  }
+}

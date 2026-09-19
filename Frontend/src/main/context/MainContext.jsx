@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import { getCart } from "../services/cart.service";
 import { getMe } from "../services/auth.service";
+import { getNewArrivals } from "../services/product.service";
 
 export const MainContext = createContext();
 
@@ -8,6 +9,7 @@ const MainContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [cartItems, setCartItems] = useState({});
   const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [newAravialProducts, setNewAravialProducts] = useState([]);
 
   const fetchUser = async () => {
     try {
@@ -21,6 +23,17 @@ const MainContextProvider = ({ children }) => {
       setUser(null);
     } finally {
       setIsAuthLoading(false);
+    }
+  };
+
+  const fetchNewArrivals = async () => {
+    try {
+      const res = await getNewArrivals();
+      if (res?.success && Array.isArray(res.products)) {
+        setNewAravialProducts(res.products);
+      }
+    } catch (error) {
+      console.error("Failed to fetch new arrivals in MainContext:", error);
     }
   };
 
@@ -52,6 +65,7 @@ const MainContextProvider = ({ children }) => {
   useEffect(() => {
     fetchUser();
     fetchCart();
+    fetchNewArrivals();
   }, []);
 
   return (
@@ -64,6 +78,9 @@ const MainContextProvider = ({ children }) => {
         fetchUser,
         fetchCart,
         isAuthLoading,
+        newAravialProducts,
+        setNewAravialProducts,
+        fetchNewArrivals,
       }}
     >
       {children}
@@ -72,3 +89,4 @@ const MainContextProvider = ({ children }) => {
 };
 
 export default MainContextProvider;
+
