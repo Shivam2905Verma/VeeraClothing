@@ -1,0 +1,72 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111111;
+  text-transform: capitalize;
+  margin: 0;
+}
+
+.sortbyDesktop {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.sortbyDesktop label {
+  color: #555555;
+  font-weight: 500;
+}
+
+.selectSort {
+  padding: 0.45rem 0.85rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  font-size: 0.9rem;
+  color: #111;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.selectSort:focus {
+  border-color: #111;
+}
+
+.mobileFilterToggle {
+  display: none;
+}
+
+@media screen and (max-width: 860px) {
+  .sortbyDesktop {
+    display: none;
+  }
+
+  .mobileFilterToggle {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1.25rem;
+    background-color: #111;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .mobileFilterToggle:hover {
+    background-color: #333;
+  }
+}

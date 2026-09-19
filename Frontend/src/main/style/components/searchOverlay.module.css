@@ -25,11 +25,11 @@
 .searchModalContent {
   width: 100%;
   background-color: #ffffff;
-  padding: 2rem 2rem 3rem;
+  padding: 2rem 2rem 2.5rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
   transform: translateY(-8px);
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  max-height: 90vh;
+  max-height: 88vh;
   overflow-y: auto;
 }
 
@@ -42,7 +42,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.75rem;
 }
 
 .searchBrandTitle {
@@ -79,7 +79,7 @@
 }
 
 .modalSearchForm {
-  max-width: 580px;
+  max-width: 650px;
   margin: 0 auto 1.5rem;
 }
 
@@ -92,20 +92,20 @@
 
 .modalSearchIcon {
   position: absolute;
-  left: 0.85rem;
-  font-size: 1.1rem;
-  color: #888888;
+  left: 0.9rem;
+  font-size: 1.15rem;
+  color: #777777;
   pointer-events: none;
 }
 
 .modalSearchInput {
   width: 100%;
-  height: 42px;
-  border: 1px solid #d8d8d8;
-  border-radius: 1px;
-  padding: 0 1rem 0 2.5rem;
-  font-size: 0.88rem;
-  color: #222222;
+  height: 46px;
+  border: 1px solid #d4d4d4;
+  border-radius: 4px;
+  padding: 0 2.5rem 0 2.75rem;
+  font-size: 0.95rem;
+  color: #111111;
   outline: none;
   background-color: #ffffff;
   transition:
@@ -115,99 +115,238 @@
 
 .modalSearchInput:focus {
   border-color: #111111;
+  box-shadow: 0 0 0 1px #111111;
 }
 
 .modalSearchInput::placeholder {
   color: #888888;
 }
 
-/* Tabs: Categories */
-.modalTabsWrapper {
-  max-width: 580px;
-  margin: 0 auto 0.75rem;
-  border-bottom: 1px solid #eeeeee;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.modalTabsWrapper::-webkit-scrollbar {
-  display: none;
-}
-
-.modalTabs {
-  display: flex;
-  gap: 1.75rem;
-  white-space: nowrap;
-  min-width: max-content;
-}
-
-.modalTabBtn {
+.clearInputBtn {
+  position: absolute;
+  right: 0.85rem;
   background: none;
   border: none;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #444444;
-  padding: 0 0 0.6rem;
+  color: #888888;
+  font-size: 1.15rem;
   cursor: pointer;
-  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
   transition: color 0.2s ease;
 }
 
-.modalTabBtnActive {
-  color: #000000;
-  font-weight: 600;
-  border-bottom: 2px solid #000000;
-  margin-bottom: -1px;
+.clearInputBtn:hover {
+  color: #111111;
 }
 
-/* Category List */
-.categoryListContainer {
-  max-width: 580px;
+.resultsContainer {
+  max-width: 650px;
   margin: 0 auto;
 }
 
-.categoryItemWrapper {
-  border-bottom: 1px solid #f2f2f2;
-}
-
-.categoryRow {
+.sectionHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.85rem 0;
-  cursor: pointer;
-  user-select: none;
-  transition: color 0.2s ease;
+  margin-bottom: 0.75rem;
 }
 
-.categoryRow:hover {
-  color: #000000;
+.sectionTitle {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: #777777;
+}
+
+.viewAllTextBtn {
+  background: none;
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #111111;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  transition: opacity 0.2s ease;
+}
+
+.viewAllTextBtn:hover {
+  opacity: 0.7;
+}
+
+/* Categories Grid */
+.categoriesSection {
+  margin-top: 0.5rem;
+}
+
+.categoriesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.categoryCard {
+  background-color: #f8f8f8;
+  border: 1px solid #eeeeee;
+  border-radius: 6px;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.categoryCard:hover {
+  background-color: #111111;
+  border-color: #111111;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.categoryCard:hover .categoryName,
+.categoryCard:hover .categoryArrow {
+  color: #ffffff;
 }
 
 .categoryName {
   font-size: 0.92rem;
-  color: #333333;
-  font-weight: 400;
+  font-weight: 500;
+  color: #222222;
+  transition: color 0.2s ease;
 }
 
-.categoryChevron {
-  font-size: 1.15rem;
-  color: #666666;
-  transition: transform 0.2s ease;
-}
-
-.categoryLoading {
-  padding: 1.5rem 0;
-  text-align: center;
-  font-size: 0.88rem;
+.categoryArrow {
+  font-size: 1.1rem;
   color: #888888;
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
 }
 
-.emptyCategories {
-  padding: 1.5rem 0;
-  text-align: center;
+.categoryCard:hover .categoryArrow {
+  transform: translateX(3px);
+}
+
+/* Suggested Products Grid */
+.productResultsSection {
+  margin-top: 0.5rem;
+}
+
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.85rem;
+  margin-top: 0.75rem;
+}
+
+.productSmallCard {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background-color: #ffffff;
+  border: 1px solid #eaeaea;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.productSmallCard:hover {
+  border-color: #111111;
+  background-color: #fafafa;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.productImgWrapper {
+  width: 52px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: #f2f2f2;
+}
+
+.productImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.productInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.productName {
   font-size: 0.88rem;
-  color: #888888;
+  font-weight: 500;
+  color: #111111;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+.productPrice {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #222222;
+  margin: 0;
+}
+
+/* States */
+.loadingState {
+  padding: 2rem 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #777777;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.emptyState {
+  padding: 2rem 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #777777;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.searchAnywayBtn {
+  background-color: #111111;
+  color: #ffffff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.searchAnywayBtn:hover {
+  opacity: 0.8;
 }
 
 @media (max-width: 768px) {
@@ -220,7 +359,13 @@
     letter-spacing: 0.18em;
   }
 
-  .modalTabs {
-    gap: 1.25rem;
+  .categoriesGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .productsGrid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
   }
 }

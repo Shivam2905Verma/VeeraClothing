@@ -140,7 +140,6 @@ export async function createProduct(req, res) {
           id: product.insertId,
           name,
           price: initialPrice,
-          stock: totalStock,
         },
         variants: createdVariants,
         images: createdImages,
@@ -690,7 +689,13 @@ export async function permanentDeleteProduct(req, res) {
       }
     }
 
-    // 3. Single delete query: MySQL triggers CASCADE down to variants/carts/images
+    // 3. Retrieve all Cloudinary public_ids for this product's images before DB cascade deletion
+    const productImages = await db
+      .select({ public_id: product_images.public_id })
+      .from(product_images)
+      .where(eq(product_images.product_id, productId));
+
+    // 4. Single delete query: MySQL triggers CASCADE down to variants/carts/images
     const [result] = await db
       .delete(products)
       .where(eq(products.id, productId));
@@ -702,11 +707,24 @@ export async function permanentDeleteProduct(req, res) {
       });
     }
 
+    // 5. Delete all images from Cloudinary
+    if (productImages && productImages.length > 0) {
+      const deletePromises = productImages
+        .filter((img) => img.public_id)
+        .map((img) =>
+          deleteFromCloudinary(img.public_id).catch((err) =>
+            console.error(`Failed to delete Cloudinary image ${img.public_id}:`, err)
+          )
+        );
+      await Promise.allSettled(deletePromises);
+    }
+
     return res.status(200).json({
       success: true,
-      message: "Product permanently deleted",
+      message: "Product and associated images permanently deleted",
     });
   } catch (error) {
+    console.error("permanentDeleteProduct error:", error);
     return res.status(500).json({ success: false, message: "Delete failed" });
   }
 }
