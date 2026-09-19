@@ -292,6 +292,7 @@
 
 .checkoutBtn {
   width: 100%;
+  padding: 1rem;
   height: 3.2rem;
   background-color: #111;
   color: #fff;

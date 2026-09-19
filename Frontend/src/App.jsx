@@ -4,6 +4,7 @@ import Home from "./main/pages/home/Home";
 import ProductDetail from "./main/pages/shop/ProductDetail";
 import ShopAll from "./main/pages/shop/ShopAll";
 import Cart from "./main/pages/cart/Cart";
+import Checkout from "./main/pages/checkout/Checkout";
 import Login from "./main/pages/auth/Login";
 import Register from "./main/pages/auth/Register";
 import VerifyEmail from "./main/pages/verifyEmail/VerifyEmail";
@@ -27,6 +28,7 @@ const App = () => {
         <Route path="shop/:id" element={<ProductDetail />} />
         <Route path="shopall" element={<ShopAll />} />
         <Route path="cart" element={<Cart />} />
+        <Route path="checkout" element={<Checkout />} />
       </Route>
       <Route path="login" element={<Login />} />
       <Route path="register" element={<Register />} />

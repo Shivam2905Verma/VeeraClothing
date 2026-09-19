@@ -1,0 +1,226 @@
+/* Full-Screen / Overlay Search Dropdown */
+.searchOverlayBackdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.55);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition:
+    opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.3s ease;
+}
+
+.searchOverlayOpen {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.searchModalContent {
+  width: 100%;
+  background-color: #ffffff;
+  padding: 2rem 2rem 3rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  transform: translateY(-8px);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.searchOverlayOpen .searchModalContent {
+  transform: translateY(0);
+}
+
+.searchModalHeader {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.searchBrandTitle {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #111111;
+  text-align: center;
+}
+
+.searchCloseBtn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 1.75rem;
+  color: #111111;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.searchCloseBtn:hover {
+  opacity: 0.6;
+  transform: translateY(-50%) scale(1.05);
+}
+
+.modalSearchForm {
+  max-width: 580px;
+  margin: 0 auto 1.5rem;
+}
+
+.modalSearchInputWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.modalSearchIcon {
+  position: absolute;
+  left: 0.85rem;
+  font-size: 1.1rem;
+  color: #888888;
+  pointer-events: none;
+}
+
+.modalSearchInput {
+  width: 100%;
+  height: 42px;
+  border: 1px solid #d8d8d8;
+  border-radius: 1px;
+  padding: 0 1rem 0 2.5rem;
+  font-size: 0.88rem;
+  color: #222222;
+  outline: none;
+  background-color: #ffffff;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.modalSearchInput:focus {
+  border-color: #111111;
+}
+
+.modalSearchInput::placeholder {
+  color: #888888;
+}
+
+/* Tabs: Categories */
+.modalTabsWrapper {
+  max-width: 580px;
+  margin: 0 auto 0.75rem;
+  border-bottom: 1px solid #eeeeee;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.modalTabsWrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.modalTabs {
+  display: flex;
+  gap: 1.75rem;
+  white-space: nowrap;
+  min-width: max-content;
+}
+
+.modalTabBtn {
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #444444;
+  padding: 0 0 0.6rem;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.modalTabBtnActive {
+  color: #000000;
+  font-weight: 600;
+  border-bottom: 2px solid #000000;
+  margin-bottom: -1px;
+}
+
+/* Category List */
+.categoryListContainer {
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+.categoryItemWrapper {
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.categoryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 0;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s ease;
+}
+
+.categoryRow:hover {
+  color: #000000;
+}
+
+.categoryName {
+  font-size: 0.92rem;
+  color: #333333;
+  font-weight: 400;
+}
+
+.categoryChevron {
+  font-size: 1.15rem;
+  color: #666666;
+  transition: transform 0.2s ease;
+}
+
+.categoryLoading {
+  padding: 1.5rem 0;
+  text-align: center;
+  font-size: 0.88rem;
+  color: #888888;
+}
+
+.emptyCategories {
+  padding: 1.5rem 0;
+  text-align: center;
+  font-size: 0.88rem;
+  color: #888888;
+}
+
+@media (max-width: 768px) {
+  .searchModalContent {
+    padding: 1.5rem 1rem 2rem;
+  }
+
+  .searchBrandTitle {
+    font-size: 1.15rem;
+    letter-spacing: 0.18em;
+  }
+
+  .modalTabs {
+    gap: 1.25rem;
+  }
+}

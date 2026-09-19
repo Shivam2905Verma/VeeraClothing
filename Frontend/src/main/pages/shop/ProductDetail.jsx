@@ -156,6 +156,7 @@ const ProductDetail = () => {
             [currentVariantId]: {
               cartItemId: res.cartItemId,
               productId: id,
+              categoryId: product?.category_id || product?.categoryId,
               variantId: currentVariant.id,
               quantity: currentQty + finalQty,
               price: currentVariant.price,

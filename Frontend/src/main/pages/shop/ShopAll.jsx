@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Card from "../../components/common/Card";
 import style from "../../style/pages/shopall.module.css";
 import { getAllProducts } from "../../services/product.service";
 
 const ShopAll = () => {
+  const [searchParams] = useSearchParams();
+  const searchFilter = searchParams.get("search") || "";
   const [maxPrice, setMaxPrice] = useState(1000);
   const [sortBy, setSortBy] = useState("default");
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
@@ -17,7 +19,16 @@ const ShopAll = () => {
         const products = await getAllProducts();
         if (isMounted && products && products.products) {
           const data = products.products
-            ?.filter((item) => (item.is_active === true || item.is_active === 1) && item.price <= maxPrice)
+            ?.filter((item) => {
+              const matchesActive = item.is_active === true || item.is_active === 1;
+              const matchesPrice = item.price <= maxPrice;
+              const matchesSearch = !searchFilter
+                ? true
+                : (item.name && item.name.toLowerCase().includes(searchFilter.toLowerCase())) ||
+                  (item.category_name && item.category_name.toLowerCase().includes(searchFilter.toLowerCase())) ||
+                  (item.description && item.description.toLowerCase().includes(searchFilter.toLowerCase()));
+              return matchesActive && matchesPrice && matchesSearch;
+            })
             ?.sort((a, b) => {
               if (sortBy === "low-to-high") return a.price - b.price;
               if (sortBy === "high-to-low") return b.price - a.price;
@@ -33,7 +44,7 @@ const ShopAll = () => {
     return () => {
       isMounted = false;
     };
-  }, [sortBy, maxPrice]);
+  }, [sortBy, maxPrice, searchFilter]);
 
   return (
     <div className={style.container}>

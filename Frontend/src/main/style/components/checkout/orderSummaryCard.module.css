@@ -1,0 +1,229 @@
+.sidebarWrapper {
+  position: sticky;
+  top: 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.topTotalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.topTotalLabel {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #111111;
+}
+
+.topTotalValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111111;
+}
+
+.primaryPayBtn {
+  width: 100%;
+  height: 3.25rem;
+  background-color: #111111;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition:
+    background-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.primaryPayBtn:hover:not(:disabled) {
+  background-color: #262626;
+}
+
+.primaryPayBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.termsText {
+  font-size: 0.75rem;
+  color: #737373;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.termsText a {
+  color: #111111;
+  text-decoration: underline;
+}
+
+.summaryCard {
+  background-color: #fafafa;
+  border: 1px solid #eeeeee;
+  border-radius: 6px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.summaryTitle {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #111111;
+  margin: 0;
+}
+
+.itemList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.itemRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.itemThumb {
+  width: 52px;
+  height: 52px;
+  border-radius: 4px;
+  object-fit: cover;
+  background-color: #ffffff;
+  border: 1px solid #e5e5e5;
+  flex-shrink: 0;
+}
+
+.itemInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.itemName {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #111111;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+.itemMeta {
+  font-size: 0.75rem;
+  color: #737373;
+  margin-top: 2px;
+}
+
+.itemPrice {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111111;
+}
+
+.costBreakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e5e5;
+  font-size: 0.85rem;
+}
+
+.costRow {
+  display: flex;
+  justify-content: space-between;
+  color: #555555;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111111;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e5e5e5;
+  margin-top: 0.25rem;
+}
+
+.dutiesNote {
+  font-size: 0.725rem;
+  color: #737373;
+  font-weight: 400;
+}
+
+.promoWrapper {
+  display: flex;
+  gap: 6px;
+  margin-top: 0.25rem;
+}
+
+.promoInput {
+  flex: 1;
+  height: 2.6rem;
+  padding: 0 0.75rem;
+  border: 1px solid #d4d4d4;
+  border-radius: 4px;
+  font-size: 0.825rem;
+  background-color: #ffffff;
+  outline: none;
+}
+
+.promoInput:focus {
+  border-color: #111111;
+}
+
+.promoBtn {
+  padding: 0 1rem;
+  height: 2.6rem;
+  background-color: #111111;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.returnsBadge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background-color: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #111111;
+}
+
+.freeTag {
+  background-color: #111111;
+  color: #ffffff;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+@media screen and (max-width: 960px) {
+  .sidebarWrapper {
+    position: static;
+  }
+}

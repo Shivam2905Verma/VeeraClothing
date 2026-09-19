@@ -1,0 +1,119 @@
+.sectionBlock {
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.sectionTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111111;
+  margin: 0;
+}
+
+.measurementsBox {
+  background-color: #fafafa;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  padding: 1.5rem;
+}
+
+.boxDescription {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.85rem;
+  color: #444444;
+}
+
+.measurementsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.15rem;
+  margin-top: 1rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  text-align: left;
+}
+
+.label {
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: #333333;
+  letter-spacing: 0.02em;
+}
+
+.measurementInputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  height: 2.85rem;
+  padding: 0 3.5rem 0 0.85rem;
+  border: 1px solid #d4d4d4;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #111111;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #111111;
+  box-shadow: 0 0 0 1px #111111;
+}
+
+.measurementUnitBadge {
+  position: absolute;
+  right: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #737373;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.measurementHelpText {
+  font-size: 0.775rem;
+  color: #737373;
+  margin-top: 0.75rem;
+}
+
+.noMeasurementsRequired {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 1rem 1.25rem;
+  background-color: #f9fafb;
+  border: 1px dashed #d1d5db;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #4b5563;
+}
+
+@media screen and (max-width: 600px) {
+  .measurementsGrid {
+    grid-template-columns: 1fr;
+  }
+}

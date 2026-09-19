@@ -27,6 +27,7 @@ export async function getCart(req, res) {
         price: product_variants.price,
         stock: product_variants.stock,
         product_id: products.id,
+        category_id: products.category_id,
         name: products.name,
         image_url: products.image_url,
       })

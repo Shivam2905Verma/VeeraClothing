@@ -33,6 +33,7 @@ const MainContextProvider = ({ children }) => {
           itemsObj[item.variant_id] = {
             cartItemId: item.cart_item_id,
             productId: item.product_id,
+            categoryId: item.category_id,
             variantId: item.variant_id,
             quantity: item.quantity,
             price: item.price,

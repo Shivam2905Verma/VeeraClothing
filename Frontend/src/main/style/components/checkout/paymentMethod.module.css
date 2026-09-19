@@ -1,0 +1,100 @@
+.sectionBlock {
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.sectionBlock:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.sectionTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.statusCheckIcon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: #ecfdf5;
+  color: #059669;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111111;
+  margin: 0;
+}
+
+.paymentMethodsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.paymentCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #ffffff;
+  transition: all 0.15s ease;
+}
+
+.paymentCard:hover {
+  border-color: #a3a3a3;
+}
+
+.paymentCardSelected {
+  border-color: #111111 !important;
+  background-color: #fbfbfb;
+}
+
+.paymentLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.paymentRadio {
+  accent-color: #111111;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+.paymentName {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #111111;
+}
+
+.paymentIcon {
+  font-size: 1.25rem;
+  color: #555555;
+}
+
+.paymentNotice {
+  font-size: 0.8rem;
+  color: #737373;
+  margin-top: 0.75rem;
+  line-height: 1.4;
+}
