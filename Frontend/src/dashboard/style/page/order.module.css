@@ -1,0 +1,136 @@
+.orderPage {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+/* =========================================
+   ENTERPRISE DATA TABLE WRAPPER
+========================================= */
+.tableWrapper {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+.tableHeaderRow {
+  background-color: #fafafa;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.checkboxHeader {
+  padding: 10px 14px;
+  width: 40px;
+  text-align: center;
+}
+
+.headerCheckbox {
+  cursor: pointer;
+  accent-color: #111827;
+  width: 15px;
+  height: 15px;
+  border-radius: 4px;
+}
+
+.tableHeader {
+  padding: 10px 16px;
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: #4b5563;
+  text-transform: none;
+  user-select: none;
+}
+
+.sortableHeader {
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.sortableHeader:hover {
+  color: #111827;
+}
+
+.headerContent {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.actionsHeader {
+  text-align: right;
+  padding-right: 20px;
+}
+
+/* Table Footer */
+.tableFooter {
+  padding: 12px 18px;
+  background-color: #fafafa;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footerInfo {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* =========================================
+   EMPTY & LOADING STATES
+========================================= */
+.emptyContainer {
+  background: #ffffff;
+  border: 1px dashed #e5e7eb;
+  border-radius: 8px;
+  padding: 60px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.emptyIcon {
+  color: #9ca3af;
+  margin-bottom: 4px;
+}
+
+.emptyTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.emptySubtitle {
+  font-size: 0.825rem;
+  color: #6b7280;
+  max-width: 400px;
+}
+
+.loadingSpinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 80px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  .tableWrapper {
+    overflow-x: auto;
+  }
+}

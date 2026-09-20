@@ -3,8 +3,6 @@ import style from "../../../style/components/productCard.module.css";
 
 const ProductCard = ({
   product,
-  isSelected = false,
-  onToggleSelect,
   onToggleStatus,
   onDelete,
 }) => {
@@ -20,20 +18,10 @@ const ProductCard = ({
   return (
     <tr
       className={`${style.tableRow} ${
-        isSelected ? style.rowSelected : ""
-      } ${!product.is_active ? style.rowInactive : ""}`}
+        !product.is_active ? style.rowInactive : ""
+      }`}
     >
-      {/* 1. Checkbox Column */}
-      <td className={style.checkboxCell}>
-        <input
-          type="checkbox"
-          checked={isSelected}
-          onChange={() => onToggleSelect && onToggleSelect(product.id)}
-          className={style.rowCheckbox}
-        />
-      </td>
-
-      {/* 2. Product Column: Thumbnail + Title + ID */}
+      {/* 1. Product Column: Thumbnail + Title + ID */}
       <td className={style.productCell}>
         <div className={style.productInfoWrapper}>
           <div className={style.thumbnailWrapper}>

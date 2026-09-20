@@ -37,6 +37,14 @@ const Navbar = () => {
         </div>
         <div className={style.topcenter}>VEERA CLOTHING</div>
         <div className={style.topright}>
+          <button
+            type="button"
+            className={style.mobileSearchBtn + " " + style.mobileonly}
+            onClick={() => setIsSearchOpen(true)}
+            aria-label="Search"
+          >
+            <i className="ri-search-line"></i>
+          </button>
           <Link to="/cart" className={style.cart}>
             <i className="ri-handbag-line"></i>
             <div className={style.cartCount}>{totalCartCount}</div>

@@ -1,0 +1,170 @@
+/* =========================================
+   ORDER PAGE HEADER & TOOLBAR (ENTERPRISE THEME)
+========================================= */
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.titleArea {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pageTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.02em;
+}
+
+.countBadge {
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: #6b7280;
+  background-color: #f3f4f6;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+/* Toolbar Row: Filter input + Filter Pills + Refresh controls */
+.toolbarRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.toolbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filterInputWrapper {
+  position: relative;
+  width: 240px;
+}
+
+.filterIcon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  font-size: 0.9rem;
+}
+
+.filterInput {
+  width: 100%;
+  padding: 6px 12px 6px 30px;
+  font-size: 0.825rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #111827;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.filterInput:focus {
+  border-color: #111827;
+  box-shadow: 0 0 0 1px #111827;
+}
+
+.clearBtn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+}
+
+.clearBtn:hover {
+  color: #4b5563;
+}
+
+/* Filter Dropdown Pills */
+.filterPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 0.825rem;
+  font-weight: 500;
+  color: #374151;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.filterPill:hover {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.filterPillActive {
+  background-color: #f3f4f6;
+  border-color: #111827;
+  color: #111827;
+  font-weight: 600;
+}
+
+/* Toolbar Right (Actions / Refresh) */
+.toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.viewBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: #6b7280;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.viewBtn:hover {
+  background-color: #f9fafb;
+  color: #111827;
+  border-color: #d1d5db;
+}
+
+@media (max-width: 768px) {
+  .headerRow {
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .toolbarRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .filterInputWrapper {
+    width: 100%;
+  }
+}

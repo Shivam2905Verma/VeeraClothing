@@ -1,0 +1,427 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 40px;
+}
+
+/* Header Area */
+.headerBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: #ffffff;
+  padding: 20px 24px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.headerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-decoration: none;
+  transition: color 0.15s ease;
+  width: fit-content;
+}
+
+.backBtn:hover {
+  color: #111827;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pageTitle {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.01em;
+}
+
+.headerDate {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.headerBadges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Two Column Layout */
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 24px;
+  align-items: start;
+}
+
+.mainColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sideColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Generic Section Card */
+.card {
+  background: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 12px;
+}
+
+.cardTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Items Table */
+.itemsList {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #f3f4f6;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.itemRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f3f4f6;
+  background-color: #ffffff;
+}
+
+.itemRow:last-child {
+  border-bottom: none;
+}
+
+.itemInfoLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.itemThumbnail {
+  width: 52px;
+  height: 52px;
+  border-radius: 6px;
+  object-fit: cover;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+.thumbPlaceholder {
+  width: 52px;
+  height: 52px;
+  border-radius: 6px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.itemDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.itemName {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.itemMeta {
+  font-size: 0.775rem;
+  color: #6b7280;
+}
+
+.itemPrices {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.itemSubtotal {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.itemUnitPrice {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+/* Measurements Grid */
+.measGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+}
+
+.measItem {
+  background-color: #f9fafb;
+  border: 1px solid #f3f4f6;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.measLabel {
+  font-size: 0.7rem;
+  color: #6b7280;
+  text-transform: uppercase;
+}
+
+.measValue {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Edit Status Controls */
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formLabel {
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.selectInput {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  outline: none;
+  background-color: #ffffff;
+  color: #111827;
+  transition: border-color 0.15s ease;
+}
+
+.selectInput:focus {
+  border-color: #111827;
+}
+
+.updateBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background-color: #111827;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.updateBtn:hover {
+  background-color: #1f2937;
+}
+
+.updateBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Financial Summary List */
+.summaryRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #4b5563;
+}
+
+.summaryTotalRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #111827;
+  border-top: 1px solid #f3f4f6;
+  padding-top: 10px;
+  margin-top: 4px;
+}
+
+/* Info Details rows */
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.infoItemLabel {
+  font-size: 0.725rem;
+  color: #6b7280;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.infoItemVal {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Status Badges */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.payPaid {
+  background-color: #ecfdf5;
+  color: #065f46;
+}
+.payPaid .statusDot {
+  background-color: #10b981;
+}
+
+.payPending {
+  background-color: #fffbeb;
+  color: #92400e;
+}
+.payPending .statusDot {
+  background-color: #f59e0b;
+}
+
+.payFailed {
+  background-color: #fef2f2;
+  color: #991b1b;
+}
+.payFailed .statusDot {
+  background-color: #ef4444;
+}
+
+.payRefunded {
+  background-color: #f5f3ff;
+  color: #5b21b6;
+}
+.payRefunded .statusDot {
+  background-color: #8b5cf6;
+}
+
+.orderDelivered {
+  background-color: #f0fdf4;
+  color: #166534;
+}
+.orderDelivered .statusDot {
+  background-color: #22c55e;
+}
+
+.orderShipped {
+  background-color: #eff6ff;
+  color: #1e40af;
+}
+.orderShipped .statusDot {
+  background-color: #3b82f6;
+}
+
+.orderConfirmed {
+  background-color: #eef2ff;
+  color: #3730a3;
+}
+.orderConfirmed .statusDot {
+  background-color: #6366f1;
+}
+
+.orderPending {
+  background-color: #fffbeb;
+  color: #b45309;
+}
+.orderPending .statusDot {
+  background-color: #f59e0b;
+}
+
+.orderCancelled {
+  background-color: #fef2f2;
+  color: #991b1b;
+}
+.orderCancelled .statusDot {
+  background-color: #ef4444;
+}
+
+@media (max-width: 900px) {
+  .contentGrid {
+    grid-template-columns: 1fr;
+  }
+}

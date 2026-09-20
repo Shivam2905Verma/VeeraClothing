@@ -1,0 +1,279 @@
+/* =========================================
+   ORDER TABLE ROW (ENTERPRISE DATA TABLE)
+========================================= */
+.tableRow {
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.15s ease;
+}
+
+.tableRow:hover {
+  background-color: #fafafa;
+}
+
+.rowSelected {
+  background-color: #f8fafc !important;
+}
+
+/* Checkbox Cell */
+.checkboxCell {
+  padding: 12px 14px;
+  width: 40px;
+  text-align: center;
+}
+
+.rowCheckbox {
+  cursor: pointer;
+  accent-color: #111827;
+  width: 15px;
+  height: 15px;
+  border-radius: 4px;
+}
+
+/* 1. Date Cell */
+.dateCell {
+  padding: 12px 16px;
+  white-space: nowrap;
+}
+
+.dateWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.dateMain {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.dateSub {
+  font-size: 0.725rem;
+  color: #9ca3af;
+  margin-top: 1px;
+}
+
+/* 2. Order ID Cell */
+.orderIdCell {
+  padding: 12px 16px;
+  white-space: nowrap;
+}
+
+.orderIdBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-family: ui-monospace, monospace;
+  color: #111827;
+  background-color: #f3f4f6;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
+}
+
+/* 3. Customer Cell */
+.customerCell {
+  padding: 12px 16px;
+}
+
+.customerWrapper {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.customerName {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+.customerSub {
+  font-size: 0.75rem;
+  color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+  margin-top: 1px;
+}
+
+/* 4. Total Cell */
+.totalCell {
+  padding: 12px 16px;
+  white-space: nowrap;
+}
+
+.totalWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.totalValue {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #111827;
+  font-variant-numeric: tabular-nums;
+}
+
+.paymentMethodSub {
+  font-size: 0.725rem;
+  color: #9ca3af;
+  text-transform: capitalize;
+}
+
+/* 5. Payment Status Cell */
+.statusCell {
+  padding: 12px 16px;
+  white-space: nowrap;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+/* Payment Status Variants */
+.payPaid {
+  background-color: #ecfdf5;
+  color: #065f46;
+}
+.payPaid .statusDot {
+  background-color: #10b981;
+}
+
+.payPending {
+  background-color: #fffbeb;
+  color: #92400e;
+}
+.payPending .statusDot {
+  background-color: #f59e0b;
+}
+
+.payFailed {
+  background-color: #fef2f2;
+  color: #991b1b;
+}
+.payFailed .statusDot {
+  background-color: #ef4444;
+}
+
+.payRefunded {
+  background-color: #f5f3ff;
+  color: #5b21b6;
+}
+.payRefunded .statusDot {
+  background-color: #8b5cf6;
+}
+
+/* Order Status Variants */
+.orderDelivered {
+  background-color: #f0fdf4;
+  color: #166534;
+}
+.orderDelivered .statusDot {
+  background-color: #22c55e;
+}
+
+.orderShipped {
+  background-color: #eff6ff;
+  color: #1e40af;
+}
+.orderShipped .statusDot {
+  background-color: #3b82f6;
+}
+
+.orderConfirmed {
+  background-color: #eef2ff;
+  color: #3730a3;
+}
+.orderConfirmed .statusDot {
+  background-color: #6366f1;
+}
+
+.orderPending {
+  background-color: #fffbeb;
+  color: #b45309;
+}
+.orderPending .statusDot {
+  background-color: #f59e0b;
+}
+
+.orderCancelled {
+  background-color: #fef2f2;
+  color: #991b1b;
+}
+.orderCancelled .statusDot {
+  background-color: #ef4444;
+}
+
+/* 6. Actions Cell */
+.actionsCell {
+  padding: 12px 14px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.actionButtons {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.actionIconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #4b5563;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.15s ease;
+}
+
+.actionIconBtn:hover {
+  background-color: #f3f4f6;
+  color: #111827;
+  border-color: #d1d5db;
+}
+
+.viewDetailsBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  font-size: 0.775rem;
+  font-weight: 600;
+  border-radius: 5px;
+  border: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  color: #111827;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.viewDetailsBtn:hover {
+  background-color: #f9fafb;
+  border-color: #111827;
+}

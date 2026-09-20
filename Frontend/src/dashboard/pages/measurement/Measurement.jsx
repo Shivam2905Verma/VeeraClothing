@@ -17,7 +17,6 @@ const Measurement = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortField, setSortField] = useState("id");
   const [sortDirection, setSortDirection] = useState("desc");
-  const [selectedIds, setSelectedIds] = useState(new Set());
 
   // Toast State
   const [toast, setToast] = useState({ message: "", type: "error" });
@@ -98,31 +97,6 @@ const Measurement = () => {
     }
   };
 
-  // Selection Handlers
-  const handleToggleSelectAll = () => {
-    if (
-      selectedIds.size === filteredMeasurements.length &&
-      filteredMeasurements.length > 0
-    ) {
-      setSelectedIds(new Set());
-    } else {
-      const allIds = new Set(filteredMeasurements.map((m) => m.id));
-      setSelectedIds(allIds);
-    }
-  };
-
-  const handleToggleSelect = (id) => {
-    setSelectedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
-  };
-
   // Open Edit Modal
   const handleOpenEdit = (item) => {
     setMeasurementToEdit(item);
@@ -181,11 +155,6 @@ const Measurement = () => {
       setMeasurements((prev) =>
         prev.filter((item) => item.id !== measurementToDelete.id),
       );
-      setSelectedIds((prev) => {
-        const next = new Set(prev);
-        next.delete(measurementToDelete.id);
-        return next;
-      });
       showToast(`Measurement "${measurementToDelete.name}" deleted.`, "success");
       setDeleteModalOpen(false);
       setMeasurementToDelete(null);
@@ -199,10 +168,6 @@ const Measurement = () => {
       setIsDeleting(false);
     }
   };
-
-  const isAllSelected =
-    filteredMeasurements.length > 0 &&
-    selectedIds.size === filteredMeasurements.length;
 
   return (
     <div className={style.productPage}>
@@ -297,16 +262,6 @@ const Measurement = () => {
           <table className={style.table}>
             <thead>
               <tr className={style.tableHeaderRow}>
-                {/* Checkbox Header */}
-                <th className={style.checkboxHeader}>
-                  <input
-                    type="checkbox"
-                    checked={isAllSelected}
-                    onChange={handleToggleSelectAll}
-                    className={style.headerCheckbox}
-                  />
-                </th>
-
                 {/* ID Header */}
                 <th
                   className={`${style.tableHeader} ${style.sortableHeader}`}
@@ -376,20 +331,8 @@ const Measurement = () => {
               {filteredMeasurements.map((item) => (
                 <tr
                   key={item.id}
-                  className={`${cardStyle.tableRow} ${
-                    selectedIds.has(item.id) ? cardStyle.rowSelected : ""
-                  }`}
+                  className={cardStyle.tableRow}
                 >
-                  {/* Checkbox */}
-                  <td className={cardStyle.checkboxCell}>
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.has(item.id)}
-                      onChange={() => handleToggleSelect(item.id)}
-                      className={cardStyle.rowCheckbox}
-                    />
-                  </td>
-
                   {/* ID */}
                   <td className={cardStyle.categoryCell}>
                     <span className={cardStyle.productId}>
@@ -472,7 +415,6 @@ const Measurement = () => {
           <div className={style.tableFooter}>
             <span className={style.footerInfo}>
               Showing {filteredMeasurements.length} of {measurements.length} measurements
-              {selectedIds.size > 0 && ` (${selectedIds.size} selected)`}
             </span>
           </div>
         </div>

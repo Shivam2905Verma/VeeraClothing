@@ -159,7 +159,6 @@ const DashboardLayout = () => {
               {section.sectionTitle && (
                 <div className={style.groupHeader}>
                   <span>{section.sectionTitle}</span>
-                  <i className="ri-arrow-down-s-line" style={{ fontSize: "0.85rem" }} />
                 </div>
               )}
               <div className={style.groupItems}>
@@ -207,7 +206,11 @@ const DashboardLayout = () => {
                   <span className={style.navLabel}>{item.title}</span>
                   <i
                     className="ri-arrow-right-s-line"
-                    style={{ marginLeft: "auto", fontSize: "0.85rem", opacity: 0.5 }}
+                    style={{
+                      marginLeft: "auto",
+                      fontSize: "0.85rem",
+                      opacity: 0.5,
+                    }}
                   />
                 </div>
               ))}
@@ -217,12 +220,20 @@ const DashboardLayout = () => {
 
         {/* User Profile Tile at Bottom of Sidebar */}
         <div className={style.sidebarFooter}>
-          <div className={style.userProfileTile} onClick={logout} title="Click to Sign Out">
+          <div
+            className={style.userProfileTile}
+            onClick={logout}
+            title="Click to Sign Out"
+          >
             <div className={style.userAvatar}>
-              {adminData?.admin_id ? adminData.admin_id.charAt(0).toUpperCase() : "A"}
+              {adminData?.admin_id
+                ? adminData.admin_id.charAt(0).toUpperCase()
+                : "A"}
             </div>
             <div className={style.userInfo}>
-              <span className={style.userName}>{adminData?.admin_id || "Admin"}</span>
+              <span className={style.userName}>
+                {adminData?.admin_id || "Admin"}
+              </span>
               <span className={style.userRole}>Store Manager</span>
             </div>
             <div className={style.userChevron} title="Sign Out">
@@ -257,7 +268,10 @@ const DashboardLayout = () => {
               }}
               title="Toggle Sidebar"
             >
-              <i className="ri-layout-left-line" style={{ fontSize: "1.15rem" }} />
+              <i
+                className="ri-layout-left-line"
+                style={{ fontSize: "1.15rem" }}
+              />
             </button>
 
             {/* Breadcrumb Navigation */}

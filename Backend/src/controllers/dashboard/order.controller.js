@@ -1,0 +1,208 @@
+import { eq, desc } from "drizzle-orm";
+import { db } from "../../config/DB.config.js";
+import { order } from "../../models/order.model.js";
+import { user } from "../../models/user.model.js";
+import { address } from "../../models/address.model.js";
+import { payment_methods } from "../../models/payment_methods.model.js";
+import { order_items } from "../../models/order_items.model.js";
+import { product_variants } from "../../models/product_variants.model.js";
+import { products } from "../../models/product.model.js";
+import { product_images } from "../../models/product_images.model.js";
+import { order_item_measurements } from "../../models/order_item_measurement.model.js";
+import { measurement_types } from "../../models/measurement_types.model.js";
+
+// 1. GET ALL ORDERS FOR DASHBOARD
+export const getAllDashboardOrders = async (req, res) => {
+  try {
+    const ordersList = await db
+      .select({
+        id: order.id,
+        user_id: order.user_id,
+        order_status: order.order_status,
+        payment_status: order.payment_status,
+        total_amount: order.total_amount,
+        discount: order.discount,
+        final_amount: order.final_amount,
+        createdAt: order.createdAt,
+        customer_name: user.name,
+        customer_email: user.email,
+        recipient_firstname: address.firstname,
+        recipient_lastname: address.lastname,
+        phone: address.phone,
+        city: address.city,
+        state: address.state,
+        payment_method: payment_methods.name,
+      })
+      .from(order)
+      .leftJoin(user, eq(order.user_id, user.id))
+      .leftJoin(address, eq(order.address_id, address.id))
+      .leftJoin(payment_methods, eq(order.payment_method_id, payment_methods.id))
+      .orderBy(desc(order.id));
+
+    return res.status(200).json({
+      success: true,
+      message: "Orders fetched successfully",
+      orders: ordersList,
+    });
+  } catch (error) {
+    console.error("getAllDashboardOrders error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch orders",
+    });
+  }
+};
+
+// 2. GET ORDER BY ID WITH ITEMS, MEASUREMENTS, AND SHIPPING DETAILS
+export const getDashboardOrderById = async (req, res) => {
+  try {
+    const orderId = Number(req.params.id);
+    if (!orderId || isNaN(orderId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid order ID",
+      });
+    }
+
+    const [orderDetail] = await db
+      .select({
+        id: order.id,
+        user_id: order.user_id,
+        order_status: order.order_status,
+        payment_status: order.payment_status,
+        total_amount: order.total_amount,
+        discount: order.discount,
+        final_amount: order.final_amount,
+        createdAt: order.createdAt,
+        customer_name: user.name,
+        customer_email: user.email,
+        address_line_1: address.address_line_1,
+        landmark: address.landmark,
+        city: address.city,
+        state: address.state,
+        zip_code: address.zip_code,
+        phone: address.phone,
+        firstname: address.firstname,
+        lastname: address.lastname,
+        payment_method: payment_methods.name,
+      })
+      .from(order)
+      .leftJoin(user, eq(order.user_id, user.id))
+      .leftJoin(address, eq(order.address_id, address.id))
+      .leftJoin(payment_methods, eq(order.payment_method_id, payment_methods.id))
+      .where(eq(order.id, orderId));
+
+    if (!orderDetail) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    // Fetch items in this order
+    const items = await db
+      .select({
+        id: order_items.id,
+        quantity: order_items.quantity,
+        price: order_items.price,
+        subtotal: order_items.subtotal,
+        variant_id: product_variants.id,
+        color: product_variants.color,
+        product_id: products.id,
+        product_name: products.name,
+      })
+      .from(order_items)
+      .leftJoin(product_variants, eq(order_items.variant_id, product_variants.id))
+      .leftJoin(products, eq(product_variants.product_id, products.id))
+      .where(eq(order_items.order_id, orderId));
+
+    // Fetch primary images for these products
+    const itemsWithImages = await Promise.all(
+      items.map(async (item) => {
+        let image = null;
+        if (item.product_id) {
+          const [img] = await db
+            .select({ image_url: product_images.image_url })
+            .from(product_images)
+            .where(eq(product_images.product_id, item.product_id))
+            .limit(1);
+          image = img?.image_url || null;
+        }
+        return {
+          ...item,
+          image_url: image,
+        };
+      }),
+    );
+
+    // Fetch tailoring measurements for this order
+    const measurements = await db
+      .select({
+        id: order_item_measurements.id,
+        measurement_value: order_item_measurements.measurement_value,
+        type_name: measurement_types.name,
+        unit: measurement_types.unit,
+      })
+      .from(order_item_measurements)
+      .leftJoin(
+        measurement_types,
+        eq(order_item_measurements.measurement_type_id, measurement_types.id),
+      )
+      .where(eq(order_item_measurements.order_id, orderId));
+
+    return res.status(200).json({
+      success: true,
+      message: "Order details fetched successfully",
+      order: {
+        ...orderDetail,
+        items: itemsWithImages,
+        measurements,
+      },
+    });
+  } catch (error) {
+    console.error("getDashboardOrderById error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch order details",
+    });
+  }
+};
+
+// 3. UPDATE ORDER STATUS / PAYMENT STATUS
+export const updateDashboardOrderStatus = async (req, res) => {
+  try {
+    const orderId = Number(req.params.id);
+    if (!orderId || isNaN(orderId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid order ID",
+      });
+    }
+
+    const { order_status, payment_status } = req.body;
+    const updateData = {};
+
+    if (order_status !== undefined) updateData.order_status = order_status;
+    if (payment_status !== undefined) updateData.payment_status = payment_status;
+
+    if (Object.keys(updateData).length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No fields provided to update",
+      });
+    }
+
+    await db.update(order).set(updateData).where(eq(order.id, orderId));
+
+    return res.status(200).json({
+      success: true,
+      message: "Order updated successfully",
+    });
+  } catch (error) {
+    console.error("updateDashboardOrderStatus error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update order",
+    });
+  }
+};

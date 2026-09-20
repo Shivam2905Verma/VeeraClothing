@@ -18,7 +18,6 @@ const Product = () => {
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [sortField, setSortField] = useState("id");
   const [sortDirection, setSortDirection] = useState("desc");
-  const [selectedIds, setSelectedIds] = useState(new Set());
 
   // Toast State
   const [toast, setToast] = useState({ message: "", type: "error" });
@@ -103,31 +102,6 @@ const Product = () => {
     }
   };
 
-  // Selection Handlers
-  const handleToggleSelectAll = () => {
-    if (
-      selectedIds.size === filteredProducts.length &&
-      filteredProducts.length > 0
-    ) {
-      setSelectedIds(new Set());
-    } else {
-      const allIds = new Set(filteredProducts.map((p) => p.id));
-      setSelectedIds(allIds);
-    }
-  };
-
-  const handleToggleSelect = (id) => {
-    setSelectedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
-  };
-
   // Toggle Active / Deactive handler
   const handleToggleStatus = async (product) => {
     try {
@@ -171,11 +145,6 @@ const Product = () => {
       setProducts((prev) =>
         prev.filter((item) => item.id !== productToDelete.id),
       );
-      setSelectedIds((prev) => {
-        const next = new Set(prev);
-        next.delete(productToDelete.id);
-        return next;
-      });
       showToast(`"${productToDelete.name}" deleted permanently.`, "success");
       setDeleteModalOpen(false);
       setProductToDelete(null);
@@ -190,9 +159,6 @@ const Product = () => {
       setIsDeleting(false);
     }
   };
-
-  const isAllSelected =
-    filteredProducts.length > 0 && selectedIds.size === filteredProducts.length;
 
   return (
     <div className={style.productPage}>
@@ -239,16 +205,6 @@ const Product = () => {
           <table className={style.table}>
             <thead>
               <tr className={style.tableHeaderRow}>
-                {/* Select All Checkbox */}
-                <th className={style.checkboxHeader}>
-                  <input
-                    type="checkbox"
-                    checked={isAllSelected}
-                    onChange={handleToggleSelectAll}
-                    className={style.headerCheckbox}
-                  />
-                </th>
-
                 {/* Product Column */}
                 <th
                   className={`${style.tableHeader} ${style.sortableHeader}`}
@@ -312,8 +268,6 @@ const Product = () => {
                 <ProductCard
                   key={product.id}
                   product={product}
-                  isSelected={selectedIds.has(product.id)}
-                  onToggleSelect={handleToggleSelect}
                   onToggleStatus={handleToggleStatus}
                   onDelete={handleOpenDelete}
                 />
@@ -325,7 +279,6 @@ const Product = () => {
           <div className={style.tableFooter}>
             <span className={style.footerInfo}>
               Showing {filteredProducts.length} of {products.length} products
-              {selectedIds.size > 0 && ` (${selectedIds.size} selected)`}
             </span>
           </div>
         </div>

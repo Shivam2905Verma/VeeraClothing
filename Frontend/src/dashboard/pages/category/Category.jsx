@@ -19,7 +19,6 @@ const Category = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortField, setSortField] = useState("id");
   const [sortDirection, setSortDirection] = useState("desc");
-  const [selectedIds, setSelectedIds] = useState(new Set());
 
   // Toast State
   const [toast, setToast] = useState({ message: "", type: "error" });
@@ -35,7 +34,7 @@ const Category = () => {
   const [categoryToEdit, setCategoryToEdit] = useState(null);
   const [editCategoryName, setEditCategoryName] = useState("");
   const [editSelectedMeasurementIds, setEditSelectedMeasurementIds] = useState(
-    new Set()
+    new Set(),
   );
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -56,7 +55,7 @@ const Category = () => {
     } catch (error) {
       showToast(
         error?.response?.data?.message || "Failed to load categories.",
-        "error"
+        "error",
       );
     } finally {
       setLoading(false);
@@ -79,8 +78,8 @@ const Category = () => {
           item.name?.toLowerCase().includes(query) ||
           String(item.id).includes(query) ||
           item.measurements?.some((m) =>
-            m.name?.toLowerCase().includes(query)
-          )
+            m.name?.toLowerCase().includes(query),
+          ),
       );
     }
 
@@ -112,37 +111,12 @@ const Category = () => {
     }
   };
 
-  // Selection Handlers
-  const handleToggleSelectAll = () => {
-    if (
-      selectedIds.size === filteredCategories.length &&
-      filteredCategories.length > 0
-    ) {
-      setSelectedIds(new Set());
-    } else {
-      const allIds = new Set(filteredCategories.map((c) => c.id));
-      setSelectedIds(allIds);
-    }
-  };
-
-  const handleToggleSelect = (id) => {
-    setSelectedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
-  };
-
   // Open Edit Modal
   const handleOpenEdit = (item) => {
     setCategoryToEdit(item);
     setEditCategoryName(item.name || "");
     const initialMeasIds = new Set(
-      (item.measurements || []).map((m) => m.id)
+      (item.measurements || []).map((m) => m.id),
     );
     setEditSelectedMeasurementIds(initialMeasIds);
     setEditModalOpen(true);
@@ -178,7 +152,7 @@ const Category = () => {
 
       // Update local state
       const updatedMeasurements = allMeasurements.filter((m) =>
-        editSelectedMeasurementIds.has(m.id)
+        editSelectedMeasurementIds.has(m.id),
       );
 
       setCategories((prev) =>
@@ -189,8 +163,8 @@ const Category = () => {
                 name: editCategoryName.trim(),
                 measurements: updatedMeasurements,
               }
-            : c
-        )
+            : c,
+        ),
       );
 
       showToast(`Category "${editCategoryName}" updated successfully.`, "success");
@@ -199,7 +173,7 @@ const Category = () => {
     } catch (error) {
       showToast(
         error?.response?.data?.message || "Failed to update category.",
-        "error"
+        "error",
       );
     } finally {
       setIsUpdating(false);
@@ -219,13 +193,8 @@ const Category = () => {
       setIsDeleting(true);
       await deleteCategory(categoryToDelete.id);
       setCategories((prev) =>
-        prev.filter((item) => item.id !== categoryToDelete.id)
+        prev.filter((item) => item.id !== categoryToDelete.id),
       );
-      setSelectedIds((prev) => {
-        const next = new Set(prev);
-        next.delete(categoryToDelete.id);
-        return next;
-      });
       showToast(`Category "${categoryToDelete.name}" deleted.`, "success");
       setDeleteModalOpen(false);
       setCategoryToDelete(null);
@@ -233,16 +202,12 @@ const Category = () => {
       showToast(
         error?.response?.data?.message ||
           "Cannot delete category because there are active products assigned to it.",
-        "error"
+        "error",
       );
     } finally {
       setIsDeleting(false);
     }
   };
-
-  const isAllSelected =
-    filteredCategories.length > 0 &&
-    selectedIds.size === filteredCategories.length;
 
   return (
     <div className={style.productPage}>
@@ -337,16 +302,6 @@ const Category = () => {
           <table className={style.table}>
             <thead>
               <tr className={style.tableHeaderRow}>
-                {/* Checkbox Header */}
-                <th className={style.checkboxHeader}>
-                  <input
-                    type="checkbox"
-                    checked={isAllSelected}
-                    onChange={handleToggleSelectAll}
-                    className={style.headerCheckbox}
-                  />
-                </th>
-
                 {/* ID Header */}
                 <th
                   className={`${style.tableHeader} ${style.sortableHeader}`}
@@ -404,20 +359,8 @@ const Category = () => {
               {filteredCategories.map((category) => (
                 <tr
                   key={category.id}
-                  className={`${cardStyle.tableRow} ${
-                    selectedIds.has(category.id) ? cardStyle.rowSelected : ""
-                  }`}
+                  className={cardStyle.tableRow}
                 >
-                  {/* Checkbox */}
-                  <td className={cardStyle.checkboxCell}>
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.has(category.id)}
-                      onChange={() => handleToggleSelect(category.id)}
-                      className={cardStyle.rowCheckbox}
-                    />
-                  </td>
-
                   {/* ID */}
                   <td className={cardStyle.categoryCell}>
                     <span className={cardStyle.productId}>
@@ -516,7 +459,6 @@ const Category = () => {
           <div className={style.tableFooter}>
             <span className={style.footerInfo}>
               Showing {filteredCategories.length} of {categories.length} categories
-              {selectedIds.size > 0 && ` (${selectedIds.size} selected)`}
             </span>
           </div>
         </div>
