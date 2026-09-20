@@ -2,7 +2,7 @@
   position: relative;
   width: 100%;
   max-width: 100%;
-  padding: 2.5rem;
+  padding: 1.5rem;
   margin: 0 auto;
   overflow: hidden;
   user-select: none;
@@ -95,4 +95,3 @@
     bottom: 1rem;
   }
 }
-

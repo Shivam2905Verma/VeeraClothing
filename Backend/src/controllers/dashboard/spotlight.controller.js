@@ -1,14 +1,14 @@
 import { db } from "../../config/DB.config.js";
 import { spotlights } from "../../models/spotlight.model.js";
 import { eq, asc } from "drizzle-orm";
-import { uploadToCloudinary } from "../../config/cloudinary.config.js";
+import {
+  uploadToCloudinary,
+  deleteFromCloudinary,
+} from "../../config/cloudinary.config.js";
 
 export const getAllDashboardSpotlights = async (req, res) => {
   try {
-    const data = await db
-      .select()
-      .from(spotlights)
-      .orderBy(asc(spotlights.id));
+    const data = await db.select().from(spotlights).orderBy(asc(spotlights.id));
 
     return res.status(200).json({
       success: true,
@@ -26,27 +26,22 @@ export const getAllDashboardSpotlights = async (req, res) => {
 
 export const createSpotlight = async (req, res) => {
   try {
-    const { tag = "SPOTLIGHT", title, link_url = "/shopall" } = req.body;
+    const { tag, title, link_url } = req.body;
     let image_url = req.body.image_url;
+    let public_id = req.body.public_id || "";
 
     if (req.file) {
       const uploadRes = await uploadToCloudinary(req.file.buffer, "spotlights");
       image_url = uploadRes.secure_url;
-    }
-
-    if (!title || !image_url) {
-      return res.status(400).json({
-        success: false,
-        message: "Title and Image are required",
-      });
+      public_id = uploadRes.public_id;
     }
 
     await db.insert(spotlights).values({
       tag: tag || "SPOTLIGHT",
       title,
       image_url,
+      public_id: public_id || "",
       link_url: link_url || "/shopall",
-      is_active: true,
     });
 
     return res.status(201).json({
@@ -72,32 +67,51 @@ export const updateSpotlight = async (req, res) => {
       });
     }
 
-    const { tag, title, link_url, is_active } = req.body;
-    const updateData = {};
+    const [existing] = await db
+      .select()
+      .from(spotlights)
+      .where(eq(spotlights.id, id));
 
-    if (tag !== undefined) updateData.tag = tag;
-    if (title !== undefined) updateData.title = title;
-    if (link_url !== undefined) updateData.link_url = link_url;
-    if (is_active !== undefined) updateData.is_active = Boolean(is_active);
+    if (!existing) {
+      return res.status(404).json({
+        success: false,
+        message: "Spotlight not found",
+      });
+    }
+
+    const { tag, title, link_url } = req.body;
+    const updateData = {
+      tag: tag || existing.tag,
+      title: title || existing.title,
+      link_url: link_url || existing.link_url,
+    };
 
     if (req.file) {
       const uploadRes = await uploadToCloudinary(req.file.buffer, "spotlights");
       updateData.image_url = uploadRes.secure_url;
-    } else if (req.body.image_url) {
-      updateData.image_url = req.body.image_url;
+      updateData.public_id = uploadRes.public_id;
+
+      // Delete previous image from Cloudinary if it existed
+      if (existing.public_id) {
+        try {
+          await deleteFromCloudinary(existing.public_id);
+        } catch (delErr) {
+          console.log(
+            "Failed to delete previous image from Cloudinary:",
+            delErr,
+          );
+        }
+      }
     }
 
-    await db
-      .update(spotlights)
-      .set(updateData)
-      .where(eq(spotlights.id, id));
+    await db.update(spotlights).set(updateData).where(eq(spotlights.id, id));
 
     return res.status(200).json({
       success: true,
       message: "Spotlight updated successfully",
     });
   } catch (error) {
-    console.error("updateSpotlight error:", error);
+    console.log("updateSpotlight error:", error);
     return res.status(500).json({
       success: false,
       message: "Failed to update spotlight",
@@ -113,6 +127,22 @@ export const deleteSpotlight = async (req, res) => {
         success: false,
         message: "Invalid spotlight ID",
       });
+    }
+
+    const [existing] = await db
+      .select()
+      .from(spotlights)
+      .where(eq(spotlights.id, id));
+
+    if (existing?.public_id) {
+      try {
+        await deleteFromCloudinary(existing.public_id);
+      } catch (delErr) {
+        console.error(
+          "Failed to delete image from Cloudinary on delete:",
+          delErr,
+        );
+      }
     }
 
     await db.delete(spotlights).where(eq(spotlights.id, id));

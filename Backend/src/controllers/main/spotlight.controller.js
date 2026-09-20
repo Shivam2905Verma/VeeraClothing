@@ -7,7 +7,6 @@ export const getSpotlights = async (req, res) => {
     const data = await db
       .select()
       .from(spotlights)
-      .where(eq(spotlights.is_active, true))
       .orderBy(asc(spotlights.id))
       .limit(2);
 

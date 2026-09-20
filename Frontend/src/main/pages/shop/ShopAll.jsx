@@ -90,7 +90,9 @@ const ShopAll = () => {
 
     const fetchProducts = async () => {
       try {
-        const hasUrlQuery = Boolean(searchQuery || categoryIdFilter || categoryName);
+        const hasUrlQuery = Boolean(
+          searchQuery || categoryIdFilter || categoryName,
+        );
         setPage(1);
 
         const queryParams = {
@@ -116,7 +118,7 @@ const ShopAll = () => {
           res = await getAllProducts(queryParams);
         }
 
-        console.log("Shop all search :- ", res);
+        console.log(res);
 
         // Only update state if this is the latest in-flight request
         if (currentRequestId === requestIdRef.current) {
@@ -156,7 +158,9 @@ const ShopAll = () => {
 
     try {
       const nextPage = page + 1;
-      const hasUrlQuery = Boolean(searchQuery || categoryIdFilter || categoryName);
+      const hasUrlQuery = Boolean(
+        searchQuery || categoryIdFilter || categoryName,
+      );
       const queryParams = {
         sortBy,
         page: nextPage,

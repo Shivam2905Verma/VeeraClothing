@@ -3,7 +3,13 @@ import gsap from "gsap";
 import style from "../../style/components/introScreen.module.css";
 
 const IntroScreen = ({ onFinish }) => {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(() => {
+    try {
+      return !sessionStorage.getItem("veera_intro_shown");
+    } catch {
+      return false;
+    }
+  });
   const shutterRef = useRef(null);
   const contentRef = useRef(null);
   const subtitleRef = useRef(null);
@@ -11,6 +17,17 @@ const IntroScreen = ({ onFinish }) => {
   const lineRef = useRef(null);
 
   useEffect(() => {
+    if (!isVisible) {
+      if (onFinish) onFinish();
+      return;
+    }
+
+    try {
+      sessionStorage.setItem("veera_intro_shown", "true");
+    } catch (e) {
+      console.error(e);
+    }
+
     // Prevent background scrolling while intro is running
     document.body.style.overflow = "hidden";
 
