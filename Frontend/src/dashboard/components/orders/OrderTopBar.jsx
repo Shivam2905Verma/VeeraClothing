@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import style from "../../style/components/orderTopBar.module.css";
 
 const OrderTopBar = ({
-  totalCount = 0,
   searchQuery = "",
   setSearchQuery,
   paymentStatusFilter = "ALL",
@@ -61,7 +60,6 @@ const OrderTopBar = ({
       <div className={style.headerRow}>
         <div className={style.titleArea}>
           <h1 className={style.pageTitle}>Orders</h1>
-          <span className={style.countBadge}>{totalCount}</span>
         </div>
       </div>
 

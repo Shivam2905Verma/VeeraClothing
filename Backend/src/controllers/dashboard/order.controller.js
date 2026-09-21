@@ -1,4 +1,4 @@
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and, or, like } from "drizzle-orm";
 import { db } from "../../config/DB.config.js";
 import { order } from "../../models/order.model.js";
 import { user } from "../../models/user.model.js";
@@ -10,18 +10,77 @@ import { products } from "../../models/product.model.js";
 import { order_item_measurements } from "../../models/order_item_measurement.model.js";
 import { measurement_types } from "../../models/measurement_types.model.js";
 
-// 1. GET ALL ORDERS FOR DASHBOARD
+// 1. GET ALL ORDERS FOR DASHBOARD (WITH SEARCH, STATUS FILTERS, AND PAGINATION)
 export const getAllDashboardOrders = async (req, res) => {
   try {
-    const ordersList = await db
+    const search = (
+      req.query.search ||
+      req.query.q ||
+      req.query.query ||
+      ""
+    ).trim();
+    const payment_status = (
+      req.query.payment_status ||
+      req.query.paymentStatus ||
+      ""
+    ).trim();
+    const order_status = (
+      req.query.order_status ||
+      req.query.orderStatus ||
+      ""
+    ).trim();
+    const page = req.query.page ? Math.max(1, parseInt(req.query.page, 10)) : 1;
+    const limit = req.query.limit
+      ? Math.max(1, parseInt(req.query.limit, 10))
+      : 15;
+    const offset = (page - 1) * limit;
+
+    const conditions = [];
+
+    // Filter by Payment Status
+    if (payment_status && payment_status.toUpperCase() !== "ALL") {
+      conditions.push(eq(order.payment_status, payment_status.toLowerCase()));
+    }
+
+    // Filter by Order Status
+    if (order_status && order_status.toUpperCase() !== "ALL") {
+      conditions.push(eq(order.order_status, order_status.toLowerCase()));
+    }
+
+    // Filter by Search Query
+    if (search) {
+      const searchTerm = `%${search}%`;
+      const searchConditions = [
+        like(user.name, searchTerm),
+        like(user.email, searchTerm),
+        like(address.firstname, searchTerm),
+        like(address.lastname, searchTerm),
+        like(address.phone, searchTerm),
+        like(payment_methods.name, searchTerm),
+      ];
+
+      // If search matches numeric order id or #ORD-xxx format
+      const cleanId = search.replace(/^#?ORD-?/i, "").trim();
+      const numId = Number(cleanId);
+      if (!isNaN(numId) && Number.isInteger(numId) && numId > 0) {
+        searchConditions.push(eq(order.id, numId));
+      }
+
+      conditions.push(or(...searchConditions));
+    }
+
+    // Fetch Paginated Order Records (fetch limit + 1 to check if more orders exist)
+    let dataQuery = db
       .select({
         id: order.id,
         order_status: order.order_status,
         payment_status: order.payment_status,
-        total_amount: order.total_amount,
         final_amount: order.final_amount,
         customer_name: user.name,
         customer_email: user.email,
+        recipient_firstname: address.firstname,
+        recipient_lastname: address.lastname,
+        phone: address.phone,
         payment_method: payment_methods.name,
         createdAt: order.createdAt,
       })
@@ -31,13 +90,29 @@ export const getAllDashboardOrders = async (req, res) => {
       .leftJoin(
         payment_methods,
         eq(order.payment_method_id, payment_methods.id),
-      )
-      .orderBy(desc(order.id));
+      );
+
+    if (conditions.length > 0) {
+      dataQuery = dataQuery.where(and(...conditions));
+    }
+
+    const ordersList = await dataQuery
+      .orderBy(desc(order.id))
+      .limit(limit + 1)
+      .offset(offset);
+
+    const hasMore = ordersList.length > limit;
+    if (hasMore) {
+      ordersList.pop();
+    }
 
     return res.status(200).json({
       success: true,
       message: "Orders fetched successfully",
       orders: ordersList,
+      hasMore,
+      page,
+      limit,
     });
   } catch (error) {
     console.error("getAllDashboardOrders error:", error);

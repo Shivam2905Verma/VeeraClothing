@@ -59,7 +59,6 @@ const DashboardLayout = () => {
           title: "Customers",
           path: "/dashboard/customers",
           icon: <i className="ri-user-line" />,
-          disabled: true,
         },
       ],
     },

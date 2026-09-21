@@ -22,7 +22,7 @@ const OrderCard = ({ order }) => {
     style: "currency",
     currency: "INR",
     maximumFractionDigits: 2,
-  }).format(Number(order.final_amount || order.total_amount || 0));
+  }).format(Number(order.final_amount || 0));
 
   // Determine Payment Status styling
   const paymentStatus = (order.payment_status || "pending").toLowerCase();

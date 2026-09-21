@@ -20,6 +20,7 @@ import AddMeasurement from "./dashboard/pages/measurement/AddMeasurement";
 import Spotlight from "./dashboard/pages/spotlight/Spotlight";
 import Order from "./dashboard/pages/order/Order";
 import OrderDetail from "./dashboard/pages/order/OrderDetail";
+import Customer from "./dashboard/pages/customer/Customer";
 import DashboardLogin from "./dashboard/pages/auth/Login";
 import ProtectedDashboardRoute from "./dashboard/components/protected/ProtectedDashboardRoute";
 
@@ -56,6 +57,7 @@ const App = () => {
         <Route path="spotlights" element={<Spotlight />} />
         <Route path="orders" element={<Order />} />
         <Route path="orders/:id" element={<OrderDetail />} />
+        <Route path="customers" element={<Customer />} />
       </Route>
     </Routes>
   );

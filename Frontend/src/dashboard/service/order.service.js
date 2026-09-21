@@ -1,8 +1,8 @@
 import dashboardAxiosClient from "../config/axios.config";
 
-export async function getAllDashboardOrders() {
+export async function getAllDashboardOrders(params = {}) {
   try {
-    const res = await dashboardAxiosClient.get("/order");
+    const res = await dashboardAxiosClient.get("/order", { params });
     return res.data;
   } catch (error) {
     console.error("Error in getAllDashboardOrders:", error);

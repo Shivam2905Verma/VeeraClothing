@@ -16,6 +16,7 @@ import measurementRouter from "./routes/main/measurement.route.js";
 import spotlightRouter from "./routes/main/spotlight.route.js";
 import spotlightDashboardRouter from "./routes/dashboard/spotlight.route.js";
 import orderDashboardRouter from "./routes/dashboard/order.route.js";
+import customerDashboardRouter from "./routes/dashboard/customer.route.js";
 import dashboardRouter from "./routes/dashboard/dashboard.route.js";
 
 const app = express();
@@ -50,5 +51,6 @@ app.use("/api/dashboard/categories", categoriesDashboardRouter);
 app.use("/api/dashboard/measurement", measurementDashboardroute);
 app.use("/api/dashboard/spotlight", spotlightDashboardRouter);
 app.use("/api/dashboard/order", orderDashboardRouter);
+app.use("/api/dashboard/customer", customerDashboardRouter);
 
 export default app;
