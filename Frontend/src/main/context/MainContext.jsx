@@ -20,7 +20,12 @@ const MainContextProvider = ({ children }) => {
         setUser(null);
       }
     } catch (error) {
-      setUser(null);
+      if (error.response.data.isVerifiedLeft) {
+        console.log(" user: ", error.response.data.user);
+        setUser(error.response.data.user);
+      } else {
+        setUser(null);
+      }
     } finally {
       setIsAuthLoading(false);
     }
@@ -89,4 +94,3 @@ const MainContextProvider = ({ children }) => {
 };
 
 export default MainContextProvider;
-

@@ -9,9 +9,9 @@ export const generateTokenForAdmin = (adminId) => {
   });
 };
 
-export const generateTokenForUser = (userId, userEmail, is_verified) => {
+export const generateTokenForUser = (id, name, email, is_verified) => {
   return jwt.sign(
-    { userId, userEmail, is_verified },
+    { id, name, email, is_verified },
     process.env.JWT_SECRET_USER,
     {
       expiresIn: "3d",

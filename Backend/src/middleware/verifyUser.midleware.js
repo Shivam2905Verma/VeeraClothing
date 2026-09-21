@@ -3,7 +3,7 @@ dotenv.config();
 
 import jwt from "jsonwebtoken";
 
-export function verifyUser(req, res, next) {
+export async function verifyUser(req, res, next) {
   try {
     const token = req.cookies.token;
 
@@ -20,8 +20,10 @@ export function verifyUser(req, res, next) {
     if (!decoded.is_verified) {
       return res.status(401).json({
         success: false,
+        user: decoded,
         message:
           "Verify your email first that we have sent on your registerd email address",
+        isVerifiedLeft: true,
       });
     }
 

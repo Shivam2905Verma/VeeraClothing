@@ -1,11 +1,18 @@
 import { useEffect, useState, useCallback } from "react";
-import { getAllDashboardCustomers } from "../../service/customer.service";
+import {
+  getAllDashboardCustomers,
+  deleteDashboardCustomer,
+} from "../../service/customer.service";
+import ConfirmModal from "../../../common/ConfirmModal";
 import Toast from "../../../common/Toast";
 import style from "../../style/page/customer.module.css";
 
 const Customer = () => {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [customerToDelete, setCustomerToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [verifiedFilter, setVerifiedFilter] = useState("ALL");
@@ -18,7 +25,7 @@ const Customer = () => {
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchQuery);
-    }, 350);
+    }, 400);
 
     return () => {
       clearTimeout(handler);
@@ -46,7 +53,8 @@ const Customer = () => {
     } catch (error) {
       console.error("Failed to fetch customers:", error);
       showToast(
-        error?.response?.data?.message || "Failed to load customers from server.",
+        error?.response?.data?.message ||
+          "Failed to load customers from server.",
         "error",
       );
     } finally {
@@ -57,6 +65,34 @@ const Customer = () => {
   useEffect(() => {
     fetchCustomers();
   }, [fetchCustomers]);
+
+  // Open Delete Confirmation Modal
+  const handleOpenDeleteModal = (customer) => {
+    setCustomerToDelete(customer);
+    setDeleteModalOpen(true);
+  };
+
+  // Confirm Delete Action
+  const handleConfirmDelete = async () => {
+    if (!customerToDelete) return;
+
+    try {
+      setIsDeleting(true);
+      const res = await deleteDashboardCustomer(customerToDelete.id);
+      showToast(res?.message || "Customer deleted successfully", "success");
+      setCustomers((prev) => prev.filter((c) => c.id !== customerToDelete.id));
+      setDeleteModalOpen(false);
+      setCustomerToDelete(null);
+    } catch (error) {
+      console.error("Failed to delete customer:", error);
+      showToast(
+        error?.response?.data?.message || "Failed to delete customer account.",
+        "error",
+      );
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   // Helper to extract initials from name
   const getInitials = (name) => {
@@ -155,7 +191,10 @@ const Customer = () => {
       ) : customers.length === 0 ? (
         <div className={style.emptyContainer}>
           <div className={style.emptyIcon}>
-            <i className="ri-user-unfollow-line" style={{ fontSize: "2.5rem" }} />
+            <i
+              className="ri-user-unfollow-line"
+              style={{ fontSize: "2.5rem" }}
+            />
           </div>
           <h3 className={style.emptyTitle}>No Customers Found</h3>
           <p className={style.emptySubtitle}>
@@ -192,6 +231,11 @@ const Customer = () => {
                 {/* 5. Joined Date Column */}
                 <th className={style.tableHeader}>
                   <span>Joined Date</span>
+                </th>
+
+                {/* 6. Actions Column */}
+                <th className={`${style.tableHeader} ${style.actionsHeader}`}>
+                  <span>Actions</span>
                 </th>
               </tr>
             </thead>
@@ -239,7 +283,9 @@ const Customer = () => {
                     <td className={style.statusCell}>
                       <span
                         className={`${style.statusBadge} ${
-                          isVerified ? style.badgeVerified : style.badgeUnverified
+                          isVerified
+                            ? style.badgeVerified
+                            : style.badgeUnverified
                         }`}
                       >
                         <i
@@ -257,6 +303,29 @@ const Customer = () => {
                     <td className={style.dateCell}>
                       <span>{joinedDate}</span>
                     </td>
+
+                    {/* 6. Actions */}
+                    <td className={style.actionsCell}>
+                      {!isVerified ? (
+                        <button
+                          type="button"
+                          className={style.deleteBtn}
+                          onClick={() => handleOpenDeleteModal(customer)}
+                          disabled={isDeleting && customerToDelete?.id === customer.id}
+                          title="Delete Unverified Customer"
+                        >
+                          <i className="ri-delete-bin-line" />
+                          <span>Delete</span>
+                        </button>
+                      ) : (
+                        <span
+                          className={style.verifiedIndicator}
+                          title="Verified customer account"
+                        >
+                          <i className="ri-shield-check-line" />
+                        </span>
+                      )}
+                    </td>
                   </tr>
                 );
               })}
@@ -271,8 +340,29 @@ const Customer = () => {
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={deleteModalOpen}
+        title="Delete Unverified Customer"
+        message={`Are you sure you want to permanently delete the unverified account "${
+          customerToDelete?.name || "Customer"
+        }" (${customerToDelete?.email || ""})? This action cannot be undone.`}
+        confirmText="Delete Customer"
+        cancelText="Cancel"
+        isDestructive={true}
+        isLoading={isDeleting}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          if (!isDeleting) {
+            setDeleteModalOpen(false);
+            setCustomerToDelete(null);
+          }
+        }}
+      />
     </div>
   );
 };
 
 export default Customer;
+

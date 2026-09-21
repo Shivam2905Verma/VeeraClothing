@@ -91,7 +91,12 @@ export async function verifyEmail(req, res) {
       .where(eq(user.id, foundUser.id));
 
     // Generate new token with is_verified: true to overwrite old cookie
-    const newToken = generateTokenForUser(foundUser.id, foundUser.email, true);
+    const newToken = generateTokenForUser(
+      foundUser.id,
+      foundUser.name,
+      foundUser.email,
+      true,
+    );
 
     res.cookie("token", newToken, {
       httpOnly: true,
@@ -127,10 +132,6 @@ export async function loginUser(req, res) {
       .from(user)
       .where(eq(user.email, email));
 
-    console.log("Existing User: ", existingUser);
-    console.log("Email from login body:", email);
-    console.log("Password from login body:", password);
-
     if (existingUser.length === 0) {
       return res
         .status(400)
@@ -150,6 +151,7 @@ export async function loginUser(req, res) {
 
     const token = generateTokenForUser(
       existingUser[0].id,
+      existingUser[0].name,
       existingUser[0].email,
       existingUser[0].is_verified,
     );
