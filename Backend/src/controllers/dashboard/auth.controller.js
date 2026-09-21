@@ -24,27 +24,48 @@ export const login = async (req, res) => {
     }
 
     const token = generateTokenForAdmin(user.admin_id);
+
+    console.log(token);
+
     res.cookie("admin_token", token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "strict",
-      maxAge: 24 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      path: "/",
+      maxAge: 3 * 24 * 60 * 60 * 1000,
     });
 
-    res.status(200).json({ message: "Login successful" });
+    return res.status(200).json({
+      success: true,
+      message: "Login successful",
+      admin: {
+        admin_id: user.admin_id,
+      },
+    });
   } catch (error) {
     console.error("Login error:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 };
 
 export const logout = async (req, res) => {
   try {
-    res.clearCookie("admin_token");
-    res.status(200).json({ message: "Logout successful" });
+    res.clearCookie("admin_token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      path: "/",
+    });
+    return res
+      .status(200)
+      .json({ success: true, message: "Logout successful" });
   } catch (error) {
     console.error("Logout error:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 };
 
@@ -75,4 +96,3 @@ export const getme = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-

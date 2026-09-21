@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import style from "../../../style/components/productCard.module.css";
 
@@ -6,6 +7,8 @@ const ProductCard = ({
   onToggleStatus,
   onDelete,
 }) => {
+  const [imgError, setImgError] = useState(false);
+
   if (!product) return null;
 
   // Format currency
@@ -25,15 +28,12 @@ const ProductCard = ({
       <td className={style.productCell}>
         <div className={style.productInfoWrapper}>
           <div className={style.thumbnailWrapper}>
-            {product.image_url ? (
+            {product.image_url && !imgError ? (
               <img
                 src={product.image_url}
                 alt={product.name}
                 className={style.productThumb}
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "https://via.placeholder.com/40?text=P";
-                }}
+                onError={() => setImgError(true)}
               />
             ) : (
               <div className={style.thumbPlaceholder}>

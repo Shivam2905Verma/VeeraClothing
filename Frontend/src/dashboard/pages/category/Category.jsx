@@ -41,16 +41,22 @@ const Category = () => {
   const fetchCategoryList = async () => {
     try {
       setLoading(true);
-      const [catData, measData] = await Promise.all([
-        getCategories(),
-        getMeasurements().catch(() => ({ measurements: [] })),
-      ]);
+      const catData = await getCategories();
+
+      console.log(catData);
 
       if (catData && catData.categories) {
         setCategories(catData.categories);
-      }
-      if (measData && measData.measurements) {
-        setAllMeasurements(measData.measurements);
+        catData.categories.forEach((category) => {
+          if (category.measurements) {
+            setAllMeasurements((prev) => {
+              const newMeasurements = category.measurements.filter(
+                (m) => !prev.some((pm) => pm.id === m.id),
+              );
+              return [...prev, ...newMeasurements];
+            });
+          }
+        });
       }
     } catch (error) {
       showToast(
@@ -77,9 +83,7 @@ const Category = () => {
         (item) =>
           item.name?.toLowerCase().includes(query) ||
           String(item.id).includes(query) ||
-          item.measurements?.some((m) =>
-            m.name?.toLowerCase().includes(query),
-          ),
+          item.measurements?.some((m) => m.name?.toLowerCase().includes(query)),
       );
     }
 
@@ -115,9 +119,7 @@ const Category = () => {
   const handleOpenEdit = (item) => {
     setCategoryToEdit(item);
     setEditCategoryName(item.name || "");
-    const initialMeasIds = new Set(
-      (item.measurements || []).map((m) => m.id),
-    );
+    const initialMeasIds = new Set((item.measurements || []).map((m) => m.id));
     setEditSelectedMeasurementIds(initialMeasIds);
     setEditModalOpen(true);
   };
@@ -167,7 +169,10 @@ const Category = () => {
         ),
       );
 
-      showToast(`Category "${editCategoryName}" updated successfully.`, "success");
+      showToast(
+        `Category "${editCategoryName}" updated successfully.`,
+        "success",
+      );
       setEditModalOpen(false);
       setCategoryToEdit(null);
     } catch (error) {
@@ -233,7 +238,9 @@ const Category = () => {
             className={topBarStyle.primaryActionBtn}
           >
             <i className="ri-add-line" style={{ fontSize: "1rem" }} />
-            <span>Add Category</span>
+            <span>
+              Add <span className={topBarStyle.btnSuffix}>Category</span>
+            </span>
           </Link>
         </div>
 
@@ -262,17 +269,6 @@ const Category = () => {
                 </button>
               )}
             </div>
-          </div>
-
-          <div className={topBarStyle.toolbarRight}>
-            <button
-              type="button"
-              className={topBarStyle.viewBtn}
-              onClick={fetchCategoryList}
-              title="Refresh Data"
-            >
-              <i className="ri-refresh-line" style={{ fontSize: "0.95rem" }} />
-            </button>
           </div>
         </div>
       </div>
@@ -357,10 +353,7 @@ const Category = () => {
             </thead>
             <tbody>
               {filteredCategories.map((category) => (
-                <tr
-                  key={category.id}
-                  className={cardStyle.tableRow}
-                >
+                <tr key={category.id} className={cardStyle.tableRow}>
                   {/* ID */}
                   <td className={cardStyle.categoryCell}>
                     <span className={cardStyle.productId}>
@@ -370,7 +363,13 @@ const Category = () => {
 
                   {/* Category Name */}
                   <td className={cardStyle.productCell}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                      }}
+                    >
                       <div
                         style={{
                           width: "32px",
@@ -394,8 +393,15 @@ const Category = () => {
 
                   {/* Required Measurements Badges */}
                   <td className={cardStyle.categoryCell}>
-                    {category.measurements && category.measurements.length > 0 ? (
-                      <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+                    {category.measurements &&
+                    category.measurements.length > 0 ? (
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "6px",
+                          flexWrap: "wrap",
+                        }}
+                      >
                         {category.measurements.map((m) => (
                           <span
                             key={m.id}
@@ -411,16 +417,27 @@ const Category = () => {
                               gap: "4px",
                             }}
                           >
-                            <i className="ri-ruler-line" style={{ fontSize: "0.75rem", color: "#6b7280" }} />
+                            <i
+                              className="ri-ruler-line"
+                              style={{ fontSize: "0.75rem", color: "#6b7280" }}
+                            />
                             <span>{m.name}</span>
-                            <span style={{ color: "#9ca3af", fontSize: "0.7rem" }}>
+                            <span
+                              style={{ color: "#9ca3af", fontSize: "0.7rem" }}
+                            >
                               ({m.unit})
                             </span>
                           </span>
                         ))}
                       </div>
                     ) : (
-                      <span style={{ color: "#9ca3af", fontSize: "0.8rem", fontStyle: "italic" }}>
+                      <span
+                        style={{
+                          color: "#9ca3af",
+                          fontSize: "0.8rem",
+                          fontStyle: "italic",
+                        }}
+                      >
                         No measurements required
                       </span>
                     )}
@@ -458,7 +475,8 @@ const Category = () => {
           {/* Footer */}
           <div className={style.tableFooter}>
             <span className={style.footerInfo}>
-              Showing {filteredCategories.length} of {categories.length} categories
+              Showing {filteredCategories.length} of {categories.length}{" "}
+              categories
             </span>
           </div>
         </div>
@@ -500,7 +518,13 @@ const Category = () => {
                 marginBottom: "18px",
               }}
             >
-              <h3 style={{ fontSize: "1.1rem", fontWeight: 600, color: "#111827" }}>
+              <h3
+                style={{
+                  fontSize: "1.1rem",
+                  fontWeight: 600,
+                  color: "#111827",
+                }}
+              >
                 Edit Category
               </h3>
               <button
@@ -518,7 +542,10 @@ const Category = () => {
               </button>
             </div>
 
-            <form onSubmit={handleUpdateSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <form
+              onSubmit={handleUpdateSubmit}
+              style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+            >
               <div>
                 <label
                   style={{
@@ -571,7 +598,8 @@ const Category = () => {
                   <div
                     style={{
                       display: "grid",
-                      gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))",
+                      gridTemplateColumns:
+                        "repeat(auto-fill, minmax(130px, 1fr))",
                       gap: "8px",
                       maxHeight: "200px",
                       overflowY: "auto",
@@ -607,11 +635,18 @@ const Category = () => {
                             type="checkbox"
                             checked={isSelected}
                             readOnly
-                            style={{ accentColor: "#111827", cursor: "pointer" }}
+                            style={{
+                              accentColor: "#111827",
+                              cursor: "pointer",
+                            }}
                           />
-                          <div style={{ display: "flex", flexDirection: "column" }}>
+                          <div
+                            style={{ display: "flex", flexDirection: "column" }}
+                          >
                             <span>{m.name}</span>
-                            <span style={{ fontSize: "0.7rem", color: "#6b7280" }}>
+                            <span
+                              style={{ fontSize: "0.7rem", color: "#6b7280" }}
+                            >
                               {m.unit}
                             </span>
                           </div>

@@ -1,35 +1,80 @@
 import dashboardAxiosClient from "../config/axios.config";
 
-export async function getAllProducts() {
+export async function searchDashboardProducts(
+  query = "",
+  status = "ALL",
+  sortBy = "newest",
+  page = 1,
+  limit = 15,
+) {
   try {
-    const res = await dashboardAxiosClient.get("/product");
+    const params = new URLSearchParams();
+    if (typeof query === "string" && query.trim()) {
+      params.append("query", query.trim());
+    }
+    if (typeof status === "string" && status && status !== "ALL") {
+      params.append("status", status);
+    }
+    if (typeof sortBy === "string" && sortBy) {
+      params.append("sortBy", sortBy);
+    }
+    if (page) params.append("page", page);
+    if (limit) params.append("limit", limit);
+
+    const res = await dashboardAxiosClient.get(
+      `/product/search?${params.toString()}`,
+    );
     return res.data;
   } catch (error) {
-    console.log("Error in getAllProducts service", error);
+    console.log("Error in searchDashboardProducts service", error);
     throw error;
   }
 }
 
 export async function getProductById(id) {
-  const res = await dashboardAxiosClient.get(`/product/${id}`);
-  return res.data;
+  try {
+    const res = await dashboardAxiosClient.get(`/product/${id}`);
+    return res.data;
+  } catch (error) {
+    console.log("Error in getProductById service", error);
+    throw error;
+  }
 }
 
 export async function activateProduct(id) {
-  const res = await dashboardAxiosClient.patch(`/product/activeproduct/${id}`);
-  return res.data;
+  try {
+    const res = await dashboardAxiosClient.patch(
+      `/product/activeproduct/${id}`,
+    );
+    return res.data;
+  } catch (error) {
+    console.log("Error in activateProduct service", error);
+    throw error;
+  }
 }
 
 export async function deactivateProduct(id) {
-  const res = await dashboardAxiosClient.patch(
-    `/product/inactiveproduct/${id}`,
-  );
-  return res.data;
+  try {
+    const res = await dashboardAxiosClient.patch(
+      `/product/inactiveproduct/${id}`,
+    );
+    return res.data;
+  } catch (error) {
+    console.log("Error in deactivateProduct service", error);
+    throw error;
+  }
 }
 
 export async function deleteProduct(id) {
-  const res = await dashboardAxiosClient.delete(`/product/deleteproduct/${id}`);
-  return res.data;
+  try {
+    const res = await dashboardAxiosClient.delete(
+      `/product/deleteproduct/${id}`,
+    );
+    return res.data;
+  } catch (error) {
+    console.log("Error in deleteProduct service", error);
+    throw error;
+  }
 }
 
 export async function createProduct(formData) {

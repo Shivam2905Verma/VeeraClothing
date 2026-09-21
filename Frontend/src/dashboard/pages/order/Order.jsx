@@ -22,6 +22,7 @@ const Order = () => {
     try {
       setLoading(true);
       const data = await getAllDashboardOrders();
+      console.log(data);
       if (data?.orders) {
         setOrders(data.orders);
       }
@@ -142,7 +143,6 @@ const Order = () => {
         setPaymentStatusFilter={setPaymentStatusFilter}
         orderStatusFilter={orderStatusFilter}
         setOrderStatusFilter={setOrderStatusFilter}
-        onRefresh={fetchOrders}
       />
 
       {/* ORDERS DATA TABLE */}

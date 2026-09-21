@@ -53,6 +53,130 @@
 }
 
 /* =========================================
+   DATE FILTER TOOLBAR
+========================================= */
+.filterToolbar {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.filterGroup {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.presetButtons {
+  display: flex;
+  align-items: center;
+  background-color: #f3f4f6;
+  padding: 3px;
+  border-radius: 6px;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+
+.presetBtn {
+  background: transparent;
+  border: none;
+  font-size: 0.775rem;
+  font-weight: 500;
+  color: #4b5563;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.presetBtn:hover {
+  color: #111827;
+}
+
+.presetBtnActive {
+  background: #ffffff;
+  color: #111827;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.dateRangeInputs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dateInputWrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dateInputLabel {
+  font-size: 0.775rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.inputWithIcon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputWithIcon i {
+  position: absolute;
+  left: 8px;
+  color: #9ca3af;
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+
+.dateInput {
+  padding: 5px 8px 5px 28px;
+  font-size: 0.775rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  color: #111827;
+  background-color: #ffffff;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dateInput:focus {
+  border-color: #111827;
+  box-shadow: 0 0 0 1px #111827;
+}
+
+.activeRangeBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.775rem;
+  font-weight: 500;
+  color: #4b5563;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 5px 10px;
+  border-radius: 6px;
+}
+
+.activeRangeBadge i {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+/* =========================================
    STATS GRID (MINIMALIST SAAS CARDS)
 ========================================= */
 .statsGrid {
@@ -254,7 +378,41 @@
   color: #92400e;
 }
 
+.stateCancelled {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
 .orderDate {
   color: #6b7280;
   font-size: 0.775rem;
 }
+
+.emptyStateRow {
+  text-align: center;
+  padding: 32px 16px;
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.loadingSpinner {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .btnSuffix {
+    display: none;
+  }
+}
+
+

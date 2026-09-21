@@ -122,12 +122,19 @@ const Measurement = () => {
       setMeasurements((prev) =>
         prev.map((m) =>
           m.id === measurementToEdit.id
-            ? { ...m, name: editFormData.name.trim(), unit: editFormData.unit.trim() }
+            ? {
+                ...m,
+                name: editFormData.name.trim(),
+                unit: editFormData.unit.trim(),
+              }
             : m,
         ),
       );
 
-      showToast(`Measurement "${editFormData.name}" updated successfully.`, "success");
+      showToast(
+        `Measurement "${editFormData.name}" updated successfully.`,
+        "success",
+      );
       setEditModalOpen(false);
       setMeasurementToEdit(null);
     } catch (error) {
@@ -155,7 +162,10 @@ const Measurement = () => {
       setMeasurements((prev) =>
         prev.filter((item) => item.id !== measurementToDelete.id),
       );
-      showToast(`Measurement "${measurementToDelete.name}" deleted.`, "success");
+      showToast(
+        `Measurement "${measurementToDelete.name}" deleted.`,
+        "success",
+      );
       setDeleteModalOpen(false);
       setMeasurementToDelete(null);
     } catch (error) {
@@ -185,7 +195,9 @@ const Measurement = () => {
         <div className={topBarStyle.headerRow}>
           <div className={topBarStyle.titleArea}>
             <h1 className={topBarStyle.pageTitle}>Measurements</h1>
-            <span className={topBarStyle.countBadge}>{measurements.length}</span>
+            <span className={topBarStyle.countBadge}>
+              {measurements.length}
+            </span>
           </div>
 
           <Link
@@ -193,7 +205,9 @@ const Measurement = () => {
             className={topBarStyle.primaryActionBtn}
           >
             <i className="ri-add-line" style={{ fontSize: "1rem" }} />
-            <span>Add Measurement</span>
+            <span>
+              Add <span className={topBarStyle.btnSuffix}>Measurement</span>
+            </span>
           </Link>
         </div>
 
@@ -222,17 +236,6 @@ const Measurement = () => {
                 </button>
               )}
             </div>
-          </div>
-
-          <div className={topBarStyle.toolbarRight}>
-            <button
-              type="button"
-              className={topBarStyle.viewBtn}
-              onClick={fetchMeasurementList}
-              title="Refresh Data"
-            >
-              <i className="ri-refresh-line" style={{ fontSize: "0.95rem" }} />
-            </button>
           </div>
         </div>
       </div>
@@ -329,10 +332,7 @@ const Measurement = () => {
             </thead>
             <tbody>
               {filteredMeasurements.map((item) => (
-                <tr
-                  key={item.id}
-                  className={cardStyle.tableRow}
-                >
+                <tr key={item.id} className={cardStyle.tableRow}>
                   {/* ID */}
                   <td className={cardStyle.categoryCell}>
                     <span className={cardStyle.productId}>
@@ -342,7 +342,13 @@ const Measurement = () => {
 
                   {/* Measurement Name */}
                   <td className={cardStyle.productCell}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                      }}
+                    >
                       <div
                         style={{
                           width: "32px",
@@ -414,7 +420,8 @@ const Measurement = () => {
           {/* Footer */}
           <div className={style.tableFooter}>
             <span className={style.footerInfo}>
-              Showing {filteredMeasurements.length} of {measurements.length} measurements
+              Showing {filteredMeasurements.length} of {measurements.length}{" "}
+              measurements
             </span>
           </div>
         </div>
@@ -454,7 +461,13 @@ const Measurement = () => {
                 marginBottom: "18px",
               }}
             >
-              <h3 style={{ fontSize: "1.1rem", fontWeight: 600, color: "#111827" }}>
+              <h3
+                style={{
+                  fontSize: "1.1rem",
+                  fontWeight: 600,
+                  color: "#111827",
+                }}
+              >
                 Edit Measurement
               </h3>
               <button
@@ -472,7 +485,10 @@ const Measurement = () => {
               </button>
             </div>
 
-            <form onSubmit={handleUpdateSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+            <form
+              onSubmit={handleUpdateSubmit}
+              style={{ display: "flex", flexDirection: "column", gap: "14px" }}
+            >
               <div>
                 <label
                   style={{
@@ -489,7 +505,10 @@ const Measurement = () => {
                   type="text"
                   value={editFormData.name}
                   onChange={(e) =>
-                    setEditFormData((prev) => ({ ...prev, name: e.target.value }))
+                    setEditFormData((prev) => ({
+                      ...prev,
+                      name: e.target.value,
+                    }))
                   }
                   required
                   placeholder="e.g. Chest"
@@ -522,7 +541,10 @@ const Measurement = () => {
                   type="text"
                   value={editFormData.unit}
                   onChange={(e) =>
-                    setEditFormData((prev) => ({ ...prev, unit: e.target.value }))
+                    setEditFormData((prev) => ({
+                      ...prev,
+                      unit: e.target.value,
+                    }))
                   }
                   required
                   placeholder="e.g. in or cm"

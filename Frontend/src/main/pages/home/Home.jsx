@@ -30,7 +30,7 @@ const Home = () => {
       {/* Category Section */}
       <section className={style.productSection}>
         <div className={style.sectionHeader}>
-          <h2>Choose Category</h2>
+          <h2>Best sellers</h2>
         </div>
         <div ref={categoryScrollRef} className={style.cardsContainer}>
           {CATEGORIES.map((item) => (

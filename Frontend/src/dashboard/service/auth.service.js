@@ -8,6 +8,7 @@ export async function login({ userId, password }) {
     });
     return res.data;
   } catch (error) {
+    console.log(error);
     console.error("Error in admin login service", error);
     throw error;
   }

@@ -36,5 +36,11 @@ export async function sendVerificationEmail(toEmail, token) {
     `,
   };
 
-  return await transporter.sendMail(mailOptions);
+  try {
+    const response = await transporter.sendMail(mailOptions);
+    return response;
+  } catch (error) {
+    console.log("Error from sendVerificationEmail controller: ", error.message);
+    return error;
+  }
 }

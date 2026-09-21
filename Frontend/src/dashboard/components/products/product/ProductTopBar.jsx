@@ -8,32 +8,62 @@ const ProductTopBar = ({
   setSearchQuery,
   statusFilter = "ALL",
   setStatusFilter,
-  onRefresh,
+  sortBy = "newest",
+  setSortBy,
 }) => {
   const [showStatusMenu, setShowStatusMenu] = useState(false);
+  const [showSortMenu, setShowSortMenu] = useState(false);
   const [filterDropdownSearch, setFilterDropdownSearch] = useState("");
-  const dropdownRef = useRef(null);
+  const statusDropdownRef = useRef(null);
+  const sortDropdownRef = useRef(null);
 
   // Close dropdown on click outside
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+      if (
+        statusDropdownRef.current &&
+        !statusDropdownRef.current.contains(e.target)
+      ) {
         setShowStatusMenu(false);
       }
+      if (
+        sortDropdownRef.current &&
+        !sortDropdownRef.current.contains(e.target)
+      ) {
+        setShowSortMenu(false);
+      }
     };
-    if (showStatusMenu) {
+    if (showStatusMenu || showSortMenu) {
       document.addEventListener("mousedown", handleClickOutside);
     }
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showStatusMenu]);
+  }, [showStatusMenu, showSortMenu]);
 
   const filterOptions = [
     { label: "All Products", value: "ALL" },
     { label: "Live (Active)", value: "ACTIVE" },
     { label: "Disabled", value: "INACTIVE" },
   ];
+
+  const sortOptions = [
+    { label: "Newest First", value: "newest", icon: "ri-time-line" },
+    { label: "Oldest First", value: "oldest", icon: "ri-history-line" },
+    {
+      label: "Price: Low to High",
+      value: "price-low-to-high",
+      icon: "ri-sort-asc",
+    },
+    {
+      label: "Price: High to Low",
+      value: "price-high-to-low",
+      icon: "ri-sort-desc",
+    },
+  ];
+
+  const currentSortLabel =
+    sortOptions.find((opt) => opt.value === sortBy)?.label || "Sort";
 
   const filteredOptions = filterOptions.filter((opt) =>
     opt.label.toLowerCase().includes(filterDropdownSearch.toLowerCase()),
@@ -50,7 +80,9 @@ const ProductTopBar = ({
 
         <Link to="/dashboard/products/add" className={style.primaryActionBtn}>
           <i className="ri-add-line" style={{ fontSize: "1rem" }} />
-          <span>Add Product</span>
+          <span>
+            Add <span className={style.btnSuffix}>Product</span>
+          </span>
         </Link>
       </div>
 
@@ -82,21 +114,24 @@ const ProductTopBar = ({
           </div>
 
           {/* Status Dropdown Trigger Pill */}
-          <div style={{ position: "relative" }} ref={dropdownRef}>
+          <div style={{ position: "relative" }} ref={statusDropdownRef}>
             <button
               type="button"
               className={`${style.filterPill} ${
                 statusFilter !== "ALL" ? style.filterPillActive : ""
               }`}
-              onClick={() => setShowStatusMenu(!showStatusMenu)}
+              onClick={() => {
+                setShowStatusMenu(!showStatusMenu);
+                setShowSortMenu(false);
+              }}
             >
               <i className="ri-filter-3-line" style={{ fontSize: "0.85rem" }} />
               <span>
                 {statusFilter === "ALL"
                   ? "State"
                   : statusFilter === "ACTIVE"
-                  ? "Live"
-                  : "Disabled"}
+                    ? "Live"
+                    : "Disabled"}
               </span>
               <i
                 className="ri-arrow-down-s-line"
@@ -114,7 +149,8 @@ const ProductTopBar = ({
                   background: "#ffffff",
                   border: "1px solid #e5e7eb",
                   borderRadius: "8px",
-                  boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05)",
+                  boxShadow:
+                    "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05)",
                   zIndex: 60,
                   minWidth: "200px",
                   padding: "6px",
@@ -153,7 +189,13 @@ const ProductTopBar = ({
                 </div>
 
                 {/* List of options */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "2px",
+                  }}
+                >
                   {filteredOptions.map((opt) => {
                     const isSelected = statusFilter === opt.value;
                     return (
@@ -198,25 +240,109 @@ const ProductTopBar = ({
             )}
           </div>
 
-          <button
-            type="button"
-            className={style.iconOnlyPill}
-            title="Saved Views"
-          >
-            <i className="ri-bookmark-line" style={{ fontSize: "0.9rem" }} />
-          </button>
-        </div>
+          {/* Sort Dropdown Trigger Pill */}
+          <div style={{ position: "relative" }} ref={sortDropdownRef}>
+            <button
+              type="button"
+              className={`${style.filterPill} ${
+                sortBy !== "newest" ? style.filterPillActive : ""
+              }`}
+              onClick={() => {
+                setShowSortMenu(!showSortMenu);
+                setShowStatusMenu(false);
+              }}
+            >
+              <i className="ri-sort-desc" style={{ fontSize: "0.85rem" }} />
+              <span>{currentSortLabel}</span>
+              <i
+                className="ri-arrow-down-s-line"
+                style={{ fontSize: "0.85rem", opacity: 0.6 }}
+              />
+            </button>
 
-        {/* Toolbar Right */}
-        <div className={style.toolbarRight}>
-          <button
-            type="button"
-            className={style.viewBtn}
-            onClick={onRefresh}
-            title="Refresh Data"
-          >
-            <i className="ri-refresh-line" style={{ fontSize: "0.95rem" }} />
-          </button>
+            {/* Sort Popover */}
+            {showSortMenu && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "calc(100% + 4px)",
+                  left: 0,
+                  background: "#ffffff",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: "8px",
+                  boxShadow:
+                    "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05)",
+                  zIndex: 60,
+                  minWidth: "190px",
+                  padding: "6px",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "2px",
+                  }}
+                >
+                  {sortOptions.map((opt) => {
+                    const isSelected = sortBy === opt.value;
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        style={{
+                          width: "100%",
+                          textAlign: "left",
+                          padding: "7px 10px",
+                          fontSize: "0.825rem",
+                          border: "none",
+                          borderRadius: "4px",
+                          background: isSelected ? "#f3f4f6" : "transparent",
+                          color: "#111827",
+                          fontWeight: isSelected ? "600" : "400",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          gap: "8px",
+                        }}
+                        onClick={() => {
+                          if (setSortBy) setSortBy(opt.value);
+                          setShowSortMenu(false);
+                        }}
+                      >
+                        <span
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "8px",
+                          }}
+                        >
+                          <i
+                            className={opt.icon}
+                            style={{
+                              fontSize: "0.9rem",
+                              color: isSelected ? "#111827" : "#6b7280",
+                            }}
+                          />
+                          {opt.label}
+                        </span>
+                        {isSelected && (
+                          <i
+                            className="ri-check-line"
+                            style={{
+                              color: "#111827",
+                              fontWeight: "bold",
+                            }}
+                          />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

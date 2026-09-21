@@ -1,6 +1,6 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
-  getAllProducts,
+  searchDashboardProducts,
   activateProduct,
   deactivateProduct,
   deleteProduct,
@@ -11,13 +11,18 @@ import ProductTopBar from "../../components/products/product/ProductTopBar";
 import ProductCard from "../../components/products/product/ProductCard";
 import style from "../../style/page/product.module.css";
 
+const PAGE_SIZE = 15;
+
 const Product = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
-  const [sortField, setSortField] = useState("id");
-  const [sortDirection, setSortDirection] = useState("desc");
+  const [sortBy, setSortBy] = useState("newest");
 
   // Toast State
   const [toast, setToast] = useState({ message: "", type: "error" });
@@ -28,77 +33,74 @@ const Product = () => {
   const [productToDelete, setProductToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const fetchProducts = async () => {
+  // Fetch Products Handler (Supports Search Query, Status Filter, and Server-Side Sort)
+  const fetchProducts = useCallback(
+    async (
+      query = searchQuery,
+      status = statusFilter,
+      sort = sortBy,
+    ) => {
+      const q = typeof query === "string" ? query : searchQuery;
+      const s = typeof status === "string" ? status : statusFilter;
+      const sb = typeof sort === "string" ? sort : sortBy;
+      try {
+        setLoading(true);
+        setPage(1);
+        const data = await searchDashboardProducts(q, s, sb, 1, PAGE_SIZE);
+        if (data && data.products) {
+          setProducts(data.products);
+          setHasMore(Boolean(data.hasMore));
+          setTotalCount(Number(data.totalCount ?? data.products.length));
+        }
+      } catch (error) {
+        showToast(
+          error?.response?.data?.message || "Failed to load products.",
+          "error",
+        );
+      } finally {
+        setLoading(false);
+      }
+    },
+    [searchQuery, statusFilter, sortBy],
+  );
+
+  // Debounced effect whenever search query, status filter, or sortBy changes
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      fetchProducts(searchQuery, statusFilter, sortBy);
+    }, 300);
+
+    return () => clearTimeout(handler);
+  }, [searchQuery, statusFilter, sortBy, fetchProducts]);
+
+  // Load More Handler (loads page + 1 and appends to existing products with active search/filter/sort)
+  const handleLoadMore = async () => {
+    if (loadingMore || !hasMore) return;
     try {
-      setLoading(true);
-      const data = await getAllProducts();
+      setLoadingMore(true);
+      const nextPage = page + 1;
+      const data = await searchDashboardProducts(
+        searchQuery,
+        statusFilter,
+        sortBy,
+        nextPage,
+        PAGE_SIZE,
+      );
       if (data && data.products) {
-        setProducts(data.products);
+        setProducts((prev) => [...prev, ...data.products]);
+        setPage(nextPage);
+        setHasMore(Boolean(data.hasMore));
+        if (data.totalCount !== undefined) {
+          setTotalCount(Number(data.totalCount));
+        }
       }
     } catch (error) {
       showToast(
-        error?.response?.data?.message || "Failed to load products.",
+        error?.response?.data?.message || "Failed to load more products.",
         "error",
       );
     } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  // Filter products based on search query & status filter
-  const filteredProducts = useMemo(() => {
-    let result = [...products];
-
-    // 1. Status Filter
-    if (statusFilter === "ACTIVE") {
-      result = result.filter((p) => p.is_active);
-    } else if (statusFilter === "INACTIVE") {
-      result = result.filter((p) => !p.is_active);
-    }
-
-    // 2. Search Query
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase().trim();
-      result = result.filter(
-        (item) =>
-          item.name?.toLowerCase().includes(query) ||
-          item.description?.toLowerCase().includes(query) ||
-          String(item.id).includes(query) ||
-          String(item.price).includes(query) ||
-          item.category?.name?.toLowerCase().includes(query) ||
-          item.category_name?.toLowerCase().includes(query),
-      );
-    }
-
-    // 3. Sorting
-    result.sort((a, b) => {
-      let aVal = a[sortField];
-      let bVal = b[sortField];
-
-      if (typeof aVal === "string") {
-        aVal = aVal.toLowerCase();
-        bVal = (bVal || "").toLowerCase();
-      }
-
-      if (aVal < bVal) return sortDirection === "asc" ? -1 : 1;
-      if (aVal > bVal) return sortDirection === "asc" ? 1 : -1;
-      return 0;
-    });
-
-    return result;
-  }, [products, searchQuery, statusFilter, sortField, sortDirection]);
-
-  // Handle Sort Change
-  const handleSort = (field) => {
-    if (sortField === field) {
-      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
-    } else {
-      setSortField(field);
-      setSortDirection("asc");
+      setLoadingMore(false);
     }
   };
 
@@ -145,6 +147,7 @@ const Product = () => {
       setProducts((prev) =>
         prev.filter((item) => item.id !== productToDelete.id),
       );
+      setTotalCount((prev) => Math.max(0, prev - 1));
       showToast(`"${productToDelete.name}" deleted permanently.`, "success");
       setDeleteModalOpen(false);
       setProductToDelete(null);
@@ -172,12 +175,13 @@ const Product = () => {
 
       {/* TOP BAR Component */}
       <ProductTopBar
-        totalCount={products.length}
+        totalCount={totalCount || products.length}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         statusFilter={statusFilter}
         setStatusFilter={setStatusFilter}
-        onRefresh={fetchProducts}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
       />
 
       {/* PRODUCTS TABLE */}
@@ -188,7 +192,7 @@ const Product = () => {
             style={{ fontSize: "1.75rem", color: "#6b7280" }}
           />
         </div>
-      ) : filteredProducts.length === 0 ? (
+      ) : products.length === 0 ? (
         <div className={style.emptyContainer}>
           <div className={style.emptyIcon}>
             <i className="ri-inbox-line" style={{ fontSize: "2.5rem" }} />
@@ -206,21 +210,9 @@ const Product = () => {
             <thead>
               <tr className={style.tableHeaderRow}>
                 {/* Product Column */}
-                <th
-                  className={`${style.tableHeader} ${style.sortableHeader}`}
-                  onClick={() => handleSort("name")}
-                >
+                <th className={style.tableHeader}>
                   <div className={style.headerContent}>
                     <span>Product</span>
-                    {sortField === "name" && (
-                      <i
-                        className={
-                          sortDirection === "asc"
-                            ? "ri-arrow-up-line"
-                            : "ri-arrow-down-line"
-                        }
-                      />
-                    )}
                   </div>
                 </th>
 
@@ -239,21 +231,9 @@ const Product = () => {
                 </th>
 
                 {/* Price Column */}
-                <th
-                  className={`${style.tableHeader} ${style.sortableHeader}`}
-                  onClick={() => handleSort("price")}
-                >
+                <th className={style.tableHeader}>
                   <div className={style.headerContent}>
                     <span>Price</span>
-                    {sortField === "price" && (
-                      <i
-                        className={
-                          sortDirection === "asc"
-                            ? "ri-arrow-up-line"
-                            : "ri-arrow-down-line"
-                        }
-                      />
-                    )}
                   </div>
                 </th>
 
@@ -264,7 +244,7 @@ const Product = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredProducts.map((product) => (
+              {products.map((product) => (
                 <ProductCard
                   key={product.id}
                   product={product}
@@ -275,10 +255,38 @@ const Product = () => {
             </tbody>
           </table>
 
+          {/* Load More Button Container */}
+          {hasMore && (
+            <div className={style.loadMoreContainer}>
+              <button
+                type="button"
+                className={style.loadMoreBtn}
+                onClick={handleLoadMore}
+                disabled={loadingMore}
+              >
+                {loadingMore ? (
+                  <>
+                    <i
+                      className="ri-loader-4-line ri-spin"
+                      style={{ fontSize: "1rem" }}
+                    />
+                    <span>Loading more products...</span>
+                  </>
+                ) : (
+                  <>
+                    <i className="ri-arrow-down-line" />
+                    <span>Load More Products (15 more)</span>
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+
           {/* Table Footer with Summary */}
           <div className={style.tableFooter}>
             <span className={style.footerInfo}>
-              Showing {filteredProducts.length} of {products.length} products
+              Showing {products.length} of {totalCount || products.length}{" "}
+              products
             </span>
           </div>
         </div>

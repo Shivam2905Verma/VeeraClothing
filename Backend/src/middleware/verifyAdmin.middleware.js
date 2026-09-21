@@ -2,9 +2,12 @@ import jwt from "jsonwebtoken";
 
 export const verifyAdmin = (req, res, next) => {
   try {
-    const token = req.cookies?.admin_token;
+    const token =
+      req.cookies?.admin_token ||
+      req.headers?.authorization?.replace("Bearer ", "");
 
     if (!token) {
+      console.log("this is running");
       return res.status(401).json({
         success: false,
         message: "Access denied. No authentication token found.",

@@ -148,4 +148,8 @@
     height: 32px;
     gap: 6px;
   }
+
+  .btnSuffix {
+    display: none;
+  }
 }

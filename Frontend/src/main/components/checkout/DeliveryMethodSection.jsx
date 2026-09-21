@@ -45,7 +45,8 @@ const DeliveryMethodSection = ({ cartList = [], deliveryFee = 0 }) => {
                 className={style.deliveryThumb}
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = "https://via.placeholder.com/50?text=VC";
+                  e.target.src =
+                    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 50 50'%3E%3Crect width='50' height='50' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%239ca3af'%3EVC%3C/text%3E%3C/svg%3E";
                 }}
               />
               <span className={style.deliveryEstimate}>

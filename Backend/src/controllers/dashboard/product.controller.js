@@ -1,4 +1,4 @@
-import { eq, inArray, and } from "drizzle-orm";
+import { eq, inArray, and, or, like, asc, desc, sql } from "drizzle-orm";
 import {
   uploadToCloudinary,
   deleteFromCloudinary,
@@ -7,22 +7,128 @@ import { db } from "../../config/DB.config.js";
 import { cart_items } from "../../models/cart_items.model.js";
 import { order_items } from "../../models/order_items.model.js";
 import { products } from "../../models/product.model.js";
+import { categories } from "../../models/categories.model.js";
 import { product_images } from "../../models/product_images.model.js";
 import { product_variants } from "../../models/product_variants.model.js";
 
-export async function getAllDashboardProducts(req, res) {
+export async function searchDashboardProducts(req, res) {
   try {
-    const result = await db.select().from(products);
+    const query = (
+      req.query.q ||
+      req.query.query ||
+      req.query.search ||
+      ""
+    ).trim();
+    const status = (req.query.status || "").trim();
+    const sortBy = (req.query.sortBy || req.query.sort || "newest").trim();
+    const page = req.query.page ? parseInt(req.query.page, 10) : 1;
+    const limit = req.query.limit ? parseInt(req.query.limit, 10) : 15;
+    const offset = (page - 1) * limit;
+
+    const conditions = [];
+
+    // Status Filter: "ACTIVE" / "live" or "INACTIVE" / "disable" / "disabled"
+    if (status && status !== "ALL") {
+      const upper = status.toUpperCase();
+      if (upper === "ACTIVE" || upper === "LIVE") {
+        conditions.push(eq(products.is_active, true));
+      } else if (
+        upper === "INACTIVE" ||
+        upper === "DISABLED" ||
+        upper === "DISABLE"
+      ) {
+        conditions.push(eq(products.is_active, false));
+      }
+    }
+
+    // Search Query (matches name, description, category name, or ID)
+    if (query) {
+      const searchTerm = `%${query}%`;
+      const numId = Number(query);
+      const isNum = !isNaN(numId) && Number.isInteger(numId);
+
+      const searchConditions = [
+        like(products.name, searchTerm),
+        like(products.description, searchTerm),
+        like(categories.name, searchTerm),
+      ];
+
+      if (isNum) {
+        searchConditions.push(eq(products.id, numId));
+      }
+
+      conditions.push(or(...searchConditions));
+    }
+
+    // Build count query
+    let countQuery = db
+      .select({ count: sql`count(DISTINCT ${products.id})` })
+      .from(products)
+      .leftJoin(categories, eq(products.category_id, categories.id));
+
+    if (conditions.length > 0) {
+      countQuery = countQuery.where(and(...conditions));
+    }
+
+    const [{ count }] = await countQuery;
+    const totalCount = Number(count || 0);
+
+    // Build data query
+    let dataQuery = db
+      .select({
+        id: products.id,
+        name: products.name,
+        category_name: categories.name,
+        price: products.price,
+        image_url: products.image_url,
+        is_active: products.is_active,
+        createdAt: products.createdAt,
+      })
+      .from(products)
+      .leftJoin(categories, eq(products.category_id, categories.id));
+
+    if (conditions.length > 0) {
+      dataQuery = dataQuery.where(and(...conditions));
+    }
+
+    // Sort order
+    if (
+      sortBy === "price-low-to-high" ||
+      sortBy === "low-to-high" ||
+      sortBy === "price-asc"
+    ) {
+      dataQuery = dataQuery.orderBy(asc(products.price), desc(products.id));
+    } else if (
+      sortBy === "price-high-to-low" ||
+      sortBy === "high-to-low" ||
+      sortBy === "price-desc"
+    ) {
+      dataQuery = dataQuery.orderBy(desc(products.price), desc(products.id));
+    } else if (sortBy === "oldest" || sortBy === "date-oldest") {
+      dataQuery = dataQuery.orderBy(asc(products.createdAt), asc(products.id));
+    } else {
+      // Default: "newest"
+      dataQuery = dataQuery.orderBy(desc(products.createdAt), desc(products.id));
+    }
+
+    dataQuery = dataQuery.limit(limit).offset(offset);
+
+    const result = await dataQuery;
+
     return res.status(200).json({
       success: true,
-      message: "All dashboard products fetched successfully",
+      message: "Dashboard products searched successfully",
       products: result,
+      totalCount,
+      page,
+      limit,
+      hasMore: page * limit < totalCount,
     });
   } catch (error) {
-    console.error("getAllDashboardProducts:", error);
+    console.error("searchDashboardProducts error:", error);
     return res.status(500).json({
       success: false,
-      message: "Failed to fetch dashboard products",
+      message: "Failed to search dashboard products",
     });
   }
 }
@@ -713,8 +819,11 @@ export async function permanentDeleteProduct(req, res) {
         .filter((img) => img.public_id)
         .map((img) =>
           deleteFromCloudinary(img.public_id).catch((err) =>
-            console.error(`Failed to delete Cloudinary image ${img.public_id}:`, err)
-          )
+            console.error(
+              `Failed to delete Cloudinary image ${img.public_id}:`,
+              err,
+            ),
+          ),
         );
       await Promise.allSettled(deletePromises);
     }

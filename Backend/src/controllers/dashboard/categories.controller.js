@@ -8,54 +8,50 @@ import { measurement_types } from "../../models/measurement_types.model.js";
 // GET ALL CATEGORIES WITH THEIR LINKED MEASUREMENTS
 export const getCategories = async (req, res) => {
   try {
-    const allCategories = await db.select().from(categories);
-
-    if (allCategories.length === 0) {
-      return res.status(200).json({
-        success: true,
-        message: "Categories fetched successfully",
-        categories: [],
-      });
-    }
-
-    // Fetch all category-measurement links joined with measurement_types
-    const categoryIds = allCategories.map((c) => c.id);
-    const links = await db
+    const rows = await db
       .select({
-        category_id: categories_measurements.category_id,
+        id: categories.id,
+        name: categories.name,
+        createdAt: categories.createdAt,
         measurement_id: measurement_types.id,
         measurement_name: measurement_types.name,
         measurement_unit: measurement_types.unit,
       })
-      .from(categories_measurements)
-      .innerJoin(
-        measurement_types,
-        eq(categories_measurements.measurement_type_id, measurement_types.id)
+      .from(categories)
+      .leftJoin(
+        categories_measurements,
+        eq(categories.id, categories_measurements.category_id),
       )
-      .where(inArray(categories_measurements.category_id, categoryIds));
+      .leftJoin(
+        measurement_types,
+        eq(categories_measurements.measurement_type_id, measurement_types.id),
+      );
 
-    // Group measurements by category ID
-    const measurementsByCatId = {};
-    links.forEach((link) => {
-      if (!measurementsByCatId[link.category_id]) {
-        measurementsByCatId[link.category_id] = [];
+    const categoryMap = new Map();
+
+    for (const row of rows) {
+      if (!categoryMap.has(row.id)) {
+        categoryMap.set(row.id, {
+          id: row.id,
+          name: row.name,
+          createdAt: row.createdAt,
+          measurements: [],
+        });
       }
-      measurementsByCatId[link.category_id].push({
-        id: link.measurement_id,
-        name: link.measurement_name,
-        unit: link.measurement_unit,
-      });
-    });
 
-    const enrichedCategories = allCategories.map((cat) => ({
-      ...cat,
-      measurements: measurementsByCatId[cat.id] || [],
-    }));
+      if (row.measurement_id) {
+        categoryMap.get(row.id).measurements.push({
+          id: row.measurement_id,
+          name: row.measurement_name,
+          unit: row.measurement_unit,
+        });
+      }
+    }
 
     return res.status(200).json({
       success: true,
       message: "Categories fetched successfully",
-      categories: enrichedCategories,
+      categories: Array.from(categoryMap.values()),
     });
   } catch (error) {
     console.error("Error in getCategories controller:", error);

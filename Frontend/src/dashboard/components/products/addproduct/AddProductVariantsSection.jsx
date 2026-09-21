@@ -46,7 +46,9 @@ const AddProductVariantsSection = ({
           className={style.addVariantBtn}
         >
           <i className="ri-add-line" style={{ fontSize: "1.1rem" }} />
-          <span>Add Variant</span>
+          <span>
+            Add <span className={style.btnSuffix}>Variant</span>
+          </span>
         </button>
       </div>
 

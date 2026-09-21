@@ -400,7 +400,16 @@
     padding: 0 16px;
   }
 
+  .storeLinkText {
+    display: none;
+  }
+
+  .storeLink {
+    padding: 6px 8px;
+  }
+
   .contentArea {
     padding: 16px;
   }
 }
+

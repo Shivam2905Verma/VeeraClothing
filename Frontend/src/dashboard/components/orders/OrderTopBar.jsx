@@ -9,7 +9,6 @@ const OrderTopBar = ({
   setPaymentStatusFilter,
   orderStatusFilter = "ALL",
   setOrderStatusFilter,
-  onRefresh,
 }) => {
   const [showPaymentMenu, setShowPaymentMenu] = useState(false);
   const [showOrderMenu, setShowOrderMenu] = useState(false);
@@ -253,18 +252,6 @@ const OrderTopBar = ({
               </div>
             )}
           </div>
-        </div>
-
-        {/* Toolbar Right */}
-        <div className={style.toolbarRight}>
-          <button
-            type="button"
-            className={style.viewBtn}
-            onClick={onRefresh}
-            title="Refresh Orders"
-          >
-            <i className="ri-refresh-line" style={{ fontSize: "0.95rem" }} />
-          </button>
         </div>
       </div>
     </div>

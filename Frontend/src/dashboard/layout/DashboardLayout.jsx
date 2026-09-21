@@ -305,17 +305,8 @@ const DashboardLayout = () => {
               target="_blank"
             >
               <i className="ri-external-link-line" />
-              <span>Live Store</span>
+              <span className={style.storeLinkText}>Live Store</span>
             </Link>
-
-            <button
-              type="button"
-              className={style.iconBtn}
-              onClick={logout}
-              title="Sign Out"
-            >
-              <i className="ri-logout-box-r-line" />
-            </button>
           </div>
         </header>
 
