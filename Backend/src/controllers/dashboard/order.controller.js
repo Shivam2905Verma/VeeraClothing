@@ -7,7 +7,7 @@ import { payment_methods } from "../../models/payment_methods.model.js";
 import { order_items } from "../../models/order_items.model.js";
 import { product_variants } from "../../models/product_variants.model.js";
 import { products } from "../../models/product.model.js";
-import { order_item_measurements } from "../../models/order_item_measurement.model.js";
+import { order_measurements } from "../../models/order_measurements.model.js";
 import { measurement_types } from "../../models/measurement_types.model.js";
 
 // 1. GET ALL ORDERS FOR DASHBOARD (WITH SEARCH, STATUS FILTERS, AND PAGINATION)
@@ -196,17 +196,17 @@ export const getDashboardOrderById = async (req, res) => {
 
       db
         .select({
-          id: order_item_measurements.id,
-          measurement_value: order_item_measurements.measurement_value,
+          id: order_measurements.id,
+          measurement_value: order_measurements.measurement_value,
           type_name: measurement_types.name,
           unit: measurement_types.unit,
         })
-        .from(order_item_measurements)
+        .from(order_measurements)
         .leftJoin(
           measurement_types,
-          eq(order_item_measurements.measurement_type_id, measurement_types.id),
+          eq(order_measurements.measurement_type_id, measurement_types.id),
         )
-        .where(eq(order_item_measurements.order_id, orderId)),
+        .where(eq(order_measurements.order_id, orderId)),
     ]);
 
     return res.status(200).json({

@@ -14,7 +14,7 @@
 }
 
 .menubar {
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   cursor: pointer;
@@ -213,6 +213,7 @@
 
 @media (max-width: 526px) {
   .menubar {
+    display: flex;
     font-size: 1.5rem;
   }
 

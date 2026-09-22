@@ -4,7 +4,7 @@ import { payment_methods } from "../../models/payment_methods.model.js";
 import { address } from "../../models/address.model.js";
 import { order } from "../../models/order.model.js";
 import { order_items } from "../../models/order_items.model.js";
-import { order_item_measurements } from "../../models/order_item_measurement.model.js";
+import { order_measurements } from "../../models/order_measurements.model.js";
 import { cart_items } from "../../models/cart_items.model.js";
 import { product_variants } from "../../models/product_variants.model.js";
 import { products } from "../../models/product.model.js";
@@ -33,9 +33,6 @@ export const getPaymentMethods = async (req, res) => {
 export const placeOrder = async (req, res) => {
   try {
     const userId = getUserId(req);
-    if (!userId) {
-      return res.status(401).json({ success: false, message: "Unauthorized" });
-    }
 
     const { order: orderData, measurements } = req.body;
 
@@ -117,25 +114,31 @@ export const placeOrder = async (req, res) => {
     const newOrderId = orderResult.insertId;
 
     // 5. Insert Order Items
-    for (const item of cartList) {
+    const orderItemsData = cartList.map((item) => {
       const itemSubtotal = Number(item.price) * item.quantity;
-      await db.insert(order_items).values({
+      return {
         order_id: newOrderId,
         variant_id: item.variant_id,
         quantity: item.quantity,
         price: Number(item.price).toFixed(2),
         subtotal: itemSubtotal.toFixed(2),
-      });
-    }
+      };
+    });
+
+    await db.insert(order_items).values(orderItemsData);
 
     // 6. Save custom tailoring measurements for this order if provided
-    for (const [measurementTypeId, val] of Object.entries(measurements)) {
-      if (measurementTypeId && val) {
-        await db.insert(order_item_measurements).values({
+    if (measurements && Object.keys(measurements).length > 0) {
+      const measurementData = Object.entries(measurements)
+        .filter(([measurementTypeId, val]) => measurementTypeId && val)
+        .map(([measurementTypeId, val]) => ({
           order_id: newOrderId,
           measurement_type_id: Number(measurementTypeId),
-          measurement_value: val,
-        });
+          measurement_value: Number(val),
+        }));
+
+      if (measurementData.length > 0) {
+        await db.insert(order_measurements).values(measurementData);
       }
     }
 

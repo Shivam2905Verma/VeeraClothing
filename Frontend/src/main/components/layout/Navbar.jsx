@@ -40,7 +40,7 @@ const Navbar = () => {
       <div className={style.top}>
         <div className={style.topleft}>
           <span
-            className={style.menubar}
+            className={`${style.menubar} ${style.mobileonly}`}
             onClick={() => setIsMenuOpen(true)}
             role="button"
             tabIndex={0}

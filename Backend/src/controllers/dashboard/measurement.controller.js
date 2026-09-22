@@ -2,7 +2,7 @@ import { eq, and, ne } from "drizzle-orm";
 import { db } from "../../config/DB.config.js";
 import { measurement_types } from "../../models/measurement_types.model.js";
 import { categories_measurements } from "../../models/category_measurements.model.js";
-import { order_item_measurements } from "../../models/order_item_measurement.model.js";
+import { order_measurements } from "../../models/order_measurements.model.js";
 
 // GET ALL MEASUREMENT TYPES
 export const getMeasurements = async (req, res) => {
@@ -183,8 +183,8 @@ export const deleteMeasurement = async (req, res) => {
     // Check if linked to orders
     const orderLinks = await db
       .select()
-      .from(order_item_measurements)
-      .where(eq(order_item_measurements.measurement_type_id, id))
+      .from(order_measurements)
+      .where(eq(order_measurements.measurement_type_id, id))
       .limit(1);
 
     if (orderLinks.length > 0) {

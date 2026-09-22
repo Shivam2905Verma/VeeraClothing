@@ -3,8 +3,8 @@ import { int, mysqlTable, foreignKey } from "drizzle-orm/mysql-core";
 import { measurement_types } from "./measurement_types.model.js";
 import { order } from "./order.model.js";
 
-export const order_item_measurements = mysqlTable(
-  "order_item_measurements",
+export const order_measurements = mysqlTable(
+  "order_measurements",
   {
     id: int().autoincrement().primaryKey(),
     order_id: int()
@@ -15,7 +15,7 @@ export const order_item_measurements = mysqlTable(
   },
   (table) => [
     foreignKey({
-      name: "ord_item_meas_type_fk",
+      name: "ord_meas_type_fk",
       columns: [table.measurement_type_id],
       foreignColumns: [measurement_types.id],
     }),
